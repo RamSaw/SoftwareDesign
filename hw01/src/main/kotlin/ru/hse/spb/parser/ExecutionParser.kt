@@ -1,7 +1,7 @@
 package ru.hse.spb.parser
 
 import ru.hse.spb.exceptions.UnknownCommandException
-import ru.hse.spb.exceptions.WrongCommandArguments
+import ru.hse.spb.exceptions.WrongCommandArgumentsException
 import ru.hse.spb.execution.*
 import java.nio.file.Paths
 
@@ -16,7 +16,7 @@ object ExecutionParser: Parser {
             result = when (command[0]) {
                 "=" -> {
                     if (command.size != 3) {
-                        throw WrongCommandArguments("Wrong arguments: correct syntax for assignment <name>=<value>")
+                        throw WrongCommandArgumentsException("Wrong arguments: correct syntax for assignment <name>=<value>")
                     }
                     Assignment(command[1], command[2], isPipeline(partitionedTokens), result)
                 }

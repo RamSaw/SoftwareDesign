@@ -3,6 +3,8 @@ package ru.hse.spb.parser
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import ru.hse.spb.environment.GlobalEnvironment
+import ru.hse.spb.exceptions.UnknownCommandException
+import ru.hse.spb.exceptions.WrongCommandArgumentsException
 import ru.hse.spb.execution.*
 import java.nio.file.Paths
 
@@ -49,5 +51,15 @@ class ExecutionParserTest {
     fun exitSubstitution() {
         GlobalEnvironment.setVariable("x", "exit")
         testParsing<Exit>(listOf("exit"), Exit(false, null))
+    }
+
+    @Test(expected = WrongCommandArgumentsException::class)
+    fun assignmentThrowsWrongCommandArgumentsException() {
+        ExecutionParser.parse(listOf("=", "1", "2", "3"))
+    }
+
+    @Test(expected = UnknownCommandException::class)
+    fun emptyCommandThrowsException() {
+        ExecutionParser.parse(listOf("|"))
     }
 }

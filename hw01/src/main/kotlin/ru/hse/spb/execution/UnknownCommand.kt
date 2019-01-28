@@ -26,12 +26,17 @@ class UnknownCommand(private val commandName: String, arguments: List<String>, p
                 .redirectError(ProcessBuilder.Redirect.PIPE)
                 .start()
 
-            proc.waitFor(60, TimeUnit.MINUTES)
-            proc.inputStream.bufferedReader().readText()
+            proc.waitFor(1, TimeUnit.SECONDS)
+            removeLineSeparatorAsLastChar(proc.inputStream.bufferedReader().readText())
         } catch(e: IOException) {
             throw UnknownCommandException("External command ${commandWithArguments[0]} went to an error: " +
                     "${e.message}. Maybe wrong name of command?")
         }
+    }
+
+    private fun removeLineSeparatorAsLastChar(str: String): String {
+        return if (str.endsWith(System.lineSeparator()))
+            str.let { it.substring(0, it.length - System.lineSeparator().length) } else str
     }
 
     override fun equals(other: Any?): Boolean {

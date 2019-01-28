@@ -11,10 +11,14 @@ object CliApplication {
     fun run() {
         println("Welcome to CLI")
         while (true) {
-            print(">")
-            println(process(readLine()!!))
+            try {
+                print(">")
+                process(readLine()!!)?.apply { println(this) }
+            } catch (e: Exception) {
+                System.err.println(e.message)
+            }
         }
     }
 
-    fun process(input: String) = ExecutionParser.parse(InterpolationLexer.tokenize(input)).execute().orEmpty()
+    fun process(input: String) = ExecutionParser.parse(InterpolationLexer.tokenize(input)).execute()
 }

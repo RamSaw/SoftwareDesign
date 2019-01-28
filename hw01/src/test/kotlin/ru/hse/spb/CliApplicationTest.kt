@@ -14,12 +14,12 @@ class CliApplicationTest {
         val exampleTxt =
             Paths.get(CatTest::class.java.getResource("/ru/hse/spb/example.txt").path).toAbsolutePath()
         assertEquals("Hello, world!", CliApplication.process("echo \"Hello, world!\""))
-        assertEquals("", CliApplication.process("FILE=$exampleTxt"))
+        assertEquals(null, CliApplication.process("FILE=$exampleTxt"))
         assertEquals("Some example text", CliApplication.process("cat \$FILE"))
         assertEquals("1 3 18", CliApplication.process("cat $exampleTxt | wc"))
         assertEquals("1 3 18 example.txt", CliApplication.process("wc $exampleTxt"))
         assertEquals("1 1 4", CliApplication.process("echo 123 | wc"))
-        assertEquals("", CliApplication.process("x=exit"))
+        assertEquals(null, CliApplication.process("x=exit"))
         // assertEquals("", CliApplication.process("\$x")) exits test
     }
 }
