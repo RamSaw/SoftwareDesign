@@ -1,6 +1,5 @@
 package ru.hse.spb.execution
 
-import java.nio.file.Path
 import java.nio.file.Paths
 
 /**

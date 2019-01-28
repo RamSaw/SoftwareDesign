@@ -1,10 +1,7 @@
 package ru.hse.spb.execution
 
-import org.junit.Assert.*
-
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
-import java.nio.file.Paths
 
 class EchoTest {
     @Test

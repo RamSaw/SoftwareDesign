@@ -1,7 +1,5 @@
 package ru.hse.spb.execution
 
-import java.nio.file.Path
-
 /**
  * Implementation of echo command: echo <str1> <str2> ... .
  * Returns: <str1> <str2> ... .
