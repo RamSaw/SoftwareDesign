@@ -49,7 +49,7 @@ class InterpolationLexerTest {
     }
 
     @Test
-    fun substitutionExit() {
+    fun exitSubstitution() {
         GlobalEnvironment.setVariable("x", "exit")
         val result = InterpolationLexer.tokenize("\$x")
         val expectedResult = listOf("exit")

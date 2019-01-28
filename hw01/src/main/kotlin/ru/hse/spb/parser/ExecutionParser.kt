@@ -18,36 +18,40 @@ object ExecutionParser: Parser {
                     if (command.size != 3) {
                         throw WrongCommandArguments("Wrong arguments: correct syntax for assignment <name>=<value>")
                     }
-                    Assignment(command[1], command[2], result)
+                    Assignment(command[1], command[2], isPipeline(partitionedTokens), result)
                 }
                 "cat" -> Cat(command.subList(1, command.size).map { s -> Paths.get(s) }, result)
-                "exit" -> Exit(result)
+                "exit" -> Exit(isPipeline(partitionedTokens), result)
                 "pwd" -> Pwd(result)
                 "wc" -> Wc(command.subList(1, command.size).map { s -> Paths.get(s) }, result)
-                else -> throw UnknownCommandException("Unknown command: ${command[0]}")
+                "echo" -> Echo(command.subList(1, command.size), result)
+                else -> UnknownCommand(command[0], command.subList(1, command.size), result)
             }
         }
         return result ?: object : Executable {
             override fun execute(): String? {
-                return ""
-            }
-
-            override fun getCommandName(): String {
-                return ""
+                return null
             }
         }
     }
 
+    private fun isPipeline(partitionedTokens: List<List<String>>): Boolean {
+        return partitionedTokens.size != 1
+    }
+
     private fun partition(tokens: List<String>): List<List<String>> {
         val result = mutableListOf<List<String>>()
-        val currentCommand = mutableListOf<String>()
+        var currentCommand = mutableListOf<String>()
         for (token in tokens) {
             if (token != "|") {
                 currentCommand.add(token)
             } else {
                 result.add(currentCommand)
-                currentCommand.clear()
+                currentCommand = mutableListOf()
             }
+        }
+        if (!currentCommand.isEmpty()) {
+            result.add(currentCommand)
         }
         return result
     }

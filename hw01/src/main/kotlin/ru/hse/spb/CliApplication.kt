@@ -12,7 +12,9 @@ object CliApplication {
         println("Welcome to CLI")
         while (true) {
             print(">")
-            print(ExecutionParser.parse(InterpolationLexer.tokenize(readLine()!!)).execute())
+            println(process(readLine()!!))
         }
     }
+
+    fun process(input: String) = ExecutionParser.parse(InterpolationLexer.tokenize(input)).execute().orEmpty()
 }
