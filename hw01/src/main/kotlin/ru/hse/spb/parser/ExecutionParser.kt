@@ -5,6 +5,9 @@ import ru.hse.spb.exceptions.WrongCommandArgumentsException
 import ru.hse.spb.execution.*
 import java.nio.file.Paths
 
+/**
+ * Implementation of parser that supports pipeline and creates executables
+ */
 object ExecutionParser: Parser {
     override fun parse(tokens: List<String>): Executable {
         val partitionedTokens = partition(tokens)

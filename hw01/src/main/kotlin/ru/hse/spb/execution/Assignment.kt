@@ -38,5 +38,4 @@ class Assignment(private val variableName: String,
         result = 31 * result + isInPipeline.hashCode()
         return result
     }
-
 }
