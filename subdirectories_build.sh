@@ -13,6 +13,7 @@ build_subdirectory () {
     then
       chmod +x gradlew
       ./gradlew build
+      ./gradlew check
     fi
 
     cd ..
