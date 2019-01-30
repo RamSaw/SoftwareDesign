@@ -11,6 +11,11 @@ sealed class CliException(message: String?) : Exception(message)
 class UnknownCommandException(message: String?) : CliException(message)
 
 /**
+ * Exception that must be thrown if external command has errored
+ */
+class ExternalCommandException(message: String?) : CliException(message)
+
+/**
  * Exception that must be thrown if command has incorrect arguments
  */
 class WrongCommandArgumentsException(message: String?) : CliException(message)

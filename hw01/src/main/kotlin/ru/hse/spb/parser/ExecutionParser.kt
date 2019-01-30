@@ -12,6 +12,7 @@ object ExecutionParser: Parser {
     override fun parse(tokens: List<String>): Executable {
         val partitionedTokens = partition(tokens)
         var result: Executable? = null
+        val isPipelineTokens = isPipeline(partitionedTokens)
         for (command in partitionedTokens) {
             if (command.isEmpty()) {
                 throw UnknownCommandException("Unknown command: command is empty")
@@ -21,14 +22,14 @@ object ExecutionParser: Parser {
                     if (command.size != 3) {
                         throw WrongCommandArgumentsException("Wrong arguments: correct syntax for assignment <name>=<value>")
                     }
-                    Assignment(command[1], command[2], isPipeline(partitionedTokens), result)
+                    Assignment(command[1], command[2], isPipelineTokens, result)
                 }
                 "cat" -> Cat(command.subList(1, command.size).map { s -> Paths.get(s) }, result)
-                "exit" -> Exit(isPipeline(partitionedTokens), result)
+                "exit" -> Exit(isPipelineTokens, result)
                 "pwd" -> Pwd(result)
                 "wc" -> Wc(command.subList(1, command.size).map { s -> Paths.get(s) }, result)
                 "echo" -> Echo(command.subList(1, command.size), result)
-                else -> UnknownCommand(command[0], command.subList(1, command.size), result)
+                else -> ExternalCommand(command[0], command.subList(1, command.size), result)
             }
         }
         return result ?: object : Executable {

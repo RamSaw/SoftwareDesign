@@ -1,5 +1,6 @@
 package ru.hse.spb.execution
 
+import ru.hse.spb.exceptions.ExternalCommandException
 import ru.hse.spb.exceptions.UnknownCommandException
 import java.io.File
 import java.io.IOException
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit
  * Implementation of running external program if the command is unknown.
  * Pipeline input is passed as one argument.
  */
-class UnknownCommand(private val commandName: String, arguments: List<String>, prev: Executable?):
+class ExternalCommand(private val commandName: String, arguments: List<String>, prev: Executable?):
     OneTypeArgumentsExecutable<String>(arguments, prev) {
     override fun processArgumentsInput() =
         runCommand(listOf(commandName) + arguments, Paths.get("").toAbsolutePath().toFile())
@@ -29,7 +30,7 @@ class UnknownCommand(private val commandName: String, arguments: List<String>, p
             proc.waitFor(1, TimeUnit.SECONDS)
             removeLineSeparatorAsLastChar(proc.inputStream.bufferedReader().readText())
         } catch(e: IOException) {
-            throw UnknownCommandException("External command ${commandWithArguments[0]} went to an error: " +
+            throw ExternalCommandException("External command ${commandWithArguments[0]} went to an error: " +
                     "${e.message}. Maybe wrong name of command?")
         }
     }
@@ -44,7 +45,7 @@ class UnknownCommand(private val commandName: String, arguments: List<String>, p
         if (javaClass != other?.javaClass) return false
         if (!super.equals(other)) return false
 
-        other as UnknownCommand
+        other as ExternalCommand
 
         if (commandName != other.commandName) return false
 
