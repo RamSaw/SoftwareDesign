@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/RamSaw/SoftwareDesign.svg?branch=master)](https://travis-ci.org/RamSaw/SoftwareDesign)
-# SoftwareDesign
-Repository for software design course assignments
+Приложения позволяющее запускать некоторое количество команд Bash, обладающее примерно таким же синтаксисом.
 
 Такой была prescriptive архитектура:
 ![alt text](https://github.com/RamSaw/SoftwareDesign/blob/hw01/PrescriptiveArchitecture.png)
