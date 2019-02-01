@@ -80,4 +80,11 @@ class InterpolationLexerTest {
     fun incorrectQuotingThrowsExceptionOneTypeQuoting() {
         InterpolationLexer.tokenize("cat 'example.txt")
     }
+
+    @Test
+    fun pipelineWithoutSpace() {
+        val result = InterpolationLexer.tokenize("echo \"some text\"|wc")
+        val expectedResult = listOf("echo", "some text", "|", "wc")
+        assertEquals(expectedResult, result)
+    }
 }

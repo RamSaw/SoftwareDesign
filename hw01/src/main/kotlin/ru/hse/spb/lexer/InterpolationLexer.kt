@@ -54,15 +54,12 @@ object InterpolationLexer : Lexer {
                         State.SINGLE_QUOTING -> addChar(ch)
                         else -> variableName = ""
                     }
+                '|' -> {
+                    processSeparatorSymbol(ch, result)
+                    result.add("|")
+                }
                 ' ' ->
-                    when (state) {
-                        State.DOUBLE_QUOTING -> {
-                            currentStringPart += variableName?.let { GlobalEnvironment.getValue(it) }.orEmpty() + ' '
-                            variableName = null
-                        }
-                        State.SINGLE_QUOTING -> addChar(ch)
-                        State.NO_QUOTING -> changeState(result, State.NO_QUOTING)
-                    }
+                    processSeparatorSymbol(ch, result)
                 '=' ->
                     when (state) {
                         State.NO_QUOTING -> {
@@ -78,6 +75,17 @@ object InterpolationLexer : Lexer {
             }
         }
         return result.apply { dropToResult(this) }
+    }
+
+    private fun processSeparatorSymbol(ch: Char, result: MutableList<String>) {
+        when (state) {
+            State.DOUBLE_QUOTING -> {
+                currentStringPart += variableName?.let { GlobalEnvironment.getValue(it) }.orEmpty() + ' '
+                variableName = null
+            }
+            State.SINGLE_QUOTING -> addChar(ch)
+            State.NO_QUOTING -> changeState(result, State.NO_QUOTING)
+        }
     }
 
     private fun addChar(ch: Char) {

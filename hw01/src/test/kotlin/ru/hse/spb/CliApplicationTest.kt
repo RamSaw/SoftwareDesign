@@ -34,4 +34,9 @@ class CliApplicationTest {
             CliApplication.process("cat $exampleTxtWithDoubleQuotes")
         )
     }
+
+    @Test
+    fun pipelineWithoutSpaces() {
+        assertEquals("1 2 10", CliApplication.process("echo \"some text\"|wc"))
+    }
 }
