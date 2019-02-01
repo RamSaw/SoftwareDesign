@@ -3,7 +3,7 @@ package ru.hse.spb
 import ru.hse.spb.lexer.InterpolationLexer
 import ru.hse.spb.parser.ExecutionParser
 
-fun main(args: Array<String>) {
+fun main() {
     CliApplication.run()
 }
 

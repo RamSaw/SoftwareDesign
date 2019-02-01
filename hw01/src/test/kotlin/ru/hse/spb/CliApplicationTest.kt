@@ -2,6 +2,7 @@ package ru.hse.spb
 
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
+import ru.hse.spb.exceptions.ExternalCommandException
 import ru.hse.spb.exceptions.IncorrectQuotingException
 import ru.hse.spb.exceptions.UnknownCommandException
 import ru.hse.spb.execution.CatTest
@@ -68,5 +69,21 @@ class CliApplicationTest {
     @Test(expected = UnknownCommandException::class)
     fun incorrectPipelineThrowsException() {
         CliApplication.process("echo text | ")
+    }
+
+    @Test
+    fun singleQuotesInDoubleQuotes() {
+        assertEquals("", CliApplication.process("t=text"))
+        assertEquals("'text'" + System.lineSeparator(), CliApplication.process("echo \"'\$t'\""))
+    }
+
+    @Test
+    fun pipeInSingeQuotes() {
+        assertEquals("wesd|" + System.lineSeparator(), CliApplication.process("echo \"wesd|\""))
+    }
+
+    @Test(expected = ExternalCommandException::class)
+    fun doubleQuotesInAssignment() {
+        CliApplication.process("\"\"=text")
     }
 }

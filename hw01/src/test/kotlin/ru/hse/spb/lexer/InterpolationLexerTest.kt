@@ -110,4 +110,27 @@ class InterpolationLexerTest {
         val expectedResult = listOf("echo", "text", "|")
         assertEquals(expectedResult, result)
     }
+
+    @Test
+    fun singleQuotesInDoubleQuotes() {
+        GlobalEnvironment.setVariable("t", "text")
+        val result = InterpolationLexer.tokenize("echo \"'\$t'\"")
+        val expectedResult = listOf("echo", "'text'")
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun pipeInSingeQuotes() {
+        GlobalEnvironment.setVariable("t", "text")
+        val result = InterpolationLexer.tokenize("echo \"'\$t'\"")
+        val expectedResult = listOf("echo", "'text'")
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun doubleQuotesInAssignment() {
+        val result = InterpolationLexer.tokenize("\"\"=text")
+        val expectedResult = listOf("=text")
+        assertEquals(expectedResult, result)
+    }
 }

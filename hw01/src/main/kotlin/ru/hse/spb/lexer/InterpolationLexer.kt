@@ -26,47 +26,97 @@ object InterpolationLexer : Lexer {
 
         for (ch in input) {
             when (ch) {
-                '"' ->
+                '"' -> {
                     when (state) {
                         State.DOUBLE_QUOTING -> {
+                            interpolateVariableName()
                             state = State.NO_QUOTING
                         }
                         State.SINGLE_QUOTING -> {
-                            addChar(ch)
+                            currentStringPart += ch
                         }
                         State.NO_QUOTING -> {
+                            interpolateVariableName()
                             state = State.DOUBLE_QUOTING
                         }
                     }
-                '\'' ->
+                }
+                '\'' -> {
                     when (state) {
-                        State.DOUBLE_QUOTING -> addChar(ch)
-                        State.SINGLE_QUOTING -> state = State.NO_QUOTING
-                        State.NO_QUOTING -> state = State.SINGLE_QUOTING
+                        State.DOUBLE_QUOTING -> {
+                            interpolateVariableName()
+                            currentStringPart += ch
+                        }
+                        State.SINGLE_QUOTING -> {
+                            state = State.NO_QUOTING
+                        }
+                        State.NO_QUOTING -> {
+                            interpolateVariableName()
+                            state = State.SINGLE_QUOTING
+                        }
                     }
-                '$' ->
+                }
+                '$' -> {
                     when (state) {
-                        State.SINGLE_QUOTING -> addChar(ch)
+                        State.SINGLE_QUOTING -> currentStringPart += ch
                         else -> {
-                            currentStringPart += variableName?.let { GlobalEnvironment.getValue(it) }.orEmpty()
+                            interpolateVariableName()
                             variableName = ""
                         }
                     }
+                }
                 '|' -> {
-                    processSeparatorSymbol(ch, result)
-                    result.add("|")
+                    when (state) {
+                        State.DOUBLE_QUOTING -> {
+                            interpolateVariableName()
+                            currentStringPart += ch
+                        }
+                        State.SINGLE_QUOTING -> currentStringPart += ch
+                        State.NO_QUOTING -> {
+                            interpolateVariableName()
+                            if (currentStringPart != "") {
+                                result.add(currentStringPart)
+                                currentStringPart = ""
+                            }
+                            result.add("|")
+                        }
+                    }
                 }
                 ' ' ->
-                    processSeparatorSymbol(ch, result)
+                    when (state) {
+                        State.DOUBLE_QUOTING -> {
+                            interpolateVariableName()
+                            currentStringPart += ch
+                        }
+                        State.SINGLE_QUOTING -> currentStringPart += ch
+                        State.NO_QUOTING -> {
+                            interpolateVariableName()
+                            if (currentStringPart != "") {
+                                result.add(currentStringPart)
+                                currentStringPart = ""
+                            }
+                        }
+                    }
                 '=' ->
                     when (state) {
-                        State.NO_QUOTING -> {
-                            changeState(result, State.NO_QUOTING)
-                            result.add("=")
-                            result[result.lastIndex] = result[result.lastIndex - 1].
-                                also { result[result.lastIndex - 1] = result[result.lastIndex] }
+                        State.DOUBLE_QUOTING -> {
+                            interpolateVariableName()
+                            currentStringPart += ch
                         }
-                        else -> addChar(ch)
+                        State.SINGLE_QUOTING -> currentStringPart += ch
+                        State.NO_QUOTING -> {
+                            interpolateVariableName()
+                            if (currentStringPart == "") {
+                                currentStringPart += ch
+                            } else {
+                                result.add(currentStringPart)
+                                currentStringPart = ""
+                                result.add("=")
+                                result[result.lastIndex] = result[result.lastIndex - 1].also {
+                                    result[result.lastIndex - 1] = result[result.lastIndex]
+                                }
+                            }
+                        }
                     }
                 else ->
                     addChar(ch)
@@ -77,35 +127,17 @@ object InterpolationLexer : Lexer {
             throw IncorrectQuotingException("Incorrect quotes!")
         }
 
-        return result.apply { dropToResult(this) }
+        interpolateVariableName()
+        return if (currentStringPart == "") result else result.apply { add(currentStringPart) }
     }
 
-    private fun processSeparatorSymbol(ch: Char, result: MutableList<String>) {
-        when (state) {
-            State.DOUBLE_QUOTING -> {
-                currentStringPart += variableName?.let { GlobalEnvironment.getValue(it) }.orEmpty() + ' '
-                variableName = null
-            }
-            State.SINGLE_QUOTING -> addChar(ch)
-            State.NO_QUOTING -> changeState(result, State.NO_QUOTING)
-        }
+    private fun interpolateVariableName() {
+        currentStringPart += variableName?.let { GlobalEnvironment.getValue(it) }.orEmpty()
+        variableName = null
     }
 
     private fun addChar(ch: Char) {
         if (variableName == null) currentStringPart += ch else variableName += ch
-    }
-
-    private fun changeState(result: MutableList<String>, newState: State) {
-        state = newState
-        dropToResult(result)
-    }
-
-    private fun dropToResult(result: MutableList<String>) {
-        if (!(currentStringPart == "" && variableName == null)) {
-            result.add(currentStringPart + variableName?.let { GlobalEnvironment.getValue(it) }.orEmpty())
-            variableName = null
-            currentStringPart = ""
-        }
     }
 
     private fun clear() {
