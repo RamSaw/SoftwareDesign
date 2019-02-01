@@ -54,9 +54,7 @@ object ExecutionParser: Parser {
                 currentCommand = mutableListOf()
             }
         }
-        if (!currentCommand.isEmpty()) {
-            result.add(currentCommand)
-        }
+        result.add(currentCommand)
         return result
     }
 }

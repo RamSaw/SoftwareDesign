@@ -2,6 +2,8 @@ package ru.hse.spb
 
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
+import ru.hse.spb.exceptions.IncorrectQuotingException
+import ru.hse.spb.exceptions.UnknownCommandException
 import ru.hse.spb.execution.CatTest
 import java.nio.file.Paths
 
@@ -38,5 +40,22 @@ class CliApplicationTest {
     @Test
     fun pipelineWithoutSpaces() {
         assertEquals("1 2 10", CliApplication.process("echo \"some text\"|wc"))
+    }
+
+    @Test(expected = IncorrectQuotingException::class)
+    fun quotingMustBeClosed() {
+        CliApplication.process("echo \"text")
+    }
+
+    @Test
+    fun correctInterpolationWithTwoVariables() {
+        assertEquals("", CliApplication.process("a=ec"))
+        assertEquals("", CliApplication.process("b=ho"))
+        assertEquals("text" + System.lineSeparator(), CliApplication.process("\$a\$b text"))
+    }
+
+    @Test(expected = UnknownCommandException::class)
+    fun incorrectPipelineThrowsException() {
+        CliApplication.process("echo text | ")
     }
 }

@@ -61,7 +61,17 @@ class ExecutionParserTest {
     }
 
     @Test(expected = UnknownCommandException::class)
-    fun emptyCommandThrowsException() {
+    fun emptyCommandThrowsExceptionBothEmpty() {
         ExecutionParser.parse(listOf("|"))
+    }
+
+    @Test(expected = UnknownCommandException::class)
+    fun emptyCommandThrowsExceptionLastEmpty() {
+        ExecutionParser.parse(listOf("echo", "text", "|"))
+    }
+
+    @Test(expected = UnknownCommandException::class)
+    fun emptyCommandThrowsExceptionMiddleEmpty() {
+        ExecutionParser.parse(listOf("echo", "text", "|", "|", "echo", "text"))
     }
 }

@@ -78,13 +78,36 @@ class InterpolationLexerTest {
 
     @Test(expected = IncorrectQuotingException::class)
     fun incorrectQuotingThrowsExceptionOneTypeQuoting() {
-        InterpolationLexer.tokenize("cat 'example.txt")
+        InterpolationLexer.tokenize("echo \"text")
     }
 
     @Test
     fun pipelineWithoutSpace() {
         val result = InterpolationLexer.tokenize("echo \"some text\"|wc")
         val expectedResult = listOf("echo", "some text", "|", "wc")
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun correctInterpolationWithTwoVariables() {
+        GlobalEnvironment.setVariable("a", "ec")
+        GlobalEnvironment.setVariable("b", "ho")
+        val result = InterpolationLexer.tokenize("\$a\$b text")
+        val expectedResult = listOf("echo", "text")
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun emptyCommandInPipeline() {
+        val result = InterpolationLexer.tokenize("echo text |")
+        val expectedResult = listOf("echo", "text", "|")
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun emptyCommandInPipelineWithSpace() {
+        val result = InterpolationLexer.tokenize("echo text | ")
+        val expectedResult = listOf("echo", "text", "|")
         assertEquals(expectedResult, result)
     }
 }
