@@ -22,4 +22,16 @@ class CliApplicationTest {
         assertEquals("", CliApplication.process("x=exit"))
         // assertEquals("", CliApplication.process("\$x")) exits test
     }
+
+    @Test
+    fun testDoubleQuotesInCat() {
+        val exampleTxt =
+            Paths.get(CatTest::class.java.getResource("/ru/hse/spb/example.txt").path).toAbsolutePath()
+        val exampleTxtWithDoubleQuotes =
+            "${Paths.get(exampleTxt.parent.toAbsolutePath().toString(), "\"exam\"ple.txt")}"
+        assertEquals(
+            "Some example text" + System.lineSeparator(),
+            CliApplication.process("cat $exampleTxtWithDoubleQuotes")
+        )
+    }
 }

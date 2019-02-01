@@ -19,3 +19,8 @@ class ExternalCommandException(message: String?) : CliException(message)
  * Exception that must be thrown if command has incorrect arguments
  */
 class WrongCommandArgumentsException(message: String?) : CliException(message)
+
+/**
+ * Exception that must be thrown if quoting in input is incorrect
+ */
+class IncorrectQuotingException(message: String?) : CliException(message)

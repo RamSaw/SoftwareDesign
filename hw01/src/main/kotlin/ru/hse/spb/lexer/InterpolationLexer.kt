@@ -1,6 +1,8 @@
 package ru.hse.spb.lexer
 
 import ru.hse.spb.environment.GlobalEnvironment
+import ru.hse.spb.exceptions.IncorrectQuotingException
+import java.util.*
 
 /**
  * This implementation goes through string and substitutes all occurrences of $ and deletes quoting.
@@ -20,6 +22,10 @@ object InterpolationLexer : Lexer {
      * @return list of tokens
      */
     override fun tokenize(input: String): List<String> {
+        if (!isQuotingCorrect(input)) {
+            throw IncorrectQuotingException("Input contains incorrect quotes sequence!")
+        }
+
         clear()
         val result = mutableListOf<String>()
 
@@ -28,20 +34,20 @@ object InterpolationLexer : Lexer {
                 '"' ->
                     when (state) {
                         State.DOUBLE_QUOTING -> {
-                            changeState(result, State.NO_QUOTING)
+                            state = State.NO_QUOTING
                         }
                         State.SINGLE_QUOTING -> {
                             addChar(ch)
                         }
                         State.NO_QUOTING -> {
-                            changeState(result, State.DOUBLE_QUOTING)
+                            state = State.DOUBLE_QUOTING
                         }
                     }
                 '\'' ->
                     when (state) {
                         State.DOUBLE_QUOTING -> addChar(ch)
-                        State.SINGLE_QUOTING -> changeState(result, State.NO_QUOTING)
-                        State.NO_QUOTING -> changeState(result, State.SINGLE_QUOTING)
+                        State.SINGLE_QUOTING -> state = State.NO_QUOTING
+                        State.NO_QUOTING -> state = State.SINGLE_QUOTING
                     }
                 '$' ->
                     when (state) {
@@ -95,5 +101,32 @@ object InterpolationLexer : Lexer {
         state = State.NO_QUOTING
         variableName = null
         currentStringPart = ""
+    }
+
+    private class QuotesSequence {
+        private val quotes = Stack<Char>()
+        private val singleQuote = '\''
+        private val doubleQuote = '"'
+
+        fun addSingleQuote(): Any = addQuote(singleQuote)
+
+        fun addDoubleQuote() = addQuote(doubleQuote)
+
+        private fun addQuote(quote: Char) {
+            if (!quotes.empty() && quotes.peek() == quote) quotes.pop() else quotes.add(quote)
+        }
+
+        fun isCorrectSequence() = quotes.isEmpty()
+    }
+
+    private fun isQuotingCorrect(input: String): Boolean {
+        val quotes = QuotesSequence()
+        for (ch in input) {
+            when (ch) {
+                '"' -> quotes.addDoubleQuote()
+                '\'' -> quotes.addSingleQuote()
+            }
+        }
+        return quotes.isCorrectSequence()
     }
 }

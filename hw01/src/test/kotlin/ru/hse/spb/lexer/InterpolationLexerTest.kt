@@ -3,6 +3,7 @@ package ru.hse.spb.lexer
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import ru.hse.spb.environment.GlobalEnvironment
+import ru.hse.spb.exceptions.IncorrectQuotingException
 
 class InterpolationLexerTest {
     @Test
@@ -54,5 +55,29 @@ class InterpolationLexerTest {
         val result = InterpolationLexer.tokenize("\$x")
         val expectedResult = listOf("exit")
         assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun doubleQuotesInterpolation() {
+        val result = InterpolationLexer.tokenize("cat \"exam\"ple.txt")
+        val expectedResult = listOf("cat", "example.txt")
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun singleQuotesInterpolation() {
+        val result = InterpolationLexer.tokenize("cat 'exam'ple.txt")
+        val expectedResult = listOf("cat", "example.txt")
+        assertEquals(expectedResult, result)
+    }
+
+    @Test(expected = IncorrectQuotingException::class)
+    fun incorrectQuotingThrowsExceptionDifferentQuoting() {
+        InterpolationLexer.tokenize("cat 'exam\"ple.txt")
+    }
+
+    @Test(expected = IncorrectQuotingException::class)
+    fun incorrectQuotingThrowsExceptionOneTypeQuoting() {
+        InterpolationLexer.tokenize("cat 'example.txt")
     }
 }
