@@ -22,7 +22,8 @@ class ExecutionParserTest {
     @Test
     fun assignment() {
         testParsing<Assignment>(listOf("=", "FILE", "example.txt"),
-            Assignment("FILE", "example.txt", false, null))
+            Assignment("FILE", "example.txt", true, null)
+        )
     }
 
     @Test
@@ -44,13 +45,14 @@ class ExecutionParserTest {
     @Test
     fun assignmentExit() {
         testParsing<Assignment>(listOf("=", "x", "exit"),
-            Assignment("x", "exit", false, null))
+            Assignment("x", "exit", true, null)
+        )
     }
 
     @Test
     fun exitSubstitution() {
         GlobalEnvironment.setVariable("x", "exit")
-        testParsing<Exit>(listOf("exit"), Exit(false, null))
+        testParsing<Exit>(listOf("exit"), Exit(true, null))
     }
 
     @Test(expected = WrongCommandArgumentsException::class)

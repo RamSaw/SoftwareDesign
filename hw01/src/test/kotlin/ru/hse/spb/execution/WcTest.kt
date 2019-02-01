@@ -14,7 +14,7 @@ class WcTest {
     @Test
     fun wcOneArgument() {
         val testFilePath = Paths.get(CatTest::class.java.getResource("/ru/hse/spb/testFile1").path)
-        val expected = "1 1 19 testFile1"
+        val expected = "0 1 18 testFile1"
         assertEquals(expected, Wc(listOf(testFilePath), null).execute())
     }
 
@@ -22,15 +22,15 @@ class WcTest {
     fun wcTwoArguments() {
         val testFile1Path = Paths.get(CatTest::class.java.getResource("/ru/hse/spb/testFile1").path)
         val testFile2Path = Paths.get(CatTest::class.java.getResource("/ru/hse/spb/testFile2").path)
-        val expected = "1 1 19 testFile1" + System.lineSeparator() +
-                "2 5 23 testFile2" + System.lineSeparator() + "3 6 42 total"
+        val expected = "0 1 18 testFile1" + System.lineSeparator() +
+                "1 5 22 testFile2" + System.lineSeparator() + "1 6 40 total"
         assertEquals(expected, Wc(listOf(testFile1Path, testFile2Path), null).execute())
     }
 
     @Test
     fun wcPipeline() {
         val testFile1Path = Paths.get(CatTest::class.java.getResource("/ru/hse/spb/testFile1").path)
-        val expected = "1 1 19"
+        val expected = "0 1 18"
         assertEquals(expected, Wc(listOf(), Cat(listOf(testFile1Path), null)).execute())
     }
 }

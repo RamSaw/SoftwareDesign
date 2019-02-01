@@ -1,20 +1,21 @@
 package ru.hse.spb.execution
 
 import ru.hse.spb.environment.GlobalEnvironment
+import ru.hse.spb.pipeline.Pipeline
 
 /**
  * Implementation of assignment command: var=val.
- * This command can be used in pipeline but returns null.
+ * This command can be used in pipeline but returns empty string.
  */
 class Assignment(private val variableName: String,
                  private val variableValue: String,
-                 private val isInPipeline: Boolean,
+                 private val isSingleInPipeline: Boolean,
                  prev: Executable?) : PipelineExecutable(prev) {
-    override fun execute(): String? {
-        if (!isInPipeline) {
+    override fun executeWithPipeline(pipeLine: Pipeline?): String {
+        if (isSingleInPipeline) {
             GlobalEnvironment.setVariable(variableName, variableValue)
         }
-        return null
+        return ""
     }
 
     override fun equals(other: Any?): Boolean {
@@ -26,7 +27,7 @@ class Assignment(private val variableName: String,
 
         if (variableName != other.variableName) return false
         if (variableValue != other.variableValue) return false
-        if (isInPipeline != other.isInPipeline) return false
+        if (isSingleInPipeline != other.isSingleInPipeline) return false
 
         return true
     }
@@ -35,7 +36,7 @@ class Assignment(private val variableName: String,
         var result = super.hashCode()
         result = 31 * result + variableName.hashCode()
         result = 31 * result + variableValue.hashCode()
-        result = 31 * result + isInPipeline.hashCode()
+        result = 31 * result + isSingleInPipeline.hashCode()
         return result
     }
 }

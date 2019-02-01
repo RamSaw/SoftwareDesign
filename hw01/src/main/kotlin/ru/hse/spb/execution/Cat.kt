@@ -1,5 +1,6 @@
 package ru.hse.spb.execution
 
+import ru.hse.spb.pipeline.Pipeline
 import java.nio.file.Path
 
 /**
@@ -8,8 +9,10 @@ import java.nio.file.Path
  */
 class Cat(arguments: List<Path>, prev: Executable?) :
     OneTypeArgumentsExecutable<Path>(arguments, prev) {
+    override fun processEmptyInput() = ""
+
     override fun processArgumentsInput() =
         arguments.joinToString(System.lineSeparator()) { path ->  path.toFile().readText() }
 
-    override fun processPipelineInput(pipeLineInput: String?) = pipeLineInput.orEmpty()
+    override fun processPipelineInput(pipeLine: Pipeline) = pipeLine.getContent()
 }

@@ -20,7 +20,7 @@ object CliApplication {
         while (true) {
             try {
                 print(">")
-                process(readLine()!!)?.apply { println(this) }
+                print(process(readLine()!!))
             } catch (e: Exception) {
                 System.err.println(e.message)
             }

@@ -8,5 +8,5 @@ interface Executable {
      * Executes command
      * @return string result or null if command has no result
      */
-    fun execute(): String?
+    fun execute(): String
 }

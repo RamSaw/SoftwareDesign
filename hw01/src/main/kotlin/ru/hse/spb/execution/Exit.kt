@@ -1,15 +1,16 @@
 package ru.hse.spb.execution
 
+import ru.hse.spb.pipeline.Pipeline
 import kotlin.system.exitProcess
 
 /**
  * Implementation of exit command: just exits the program
  */
-class Exit(private val isInPipeline: Boolean, prev: Executable?) : NoArgumentsExecutable(prev) {
-    override fun executeWithoutArguments(): String? {
-        if (!isInPipeline)
+class Exit(private val isSingleInPipeline: Boolean, prev: Executable?) : NoArgumentsExecutable(prev) {
+    override fun executeWithPipeline(pipeLine: Pipeline?): String {
+        if (isSingleInPipeline)
             exitProcess(0)
-        return null
+        return ""
     }
 
     override fun equals(other: Any?): Boolean {
@@ -19,14 +20,14 @@ class Exit(private val isInPipeline: Boolean, prev: Executable?) : NoArgumentsEx
 
         other as Exit
 
-        if (isInPipeline != other.isInPipeline) return false
+        if (isSingleInPipeline != other.isSingleInPipeline) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + isInPipeline.hashCode()
+        result = 31 * result + isSingleInPipeline.hashCode()
         return result
     }
 }

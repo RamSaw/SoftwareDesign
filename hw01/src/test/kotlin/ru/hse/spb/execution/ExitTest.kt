@@ -6,6 +6,6 @@ import org.junit.Test
 class ExitTest {
     @Test
     fun exitNotAppliedInPipeline() {
-        assertEquals(null, Exit(true, Exit(true, null)).execute())
+        assertEquals("", Exit(false, Exit(false, null)).execute())
     }
 }

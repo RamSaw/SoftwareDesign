@@ -1,7 +1,7 @@
 package ru.hse.spb.execution
 
 import ru.hse.spb.exceptions.ExternalCommandException
-import ru.hse.spb.exceptions.UnknownCommandException
+import ru.hse.spb.pipeline.Pipeline
 import java.io.File
 import java.io.IOException
 import java.nio.file.Paths
@@ -13,11 +13,16 @@ import java.util.concurrent.TimeUnit
  */
 class ExternalCommand(private val commandName: String, arguments: List<String>, prev: Executable?):
     OneTypeArgumentsExecutable<String>(arguments, prev) {
-    override fun processArgumentsInput() =
-        runCommand(listOf(commandName) + arguments, Paths.get("").toAbsolutePath().toFile())
+    override fun processEmptyInput() =
+        runCommand(listOf(commandName), getCurrentDir())
 
-    override fun processPipelineInput(pipeLineInput: String?) =
-        runCommand(listOfNotNull(commandName, pipeLineInput), Paths.get("").toAbsolutePath().toFile())
+    override fun processArgumentsInput() =
+        runCommand(listOf(commandName) + arguments, getCurrentDir())
+
+    override fun processPipelineInput(pipeLine: Pipeline) =
+        runCommand(listOfNotNull(commandName, pipeLine.getContent()), getCurrentDir())
+
+    private fun getCurrentDir() = Paths.get("").toAbsolutePath().toFile()
 
     private fun runCommand(commandWithArguments: List<String>, workingDir: File): String {
         return try {
@@ -28,16 +33,11 @@ class ExternalCommand(private val commandName: String, arguments: List<String>, 
                 .start()
 
             proc.waitFor(1, TimeUnit.SECONDS)
-            removeLineSeparatorAsLastChar(proc.inputStream.bufferedReader().readText())
+            proc.inputStream.bufferedReader().readText()
         } catch(e: IOException) {
             throw ExternalCommandException("External command ${commandWithArguments[0]} went to an error: " +
                     "${e.message}. Maybe wrong name of command?")
         }
-    }
-
-    private fun removeLineSeparatorAsLastChar(str: String): String {
-        return if (str.endsWith(System.lineSeparator()))
-            str.let { it.substring(0, it.length - System.lineSeparator().length) } else str
     }
 
     override fun equals(other: Any?): Boolean {

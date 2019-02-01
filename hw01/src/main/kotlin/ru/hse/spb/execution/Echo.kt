@@ -1,5 +1,7 @@
 package ru.hse.spb.execution
 
+import ru.hse.spb.pipeline.Pipeline
+
 /**
  * Implementation of echo command: echo <str1> <str2> ... .
  * Returns: <str1> <str2> ... .
@@ -7,7 +9,9 @@ package ru.hse.spb.execution
  */
 class Echo(arguments: List<String>, prev: Executable?) :
     OneTypeArgumentsExecutable<String>(arguments, prev) {
-    override fun processArgumentsInput() = arguments.joinToString(" ")
+    override fun processEmptyInput(): String = System.lineSeparator()
 
-    override fun processPipelineInput(pipeLineInput: String?) = ""
+    override fun processArgumentsInput() = arguments.joinToString(" ") + System.lineSeparator()
+
+    override fun processPipelineInput(pipeLine: Pipeline): String = pipeLine.getFileName() + System.lineSeparator()
 }
