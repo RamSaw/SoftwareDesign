@@ -5,7 +5,16 @@ import org.junit.Test
 import ru.hse.spb.exceptions.IncorrectQuotingException
 import ru.hse.spb.exceptions.UnknownCommandException
 import ru.hse.spb.execution.CatTest
+import java.io.File
+import java.nio.file.Path
 import java.nio.file.Paths
+
+fun getResourceFilePath(filename: String): Path =
+    Paths.get(
+        CatTest::class.java.getResource(
+            File.separator + Paths.get("ru", "hse", "spb", filename).toString()
+        ).path
+    )
 
 /**
  * Test examples from presentation
@@ -13,9 +22,11 @@ import java.nio.file.Paths
 class CliApplicationTest {
     @Test
     fun process() {
-        val exampleTxt =
-            Paths.get(CatTest::class.java.getResource("/ru/hse/spb/example.txt").path).toAbsolutePath()
-        assertEquals("Hello, world!" + System.lineSeparator(), CliApplication.process("echo \"Hello, world!\""))
+        val exampleTxt = getResourceFilePath("example.txt").toAbsolutePath()
+        assertEquals(
+            "Hello, world!" + System.lineSeparator(),
+            CliApplication.process("echo \"Hello, world!\"")
+        )
         assertEquals("", CliApplication.process("FILE=$exampleTxt"))
         assertEquals("Some example text" + System.lineSeparator(), CliApplication.process("cat \$FILE"))
         assertEquals("1 3 18", CliApplication.process("cat $exampleTxt | wc"))
@@ -28,7 +39,7 @@ class CliApplicationTest {
     @Test
     fun testDoubleQuotesInCat() {
         val exampleTxt =
-            Paths.get(CatTest::class.java.getResource("/ru/hse/spb/example.txt").path).toAbsolutePath()
+            getResourceFilePath("example.txt").toAbsolutePath()
         val exampleTxtWithDoubleQuotes =
             "${Paths.get(exampleTxt.parent.toAbsolutePath().toString(), "\"exam\"ple.txt")}"
         assertEquals(
