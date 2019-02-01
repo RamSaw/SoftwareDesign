@@ -92,8 +92,8 @@ object InterpolationLexer : Lexer {
         if (variableName == null) currentStringPart += ch else variableName += ch
     }
 
-    private fun changeState(result: MutableList<String>, new_state: State) {
-        state = new_state
+    private fun changeState(result: MutableList<String>, newState: State) {
+        state = newState
         dropToResult(result)
     }
 
