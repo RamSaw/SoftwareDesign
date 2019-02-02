@@ -14,9 +14,8 @@ matrix:
 before_script:
   - |
     if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
-      choco install -y openjdk --version 11.0
-      export JAVA_HOME="/c/Program Files/OpenJDK/jdk-11"
-      export PATH="$JAVA_HOME/bin:$PATH"
+      choco install jdk8
+      export PATH=$PATH:"/c/Program Files/Java/jdk1.8.0_201/bin"
       export GRADLE_OPTS=-Dorg.gradle.daemon=false
     fi
 script:
