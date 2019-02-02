@@ -1,7 +1,13 @@
+language: shell
 jdk:
   - oraclejdk8
 os:
+  - windows
   - linux
+  - osx
 script:
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install jdk8                                        ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH=$PATH:"/c/Program Files/Java/jdk1.8.0_201/bin"; fi
   - chmod +x subdirectories_build.sh
   - ./subdirectories_build.sh
+  - exit
