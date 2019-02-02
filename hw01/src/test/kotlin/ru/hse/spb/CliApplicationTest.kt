@@ -6,18 +6,11 @@ import ru.hse.spb.exceptions.ExternalCommandException
 import ru.hse.spb.exceptions.IncorrectQuotingException
 import ru.hse.spb.exceptions.UnknownCommandException
 import ru.hse.spb.execution.CatTest
-import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 
-fun getResourceFilePath(filename: String): Path {
-    throw Exception(File.separator + Paths.get("ru", "hse", "spb", filename).toString())
-    Paths.get(
-        CatTest::class.java.getResource(
-            File.separator + Paths.get("ru", "hse", "spb", filename).toString()
-        ).path
-    )
-}
+fun getResourceFilePath(filename: String): Path =
+    Paths.get(CatTest::class.java.getResource("/ru/hse/spb/$filename").path)
 
 /**
  * Test examples from presentation
