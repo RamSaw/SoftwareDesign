@@ -1,4 +1,4 @@
-language: java
+language: shell
 jdk:
   - oraclejdk8
 os:
