@@ -8,6 +8,6 @@ import java.nio.file.Paths
  */
 class Pwd(prev: Executable?) : NoArgumentsExecutable(prev) {
     override fun executeWithPipeline(pipeLine: Pipeline?): String {
-        return Paths.get("").toAbsolutePath().toString()
+        return Paths.get("").toAbsolutePath().toString() + "\n"
     }
 }

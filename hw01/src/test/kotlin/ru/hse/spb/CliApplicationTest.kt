@@ -27,9 +27,9 @@ class CliApplicationTest {
         assertEquals("", CliApplication.process("FILE=$exampleTxt"))
         assertEquals("Some example text" + System.lineSeparator(), CliApplication.process("cat \$FILE"))
         val fileBytesNumber = 17 + System.lineSeparator().length
-        assertEquals("1 3 $fileBytesNumber", CliApplication.process("cat $exampleTxt | wc"))
-        assertEquals("1 3 $fileBytesNumber example.txt", CliApplication.process("wc $exampleTxt"))
-        assertEquals("1 1 4", CliApplication.process("echo 123 | wc"))
+        assertEquals("1 3 $fileBytesNumber\n", CliApplication.process("cat $exampleTxt | wc"))
+        assertEquals("1 3 $fileBytesNumber example.txt\n", CliApplication.process("wc $exampleTxt"))
+        assertEquals("1 1 4\n", CliApplication.process("echo 123 | wc"))
         assertEquals("", CliApplication.process("x=exit"))
         // assertEquals("", CliApplication.process("\$x")) exits test
     }
@@ -46,7 +46,7 @@ class CliApplicationTest {
 
     @Test
     fun pipelineWithoutSpaces() {
-        assertEquals("1 2 10", CliApplication.process("echo \"some text\"|wc"))
+        assertEquals("1 2 10\n", CliApplication.process("echo \"some text\"|wc"))
     }
 
     @Test(expected = IncorrectQuotingException::class)

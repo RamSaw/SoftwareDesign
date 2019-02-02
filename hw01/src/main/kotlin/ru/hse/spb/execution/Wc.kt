@@ -26,8 +26,8 @@ class Wc(arguments: List<Path>, prev: Executable?) :
             "$rows $words $bytes ${path.fileName}"
         }
         return when (arguments.size) {
-            1 -> result
-            else -> "$result\n$totalNumberOfRows $totalNumberOfWords $totalNumberOfBytes total"
+            1 -> result + "\n"
+            else -> "$result\n$totalNumberOfRows $totalNumberOfWords $totalNumberOfBytes total\n"
         }
     }
 
@@ -35,9 +35,9 @@ class Wc(arguments: List<Path>, prev: Executable?) :
         pipeLine.getContent().let {
             "${getRowsNumberForBashLikeCounting(it)} " +
                     "${StringTokenizer(it).countTokens()} ${it.toByteArray().size}"
-        }
+        } + "\n"
 
-    override fun processEmptyInput() = "0 0 0"
+    override fun processEmptyInput() = "0 0 0\n"
 
     private fun getRowsNumberForBashLikeCounting(filePath: Path) =
         getRowsNumberForBashLikeCounting(filePath.toFile().readText())
