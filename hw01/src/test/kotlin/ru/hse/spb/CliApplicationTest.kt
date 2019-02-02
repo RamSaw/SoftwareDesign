@@ -10,7 +10,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 fun getResourceFilePath(filename: String): Path =
-    Paths.get(CatTest::class.java.getResource("/ru/hse/spb/$filename").path)
+    Paths.get(CatTest::class.java.getResource("/ru/hse/spb/$filename").toURI())
 
 /**
  * Test examples from presentation
