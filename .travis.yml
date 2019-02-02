@@ -1,13 +1,24 @@
-language: shell
-jdk:
-  - oraclejdk8
-os:
-  - windows
-  - linux
-  - osx
+matrix:
+  include:
+    - os: linux
+      language: java
+      sudo: false # for faster builds
+      jdk: openjdk11
+    - os: osx
+      language: java
+      sudo: false # for faster builds
+      jdk: openjdk11
+    - os: windows
+      language: shell # 'java' not supported, 'generic' causes VM to hang on boot.
+      sudo: false # for faster builds
+before_script:
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
+      choco install -y openjdk --version 11.0
+      export JAVA_HOME="/c/Program Files/OpenJDK/jdk-11"
+      export PATH="$JAVA_HOME/bin:$PATH"
+      export GRADLE_OPTS=-Dorg.gradle.daemon=false
+    fi
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install jdk8                                        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH=$PATH:"/c/Program Files/Java/jdk1.8.0_201/bin"; fi
   - chmod +x subdirectories_build.sh
   - ./subdirectories_build.sh
-  - exit
