@@ -22,8 +22,7 @@ class WcTest {
     fun wcTwoArguments() {
         val testFile1Path = getResourceFilePath("testFile1")
         val testFile2Path = getResourceFilePath("testFile2")
-        val expected = "0 1 18 testFile1" + System.lineSeparator() +
-                "1 5 22 testFile2" + System.lineSeparator() + "1 6 40 total"
+        val expected = "0 1 18 testFile1\n1 5 22 testFile2\n1 6 40 total"
         assertEquals(expected, Wc(listOf(testFile1Path, testFile2Path), null).execute())
     }
 

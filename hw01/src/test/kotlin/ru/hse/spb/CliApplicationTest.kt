@@ -25,11 +25,11 @@ class CliApplicationTest {
     fun process() {
         val exampleTxt = getResourceFilePath("example.txt").toAbsolutePath()
         assertEquals(
-            "Hello, world!" + System.lineSeparator(),
+            "Hello, world!" + "\n",
             CliApplication.process("echo \"Hello, world!\"")
         )
         assertEquals("", CliApplication.process("FILE=$exampleTxt"))
-        assertEquals("Some example text" + System.lineSeparator(), CliApplication.process("cat \$FILE"))
+        assertEquals("Some example text" + "\n", CliApplication.process("cat \$FILE"))
         assertEquals("1 3 18", CliApplication.process("cat $exampleTxt | wc"))
         assertEquals("1 3 18 example.txt", CliApplication.process("wc $exampleTxt"))
         assertEquals("1 1 4", CliApplication.process("echo 123 | wc"))
@@ -44,8 +44,7 @@ class CliApplicationTest {
         val exampleTxtWithDoubleQuotes =
             "${Paths.get(exampleTxt.parent.toAbsolutePath().toString(), "\"exam\"ple.txt")}"
         assertEquals(
-            "Some example text" + System.lineSeparator(),
-            CliApplication.process("cat $exampleTxtWithDoubleQuotes")
+            "Some example text\n", CliApplication.process("cat $exampleTxtWithDoubleQuotes")
         )
     }
 
@@ -63,7 +62,7 @@ class CliApplicationTest {
     fun correctInterpolationWithTwoVariables() {
         assertEquals("", CliApplication.process("a=ec"))
         assertEquals("", CliApplication.process("b=ho"))
-        assertEquals("text" + System.lineSeparator(), CliApplication.process("\$a\$b text"))
+        assertEquals("text\n", CliApplication.process("\$a\$b text"))
     }
 
     @Test(expected = UnknownCommandException::class)
@@ -74,16 +73,26 @@ class CliApplicationTest {
     @Test
     fun singleQuotesInDoubleQuotes() {
         assertEquals("", CliApplication.process("t=text"))
-        assertEquals("'text'" + System.lineSeparator(), CliApplication.process("echo \"'\$t'\""))
+        assertEquals("'text'\n", CliApplication.process("echo \"'\$t'\""))
     }
 
     @Test
     fun pipeInSingeQuotes() {
-        assertEquals("wesd|" + System.lineSeparator(), CliApplication.process("echo \"wesd|\""))
+        assertEquals("wesd|\n", CliApplication.process("echo \"wesd|\""))
     }
 
     @Test(expected = ExternalCommandException::class)
     fun doubleQuotesInAssignment() {
         CliApplication.process("\"\"=text")
+    }
+
+    @Test
+    fun pipelineAndInterpolation() {
+        assertEquals("", CliApplication.process("a=ec"))
+        assertEquals("", CliApplication.process("b=ho"))
+        assertEquals("", CliApplication.process("c=te"))
+        assertEquals("", CliApplication.process("d=xt"))
+        assertEquals("", CliApplication.process("f=cat"))
+        assertEquals("text\n", CliApplication.process("\$a\$b \$c\$d|\$f"))
     }
 }

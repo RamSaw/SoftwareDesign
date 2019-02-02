@@ -16,7 +16,7 @@ class Wc(arguments: List<Path>, prev: Executable?) :
         var totalNumberOfRows = 0
         var totalNumberOfWords = 0
         var totalNumberOfBytes = 0
-        val result = arguments.joinToString(System.lineSeparator()) { path ->
+        val result = arguments.joinToString("\n") { path ->
             val rows = getRowsNumberForBashLikeCounting(path)
             val words = StringTokenizer(path.toFile().readText()).countTokens()
             val bytes = path.toFile().readBytes().size

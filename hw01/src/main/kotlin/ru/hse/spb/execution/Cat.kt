@@ -12,7 +12,7 @@ class Cat(arguments: List<Path>, prev: Executable?) :
     override fun processEmptyInput() = ""
 
     override fun processArgumentsInput() =
-        arguments.joinToString(System.lineSeparator()) { path ->  path.toFile().readText() }
+        arguments.joinToString("\n") { path -> path.toFile().readText() }
 
     override fun processPipelineInput(pipeLine: Pipeline) = pipeLine.getContent()
 }

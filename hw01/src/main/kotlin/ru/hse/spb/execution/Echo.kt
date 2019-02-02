@@ -9,9 +9,9 @@ import ru.hse.spb.pipeline.Pipeline
  */
 class Echo(arguments: List<String>, prev: Executable?) :
     OneTypeArgumentsExecutable<String>(arguments, prev) {
-    override fun processEmptyInput(): String = System.lineSeparator()
+    override fun processEmptyInput(): String = "\n"
 
-    override fun processArgumentsInput() = arguments.joinToString(" ") + System.lineSeparator()
+    override fun processArgumentsInput() = arguments.joinToString(" ") + "\n"
 
-    override fun processPipelineInput(pipeLine: Pipeline): String = pipeLine.getFileName() + System.lineSeparator()
+    override fun processPipelineInput(pipeLine: Pipeline): String = pipeLine.getFileName() + "\n"
 }

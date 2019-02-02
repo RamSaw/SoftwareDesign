@@ -6,13 +6,13 @@ import org.junit.Test
 class EchoTest {
     @Test
     fun echoNoArgument() {
-        val expected = System.lineSeparator()
+        val expected = "\n"
         assertEquals(expected, Echo(listOf(), null).execute())
     }
 
     @Test
     fun echoOneArgument() {
-        val expected = "text" + System.lineSeparator()
+        val expected = "text\n"
         assertEquals(expected, Echo(listOf("text"), null).execute())
     }
 
@@ -20,7 +20,7 @@ class EchoTest {
     fun echoTwoArguments() {
         val arg1 = "arg1"
         val arg2 = "arg2"
-        val expected = "arg1 arg2" + System.lineSeparator()
+        val expected = "arg1 arg2\n"
         assertEquals(expected, Echo(listOf(arg1, arg2), null).execute())
     }
 
@@ -28,7 +28,7 @@ class EchoTest {
     fun echoIgnoresPipeline() {
         val arg1 = "arg1"
         val arg2 = "arg2"
-        val expected = "arg1" + System.lineSeparator()
+        val expected = "arg1\n"
         assertEquals(expected, Echo(listOf(arg1), Echo(listOf(arg2), null)).execute())
     }
 }

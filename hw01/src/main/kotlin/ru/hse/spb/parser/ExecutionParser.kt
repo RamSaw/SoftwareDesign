@@ -34,7 +34,7 @@ object ExecutionParser: Parser {
         }
         return result ?: object : Executable {
             override fun execute(): String {
-                return System.lineSeparator()
+                return "\n"
             }
         }
     }
