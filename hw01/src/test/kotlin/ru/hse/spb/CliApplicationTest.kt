@@ -10,12 +10,14 @@ import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
 
-fun getResourceFilePath(filename: String): Path =
+fun getResourceFilePath(filename: String): Path {
+    throw Exception(File.separator + Paths.get("ru", "hse", "spb", filename).toString())
     Paths.get(
         CatTest::class.java.getResource(
             File.separator + Paths.get("ru", "hse", "spb", filename).toString()
         ).path
     )
+}
 
 /**
  * Test examples from presentation
