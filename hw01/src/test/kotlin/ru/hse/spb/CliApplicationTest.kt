@@ -26,8 +26,9 @@ class CliApplicationTest {
         )
         assertEquals("", CliApplication.process("FILE=$exampleTxt"))
         assertEquals("Some example text" + System.lineSeparator(), CliApplication.process("cat \$FILE"))
-        assertEquals("1 3 18", CliApplication.process("cat $exampleTxt | wc"))
-        assertEquals("1 3 18 example.txt", CliApplication.process("wc $exampleTxt"))
+        val fileBytesNumber = 17 + System.lineSeparator().length
+        assertEquals("1 3 $fileBytesNumber", CliApplication.process("cat $exampleTxt | wc"))
+        assertEquals("1 3 $fileBytesNumber example.txt", CliApplication.process("wc $exampleTxt"))
         assertEquals("1 1 4", CliApplication.process("echo 123 | wc"))
         assertEquals("", CliApplication.process("x=exit"))
         // assertEquals("", CliApplication.process("\$x")) exits test
@@ -39,7 +40,7 @@ class CliApplicationTest {
             getResourceFilePath("example.txt").toAbsolutePath()
         val exampleTxtWithDoubleQuotes = "${exampleTxt.parent.toAbsolutePath()}${File.separator}\"exam\"ple.txt"
         assertEquals(
-            "Some example text\n", CliApplication.process("cat $exampleTxtWithDoubleQuotes")
+            "Some example text" + System.lineSeparator(), CliApplication.process("cat $exampleTxtWithDoubleQuotes")
         )
     }
 

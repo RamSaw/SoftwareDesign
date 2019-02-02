@@ -22,7 +22,7 @@ class CatTest {
     fun catTwoArguments() {
         val testFile1Path = getResourceFilePath("testFile1")
         val testFile2Path = getResourceFilePath("testFile2")
-        val expected = "contentOfTestFile1" + System.lineSeparator() +
+        val expected = "contentOfTestFile1\n" +
                 "content Of" + System.lineSeparator() + "Test File 2"
         assertEquals(expected, Cat(listOf(testFile1Path, testFile2Path), null).execute())
     }
