@@ -15,4 +15,5 @@ script:
     fi
     chmod +x subdirectories_build.sh
     ./subdirectories_build.sh
+    exit
   )
