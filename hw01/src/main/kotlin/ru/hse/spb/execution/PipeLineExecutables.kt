@@ -9,7 +9,17 @@ import ru.hse.spb.pipeline.Pipeline
 abstract class PipelineExecutable(protected val prev: Executable?): Executable {
     override fun execute(): String = executeWithPipeline(prev?.execute()?.let { Pipeline(it) })
 
-    protected abstract fun executeWithPipeline(pipeLine: Pipeline?): String
+    private fun executeWithPipeline(pipeLine: Pipeline?): String {
+        return if (hasArguments())
+            processArgumentsInput()
+        else
+            pipeLine?.let { processPipelineInput(it) } ?: processEmptyInput()
+    }
+
+    protected abstract fun hasArguments(): Boolean
+    protected abstract fun processArgumentsInput(): String
+    protected abstract fun processPipelineInput(pipeLine: Pipeline): String
+    protected abstract fun processEmptyInput(): String
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -30,25 +40,19 @@ abstract class PipelineExecutable(protected val prev: Executable?): Executable {
 /**
  * Implementation of execute method for commands that do not take any arguments.
  */
-abstract class NoArgumentsExecutable(prev: Executable?) : PipelineExecutable(prev)
+abstract class NoArgumentsExecutable(prev: Executable?) : PipelineExecutable(prev) {
+    override fun hasArguments() = false
+
+    override fun processArgumentsInput() =
+        throw UnsupportedOperationException("NoArgumentsExecutable cannot process arguments input")
+}
 
 /**
  * Implementation of execute method for commands that take arguments with one specific type.
  */
 abstract class OneTypeArgumentsExecutable<T>(protected val arguments: List<T>,
                                              prev: Executable?): PipelineExecutable(prev) {
-    override fun executeWithPipeline(pipeLine: Pipeline?): String {
-        return if (!arguments.isEmpty())
-            processArgumentsInput()
-        else
-            pipeLine?.let { processPipelineInput(it) } ?: processEmptyInput()
-    }
-
-    protected abstract fun processArgumentsInput(): String
-
-    protected abstract fun processPipelineInput(pipeLine: Pipeline): String
-
-    protected abstract fun processEmptyInput(): String
+    override fun hasArguments(): Boolean = arguments.isNotEmpty()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -91,4 +91,92 @@ class CliApplicationTest {
         assertEquals("", CliApplication.process("f=cat"))
         assertEquals("text\n", CliApplication.process("\$a\$b \$c\$d|\$f"))
     }
+
+    @Test
+    fun grepPluginGradleFile() {
+        assertEquals(
+            "plugins {\n" +
+                    "apply plugin: 'kotlin'\n" +
+                    "apply plugin: 'application'\n",
+            CliApplication.process("grep plugin build.gradle")
+        )
+    }
+
+    @Test
+    fun grepPluginGradlePipeline() {
+        assertEquals(
+            "plugins {\n" +
+                    "apply plugin: 'kotlin'\n" +
+                    "apply plugin: 'application'\n",
+            CliApplication.process("cat build.gradle | grep plugin")
+        )
+    }
+
+    @Test
+    fun grepPluginGradleA2() {
+        assertEquals(
+            "plugins {\n" +
+                    "    id 'org.jetbrains.kotlin.jvm' version '1.3.11'\n" +
+                    "}\n" +
+                    "--\n" +
+                    "apply plugin: 'kotlin'\n" +
+                    "apply plugin: 'application'\n" +
+                    "mainClassName = 'ru.hse.spb.CliApplicationKt'\n" +
+                    "\n",
+            CliApplication.process("grep -A 2 plugin build.gradle")
+        )
+    }
+
+    @Test
+    fun grepPluginGradleAfterContext2() {
+        assertEquals(
+            "plugins {\n" +
+                    "    id 'org.jetbrains.kotlin.jvm' version '1.3.11'\n" +
+                    "}\n" +
+                    "--\n" +
+                    "apply plugin: 'kotlin'\n" +
+                    "apply plugin: 'application'\n" +
+                    "mainClassName = 'ru.hse.spb.CliApplicationKt'\n" +
+                    "\n",
+            CliApplication.process("grep --after-context 2 plugin build.gradle")
+        )
+    }
+
+    @Test
+    fun grepPluginGradleW() {
+        assertEquals(
+            "apply plugin: 'kotlin'\n" +
+                    "apply plugin: 'application'\n",
+            CliApplication.process("grep plugin build.gradle -w")
+        )
+    }
+
+    @Test
+    fun grepPluginGradleWordRegexp() {
+        assertEquals(
+            "apply plugin: 'kotlin'\n" +
+                    "apply plugin: 'application'\n",
+            CliApplication.process("grep plugin build.gradle --word-regexp")
+        )
+    }
+
+    @Test
+    fun grepPluginGradleI() {
+        assertEquals(
+            "plugins {\n" +
+                    "apply plugin: 'kotlin'\n" +
+                    "apply plugin: 'application'\n",
+            CliApplication.process("grep PLUGIN -i build.gradle")
+        )
+    }
+
+    @Test
+    fun grepPluginGradleIgnoreCase() {
+        assertEquals(
+            "plugins {\n" +
+                    "apply plugin: 'kotlin'\n" +
+                    "apply plugin: 'application'\n",
+            CliApplication.process("grep PLUGIN --ignore-case build.gradle")
+        )
+    }
 }

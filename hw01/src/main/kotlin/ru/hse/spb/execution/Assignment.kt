@@ -11,12 +11,18 @@ class Assignment(private val variableName: String,
                  private val variableValue: String,
                  private val isSingleInPipeline: Boolean,
                  prev: Executable?) : PipelineExecutable(prev) {
-    override fun executeWithPipeline(pipeLine: Pipeline?): String {
+    override fun hasArguments() = true
+
+    override fun processArgumentsInput(): String {
         if (isSingleInPipeline) {
             GlobalEnvironment.setVariable(variableName, variableValue)
         }
         return ""
     }
+
+    override fun processPipelineInput(pipeLine: Pipeline) = ""
+
+    override fun processEmptyInput() = ""
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -7,7 +7,13 @@ import kotlin.system.exitProcess
  * Implementation of exit command: just exits the program
  */
 class Exit(private val isSingleInPipeline: Boolean, prev: Executable?) : NoArgumentsExecutable(prev) {
-    override fun executeWithPipeline(pipeLine: Pipeline?): String {
+    override fun processPipelineInput(pipeLine: Pipeline): String {
+        if (isSingleInPipeline)
+            exitProcess(0)
+        return ""
+    }
+
+    override fun processEmptyInput(): String {
         if (isSingleInPipeline)
             exitProcess(0)
         return ""
