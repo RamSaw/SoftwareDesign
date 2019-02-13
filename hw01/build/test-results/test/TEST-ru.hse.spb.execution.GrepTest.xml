@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ru.hse.spb.execution.GrepTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2019-02-10T14:43:54" hostname="mikhail-ThinkPad-E460" time="0.015">
+  <properties/>
+  <testcase name="grepWordsMiddle" classname="ru.hse.spb.execution.GrepTest" time="0.0"/>
+  <testcase name="grepNoArgument" classname="ru.hse.spb.execution.GrepTest" time="0.0"/>
+  <testcase name="grepWordsEnd" classname="ru.hse.spb.execution.GrepTest" time="0.001"/>
+  <testcase name="grepNoMatches" classname="ru.hse.spb.execution.GrepTest" time="0.0"/>
+  <testcase name="grep2LinesAfter" classname="ru.hse.spb.execution.GrepTest" time="0.006"/>
+  <testcase name="basicGrepFromFile" classname="ru.hse.spb.execution.GrepTest" time="0.0"/>
+  <testcase name="grepWordsNotMatching" classname="ru.hse.spb.execution.GrepTest" time="0.0"/>
+  <testcase name="grepWordsBeginning" classname="ru.hse.spb.execution.GrepTest" time="0.001"/>
+  <testcase name="grep3LinesAfterButInputEnds" classname="ru.hse.spb.execution.GrepTest" time="0.0"/>
+  <testcase name="basicGrepFromPipeline" classname="ru.hse.spb.execution.GrepTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

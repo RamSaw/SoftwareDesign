@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ru.hse.spb.execution.PwdTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2019-02-10T14:43:54" hostname="mikhail-ThinkPad-E460" time="0.003">
+  <properties/>
+  <testcase name="pwdInPipelineTwoTimes" classname="ru.hse.spb.execution.PwdTest" time="0.002"/>
+  <testcase name="pwdWithoutPipeline" classname="ru.hse.spb.execution.PwdTest" time="0.0"/>
+  <testcase name="pwdInPipelineThreeTimes" classname="ru.hse.spb.execution.PwdTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

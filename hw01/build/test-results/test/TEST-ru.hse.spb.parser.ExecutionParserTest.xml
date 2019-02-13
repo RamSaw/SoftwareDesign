@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ru.hse.spb.parser.ExecutionParserTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2019-02-10T14:43:54" hostname="mikhail-ThinkPad-E460" time="0.021">
+  <properties/>
+  <testcase name="emptyCommandThrowsExceptionMiddleEmpty" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.0"/>
+  <testcase name="cat" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.001"/>
+  <testcase name="exitSubstitution" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.006"/>
+  <testcase name="emptyCommandThrowsExceptionLastEmpty" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.001"/>
+  <testcase name="emptyCommandThrowsExceptionBothEmpty" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.0"/>
+  <testcase name="assignmentExit" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.001"/>
+  <testcase name="catPipeWc" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.0"/>
+  <testcase name="assignment" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.0"/>
+  <testcase name="assignmentThrowsWrongCommandArgumentsException" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.0"/>
+  <testcase name="echoPipeWc" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.0"/>
+  <testcase name="echoString" classname="ru.hse.spb.parser.ExecutionParserTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
