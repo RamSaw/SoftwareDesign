@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="ru.hse.spb.execution.ExitTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-02-10T14:43:54" hostname="mikhail-ThinkPad-E460" time="0.0">
-  <properties/>
-  <testcase name="exitNotAppliedInPipeline" classname="ru.hse.spb.execution.ExitTest" time="0.0"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

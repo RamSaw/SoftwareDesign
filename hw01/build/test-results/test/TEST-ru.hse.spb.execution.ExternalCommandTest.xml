@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="ru.hse.spb.execution.ExternalCommandTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2019-02-10T14:43:54" hostname="mikhail-ThinkPad-E460" time="0.009">
-  <properties/>
-  <testcase name="externalCommandThrowsException" classname="ru.hse.spb.execution.ExternalCommandTest" time="0.002"/>
-  <testcase name="externalCommandGit" classname="ru.hse.spb.execution.ExternalCommandTest" time="0.007"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
