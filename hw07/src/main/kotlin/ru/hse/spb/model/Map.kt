@@ -43,6 +43,14 @@ class Map private constructor(private val field: Array<Array<CellState>>) {
         }
     }
 
+    fun getStartCell(): MapPosition {
+        TODO()
+    }
+
+    fun getFreeCells(): List<MapPosition> {
+        TODO()
+    }
+
     fun getCell(position: MapPosition): CellState {
         return field[position.x][position.y]
     }
