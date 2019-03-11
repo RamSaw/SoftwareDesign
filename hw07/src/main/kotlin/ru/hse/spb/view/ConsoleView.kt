@@ -19,8 +19,7 @@ object ConsoleView: View {
     override fun draw(model: Model) {
         drawMap(model)
         drawPlayer(model)
-        drawDangerMobs(model)
-        drawSweetMobs(model)
+        drawMobs(model)
         drawInfoPanel(model)
 
         screen.refresh()
@@ -43,7 +42,7 @@ object ConsoleView: View {
     }
 
     private fun drawPlayer(model: Model) {
-        val playerPosition = model.player.position
+        val playerPosition = model.player.getCurrentPosition()
         screen.putString(
             MAP_POSITION_X + playerPosition.x,
             MAP_POSITION_Y + playerPosition.y,
@@ -52,16 +51,21 @@ object ConsoleView: View {
             Terminal.Color.BLACK)
     }
 
+    private fun drawMobs(model: Model) {
+        for (mob in model.mobs) {
+            val mobPosition = mob.getCurrentPosition()
+            screen.putString(
+                MAP_POSITION_X + mobPosition.x,
+                MAP_POSITION_Y + mobPosition.y,
+                "m",
+                Terminal.Color.WHITE,
+                Terminal.Color.BLACK
+            )
+        }
+    }
+
     private fun drawInfoPanel(model: Model) {
         val player = model.player
-
-        screen.putString(
-            MAP_POSITION_X + playerPosition.x,
-            MAP_POSITION_Y + playerPosition.y,
-            "p",
-            Terminal.Color.WHITE,
-            Terminal.Color.BLACK)
-
     }
 
     private fun cellStateToString(state: Map.CellState): String {
