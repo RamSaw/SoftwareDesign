@@ -12,12 +12,13 @@ import ru.hse.spb.view.ConsoleView
 import ru.hse.spb.view.View
 import kotlin.random.Random
 
-class WorldModel(private val map: Map) : Model {
+class WorldModel(override val map: Map) : Model {
+    override val player = Player(map.getStartCell())
+    override val mobs = mutableListOf<Mob>()
+    override var currentRound = 0
+
     private val view: View = ConsoleView
     private val random = Random(0)
-    private val player = Player(map.getStartCell())
-    private val mobs = mutableListOf<Mob>()
-    private var currentRound = 0
     private var currentCombatField: MapPosition? = null
     private val combatSystem = CombatSystem()
 
