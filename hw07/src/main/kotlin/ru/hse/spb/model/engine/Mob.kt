@@ -1,0 +1,19 @@
+package ru.hse.spb.model.engine
+
+import ru.hse.spb.model.Map
+import ru.hse.spb.model.Map.CellState.FREE
+import ru.hse.spb.model.Map.MapPosition
+
+abstract class Mob : GameCharacter() {
+    fun move(map: Map): MapPosition {
+        val x = position.x
+        val y = position.y
+        return listOf(
+            position,
+            MapPosition(x + 1, y),
+            MapPosition(x, y + 1),
+            MapPosition(x - 1, y),
+            MapPosition(x, y - 1)
+        ).filter { map.getCell(it) == FREE }.shuffled().first()
+    }
+}
