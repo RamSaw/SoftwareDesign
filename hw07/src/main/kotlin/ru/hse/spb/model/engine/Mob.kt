@@ -1,4 +1,4 @@
-package ru.hse.spb.model.enigne
+package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Map.CellState.FREE

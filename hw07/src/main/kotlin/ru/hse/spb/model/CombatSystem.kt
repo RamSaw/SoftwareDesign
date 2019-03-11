@@ -1,8 +1,8 @@
 package ru.hse.spb.model
 
 import ru.hse.spb.model.Map.MapPosition
-import ru.hse.spb.model.enigne.Mob
-import ru.hse.spb.model.enigne.Player
+import ru.hse.spb.model.engine.Mob
+import ru.hse.spb.model.engine.Player
 
 class CombatSystem {
     fun combat(player: Player, mobs: List<Mob>): MapPosition? {

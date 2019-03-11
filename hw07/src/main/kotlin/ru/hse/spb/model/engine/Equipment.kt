@@ -1,4 +1,4 @@
-package ru.hse.spb.model.enigne
+package ru.hse.spb.model.engine
 
 data class Equipment(
     val name: String,

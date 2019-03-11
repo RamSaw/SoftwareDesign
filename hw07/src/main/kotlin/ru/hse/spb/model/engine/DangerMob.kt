@@ -1,8 +1,8 @@
-package ru.hse.spb.model.enigne
+package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map.MapPosition
 
-class SweetMob(
+class DangerMob(
     override var level: Int,
     override var position: MapPosition
 ) : Mob() {
@@ -11,8 +11,8 @@ class SweetMob(
     override var strength = DEFAULT_STRENGTH + AMPLIFIER * level
 
     companion object {
-        private const val AMPLIFIER = 1
-        private const val DEFAULT_HEALTH = 5
-        private const val DEFAULT_STRENGTH = 0
+        private const val AMPLIFIER = 2
+        private const val DEFAULT_HEALTH = 10
+        private const val DEFAULT_STRENGTH = 1
     }
 }

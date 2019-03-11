@@ -4,10 +4,10 @@ import ru.hse.spb.controller.Controller.Companion.PlayerAction
 import ru.hse.spb.controller.Controller.Companion.PlayerAction.*
 import ru.hse.spb.model.Map.CellState.FREE
 import ru.hse.spb.model.Map.MapPosition
-import ru.hse.spb.model.enigne.DangerMob
-import ru.hse.spb.model.enigne.Mob
-import ru.hse.spb.model.enigne.Player
-import ru.hse.spb.model.enigne.SweetMob
+import ru.hse.spb.model.engine.DangerMob
+import ru.hse.spb.model.engine.Mob
+import ru.hse.spb.model.engine.Player
+import ru.hse.spb.model.engine.SweetMob
 import ru.hse.spb.view.ConsoleView
 import ru.hse.spb.view.View
 import kotlin.random.Random
