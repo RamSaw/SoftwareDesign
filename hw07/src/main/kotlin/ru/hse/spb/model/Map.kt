@@ -47,11 +47,24 @@ class Map private constructor(val field: Array<Array<CellState>>) {
     }
 
     fun getStartCell(): MapPosition {
-        TODO()
+        val freeCells = getFreeCells()
+        val i = Random(0).nextInt(freeCells.size)
+
+        return freeCells[i]
     }
 
     fun getFreeCells(): List<MapPosition> {
-        TODO()
+        val free = mutableListOf<MapPosition>()
+
+        for ((i, row) in field.withIndex()) {
+            for (j in row.indices) {
+                if (row[i] == CellState.FREE) {
+                    free.add(MapPosition(j, i))
+                }
+            }
+        }
+
+        return free
     }
 
     fun getCell(position: MapPosition): CellState {
