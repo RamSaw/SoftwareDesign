@@ -65,7 +65,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
 
         for ((i, row) in field.withIndex()) {
             for (j in row.indices) {
-                if (row[i] == CellState.FREE) {
+                if (row[j] == CellState.FREE) {
                     free.add(MapPosition(j, i))
                 }
             }
@@ -75,7 +75,11 @@ class Map private constructor(val field: Array<Array<CellState>>) {
     }
 
     fun getCell(position: MapPosition): CellState {
-        return field[position.x][position.y]
+        return when {
+            position.y !in 0 until field.size -> CellState.WALL
+            field.isNotEmpty() && position.x !in 0 until field[0].size -> CellState.WALL
+            else -> field[position.y][position.x]
+        }
     }
 
     class MapPosition(var x: Int, var y: Int)
