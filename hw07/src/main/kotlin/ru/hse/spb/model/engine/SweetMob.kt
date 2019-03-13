@@ -5,7 +5,7 @@ import ru.hse.spb.model.Map.MapPosition
 class SweetMob(
     override var level: Int,
     override var position: MapPosition
-) : Mob() {
+) : Mob(MobType.SWEET) {
 
     override var health = DEFAULT_HEALTH + AMPLIFIER * level
     override var strength = DEFAULT_STRENGTH + AMPLIFIER * level
