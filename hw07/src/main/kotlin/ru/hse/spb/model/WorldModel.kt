@@ -68,18 +68,21 @@ class WorldModel(override val map: Map) : Model {
     }
 
     private fun movePlayer(action: PlayerAction) {
-        val nextPosition = player.getCurrentPosition()
+        var x = player.getCurrentPosition().x
+        var y = player.getCurrentPosition().y
+
         when (action) {
-            MOVE_UP -> nextPosition.y++
-            MOVE_DOWN -> nextPosition.y--
-            MOVE_LEFT -> nextPosition.x--
-            MOVE_RIGHT -> nextPosition.x++
+            MOVE_UP -> y++
+            MOVE_DOWN -> y--
+            MOVE_LEFT -> x--
+            MOVE_RIGHT -> x++
             TAKE_OFF_EQUIPMENT -> player.takeOffEquipment()
             TAKE_ON_EQUIPMENT -> player.takeOnEquipment()
+            else -> {}
         }
 
-        if (map.getCell(nextPosition) == FREE)
-            player.changePosition(nextPosition.x, nextPosition.y)
+        if (map.getCell(MapPosition(x, y)) == FREE)
+            player.changePosition(x, y)
     }
 
     private fun moveMob(mob: Mob) {
