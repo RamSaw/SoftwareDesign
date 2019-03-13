@@ -10,6 +10,9 @@ import ru.hse.spb.model.Model
 import ru.hse.spb.model.engine.Mob
 import java.lang.Integer.max
 
+/**
+ * Simple view implementation, uses console graphics.
+ */
 object ConsoleView: View {
     private const val MAP_POSITION_X = 0
     private const val MAP_POSITION_Y = 0

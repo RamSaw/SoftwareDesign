@@ -9,6 +9,9 @@ import ru.hse.spb.view.View
 class Controller(private val model: Model,
                  private val view: View) {
 
+    /**
+     * Main game loop.
+     */
     fun run() {
         while (true) {
             val action = view.getAction()
@@ -22,6 +25,9 @@ class Controller(private val model: Model,
     }
 
     companion object {
+        /**
+         * This class represents player action.
+         */
         enum class PlayerAction {
             MOVE_UP,
             MOVE_DOWN,

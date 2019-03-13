@@ -3,6 +3,9 @@ package ru.hse.spb.model
 import java.io.File
 import kotlin.random.Random
 
+/**
+ * This class represents game field.
+ */
 class Map private constructor(val field: Array<Array<CellState>>) {
     companion object Factory {
         private const val DEFAULT_FIELD_WIDTH = 20
@@ -11,6 +14,9 @@ class Map private constructor(val field: Array<Array<CellState>>) {
 
         private val random = Random(0)
 
+        /**
+         * Generates new map with random walls.
+         */
         fun generate(): Map {
             val field = Array(DEFAULT_FIELD_HEIGHT) { Array(DEFAULT_FIELD_WIDTH) { CellState.FREE } }
 
@@ -31,6 +37,9 @@ class Map private constructor(val field: Array<Array<CellState>>) {
             return Map(field)
         }
 
+        /**
+         * Loads map from a file.
+         */
         fun load(path: String): Map {
             val reader = File(path).inputStream().bufferedReader()
             val (height, width) = reader.readLine().split(' ').map(String::toInt)
@@ -51,6 +60,9 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         }
     }
 
+    /**
+     * Map width getter.
+     */
     fun getWidth(): Int {
         return when {
             field.isNotEmpty() -> field[0].size
@@ -58,6 +70,9 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         }
     }
 
+    /**
+     * Selects player start cell.
+     */
     fun getStartCell(): MapPosition {
         val freeCells = getFreeCells()
         val i = Random(0).nextInt(freeCells.size)
@@ -65,6 +80,9 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         return freeCells[i]
     }
 
+    /**
+     * Returns all fee cell positions.
+     */
     fun getFreeCells(): List<MapPosition> {
         val free = mutableListOf<MapPosition>()
 
@@ -79,6 +97,9 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         return free
     }
 
+    /**
+     * Returns cell state for a given position.
+     */
     fun getCell(position: MapPosition): CellState {
         return when {
             position.y !in 0 until field.size -> CellState.WALL
@@ -87,8 +108,14 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         }
     }
 
+    /**
+     * This class represents map coordinates.
+     */
     class MapPosition(var x: Int, var y: Int)
 
+    /**
+     * This class represents map cell state.
+     */
     enum class CellState {
         FREE,
         WALL
