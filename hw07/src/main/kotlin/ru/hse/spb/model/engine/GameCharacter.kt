@@ -14,6 +14,8 @@ abstract class GameCharacter {
         health -= dmg
     }
 
+    fun getCurrentLevel() = level
+
     fun getCurrentHealth() = health
 
     fun inclineDamage() = strength

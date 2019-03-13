@@ -31,6 +31,8 @@ class Player(loc: MapPosition) : GameCharacter() {
         }
     }
 
+    fun getEquipmentName(): String = equipment.name
+
     companion object {
         private const val EQUIPMENT_NAME = "GODSWORD"
         private const val AMPLIFIER = 3
