@@ -10,6 +10,7 @@ import ru.hse.spb.model.engine.Player
 import ru.hse.spb.model.engine.SweetMob
 import ru.hse.spb.view.ConsoleView
 import ru.hse.spb.view.View
+import java.lang.Integer.max
 import kotlin.random.Random
 
 class WorldModel(override val map: Map) : Model {
@@ -31,7 +32,7 @@ class WorldModel(override val map: Map) : Model {
         val freeCells = map.getFreeCells()
         mobs.addAll(freeCells.shuffled(random).filter { !(it.x == pos.x && it.y == pos.y) }.take(
             random.nextInt(
-                freeCells.size
+                max(freeCells.size / 5, 1)
             )
         ).map {
             if (random.nextInt(5) == 1) {

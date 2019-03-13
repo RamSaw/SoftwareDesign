@@ -5,8 +5,8 @@ import kotlin.random.Random
 
 class Map private constructor(val field: Array<Array<CellState>>) {
     companion object Factory {
-        private const val DEFAULT_FIELD_WIDTH = 10
-        private const val DEFAULT_FIELD_HEIGHT = 10
+        private const val DEFAULT_FIELD_WIDTH = 20
+        private const val DEFAULT_FIELD_HEIGHT = 20
         private const val WALL_PERCENTAGE = 25
 
         private val random = Random(0)
@@ -14,11 +14,16 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         fun generate(): Map {
             val field = Array(DEFAULT_FIELD_HEIGHT) { Array(DEFAULT_FIELD_WIDTH) { CellState.FREE } }
 
-            for (row in field) {
-                for (i in row.indices) {
-                    row[i] = when (random.nextInt(0, 100)) {
-                        in 0..WALL_PERCENTAGE -> CellState.WALL
-                        else -> CellState.FREE
+            for ((i, row) in field.withIndex()) {
+                for (j in row.indices) {
+                    if (i == 0 || i == DEFAULT_FIELD_HEIGHT - 1 ||
+                        j == 0 || j == DEFAULT_FIELD_WIDTH - 1) {
+                        row[j] = CellState.WALL
+                    } else {
+                        row[j] = when (random.nextInt(0, 100)) {
+                            in 0..WALL_PERCENTAGE -> CellState.WALL
+                            else -> CellState.FREE
+                        }
                     }
                 }
             }
@@ -36,7 +41,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
 
                 for (i in row.indices) {
                     row[i] = when (currentLine[i]) {
-                        '.' -> CellState.FREE
+                        ' ' -> CellState.FREE
                         else -> CellState.WALL
                     }
                 }
