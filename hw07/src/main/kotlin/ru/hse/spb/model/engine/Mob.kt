@@ -4,6 +4,9 @@ import ru.hse.spb.model.Map
 import ru.hse.spb.model.Map.CellState.FREE
 import ru.hse.spb.model.Map.MapPosition
 
+/**
+ * This class represents mob(non playable characters).
+ */
 abstract class Mob : GameCharacter() {
     fun move(map: Map): MapPosition {
         val x = position.x

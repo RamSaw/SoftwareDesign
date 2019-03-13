@@ -12,6 +12,10 @@ import ru.hse.spb.view.ConsoleView
 import ru.hse.spb.view.View
 import kotlin.random.Random
 
+
+/**
+ * This class implements core game mechanics and responses to user actions.
+ */
 class WorldModel(override val map: Map) : Model {
     override val player = Player(map.getStartCell())
     override val mobs = mutableListOf<Mob>()

@@ -3,6 +3,9 @@ package ru.hse.spb.controller
 import ru.hse.spb.model.Model
 import ru.hse.spb.view.View
 
+/**
+ * This class interacts with user and provides actions to model.
+ */
 class Controller(private val model: Model,
                  private val view: View) {
 
