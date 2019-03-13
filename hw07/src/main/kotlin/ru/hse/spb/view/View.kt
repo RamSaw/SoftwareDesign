@@ -6,4 +6,5 @@ import ru.hse.spb.model.Model
 interface View {
     fun draw(model: Model)
     fun getAction(): Controller.Companion.PlayerAction
+    fun stop()
 }

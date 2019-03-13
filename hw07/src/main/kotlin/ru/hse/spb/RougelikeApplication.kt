@@ -12,4 +12,5 @@ fun main() {
     val controller = Controller(model, view)
 
     controller.run()
+    view.stop()
 }

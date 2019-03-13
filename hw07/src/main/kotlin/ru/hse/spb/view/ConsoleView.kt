@@ -21,6 +21,10 @@ object ConsoleView: View {
         screen.cursorPosition = null
     }
 
+    override fun stop() {
+        screen.stopScreen()
+    }
+
     override fun getAction(): Controller.Companion.PlayerAction {
         var action = Controller.Companion.PlayerAction.UNKNOWN
 
