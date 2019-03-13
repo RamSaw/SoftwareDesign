@@ -7,6 +7,8 @@ import com.googlecode.lanterna.terminal.Terminal
 import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
+import ru.hse.spb.model.engine.Mob
+import java.lang.Integer.max
 
 object ConsoleView: View {
     private const val MAP_POSITION_X = 0
@@ -51,8 +53,8 @@ object ConsoleView: View {
 
     override fun draw(model: Model) {
         drawMap(model)
-        drawPlayer(model)
         drawMobs(model)
+        drawPlayer(model)
         drawInfoPanel(model)
 
         screen.refresh()
@@ -80,7 +82,7 @@ object ConsoleView: View {
             MAP_POSITION_X + playerPosition.x,
             MAP_POSITION_Y + playerPosition.y,
             "p",
-            Terminal.Color.WHITE,
+            Terminal.Color.GREEN,
             Terminal.Color.BLACK)
     }
 
@@ -116,7 +118,7 @@ object ConsoleView: View {
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
             MAP_POSITION_Y + INFO_PADDING_Y + 1,
-            "health: " + player.getCurrentHealth(),
+            "equipment: " + player.getEquipmentName(),
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
         )
@@ -127,13 +129,33 @@ object ConsoleView: View {
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
         )
+
+        val health = max(player.getCurrentHealth(), 0)
+
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
             MAP_POSITION_Y + INFO_PADDING_Y + 3,
-            "equipment: " + player.getEquipmentName(),
+            "health:          ",
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
         )
+        screen.putString(
+            MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+            MAP_POSITION_Y + INFO_PADDING_Y + 3,
+            "health: $health",
+            Terminal.Color.WHITE,
+            Terminal.Color.BLACK
+        )
+
+        if (health == 0) {
+            screen.putString(
+                MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+                MAP_POSITION_Y + INFO_PADDING_Y + 4,
+                "GAME OVER",
+                Terminal.Color.WHITE,
+                Terminal.Color.BLACK
+            )
+        }
     }
 
     private fun cellStateToString(state: Map.CellState): String {

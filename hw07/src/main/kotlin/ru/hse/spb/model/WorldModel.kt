@@ -44,6 +44,10 @@ class WorldModel(override val map: Map) : Model {
     }
 
     override fun move(action: PlayerAction) {
+        if (player.getCurrentHealth() <= 0) {
+            return
+        }
+
         decorateWithView { movePlayer(action) }
         moveMobs()
         decorateWithView { combat() }
