@@ -1,8 +1,10 @@
 package ru.hse.spb.view
 
 import com.googlecode.lanterna.TerminalFacade
+import com.googlecode.lanterna.input.Key
 import com.googlecode.lanterna.screen.Screen
 import com.googlecode.lanterna.terminal.Terminal
+import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
 
@@ -14,6 +16,31 @@ object ConsoleView: View {
 
     init {
         screen.startScreen()
+        screen.cursorPosition = null
+    }
+
+    override fun getAction(): Controller.Companion.PlayerAction {
+        var action = Controller.Companion.PlayerAction.UNKNOWN
+
+        while (action == Controller.Companion.PlayerAction.UNKNOWN) {
+            val key = screen.readInput() ?: continue
+
+            action = when (key.kind) {
+                Key.Kind.ArrowDown -> Controller.Companion.PlayerAction.MOVE_UP
+                Key.Kind.ArrowUp -> Controller.Companion.PlayerAction.MOVE_DOWN
+                Key.Kind.ArrowLeft -> Controller.Companion.PlayerAction.MOVE_LEFT
+                Key.Kind.ArrowRight -> Controller.Companion.PlayerAction.MOVE_RIGHT
+                Key.Kind.NormalKey -> when (key.character) {
+                    'b' -> Controller.Companion.PlayerAction.TAKE_ON_EQUIPMENT
+                    'n' -> Controller.Companion.PlayerAction.TAKE_OFF_EQUIPMENT
+                    'q' -> Controller.Companion.PlayerAction.QUIT
+                    else -> Controller.Companion.PlayerAction.UNKNOWN
+                }
+                else -> Controller.Companion.PlayerAction.UNKNOWN
+            }
+        }
+
+        return action
     }
 
     override fun draw(model: Model) {
