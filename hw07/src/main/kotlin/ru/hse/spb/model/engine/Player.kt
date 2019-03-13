@@ -2,6 +2,9 @@ package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map.MapPosition
 
+/**
+ * This class represents player.
+ */
 class Player(loc: MapPosition) : GameCharacter() {
     override var level: Int = 1
     override var position: MapPosition = loc
@@ -9,6 +12,10 @@ class Player(loc: MapPosition) : GameCharacter() {
     override var health: Int = DEFAULT_HEALTH + equipment.additionalHealth
     override var strength: Int = DEFAULT_STRENGTH + equipment.additionalStrength
 
+
+    /**
+     * Increases health and strength.
+     */
     fun levelUp() {
         level++
         health += AMPLIFIER

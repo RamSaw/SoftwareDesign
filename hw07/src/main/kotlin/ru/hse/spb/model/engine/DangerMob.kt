@@ -2,6 +2,9 @@ package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map.MapPosition
 
+/**
+ * This class represents mob with high attack.
+ */
 class DangerMob(
     override var level: Int,
     override var position: MapPosition

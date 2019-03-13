@@ -2,6 +2,10 @@ package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map.MapPosition
 
+
+/**
+ *  This class represents all game characters.
+ */
 abstract class GameCharacter {
     protected abstract var health: Int
     protected abstract var level: Int
@@ -10,6 +14,9 @@ abstract class GameCharacter {
 
     fun getCurrentPosition() = position
 
+    /**
+     * Decrease character`s health for given amount.
+     */
     fun takeDamage(dmg: Int) {
         health -= dmg
     }
@@ -18,8 +25,14 @@ abstract class GameCharacter {
 
     fun getCurrentHealth() = health
 
+    /**
+     * Return character`s strength to incline.
+     */
     fun inclineDamage() = strength
 
+    /**
+     * Change character`s position on the map.
+     */
     fun changePosition(x: Int, y: Int) {
         position.x = x
         position.y = y

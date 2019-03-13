@@ -2,6 +2,9 @@ package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map.MapPosition
 
+/**
+ * This class represents mob with low attack.
+ */
 class SweetMob(
     override var level: Int,
     override var position: MapPosition
