@@ -46,6 +46,13 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         }
     }
 
+    fun getWidth(): Int {
+        return when {
+            field.isNotEmpty() -> field[0].size
+            else -> 0
+        }
+    }
+
     fun getStartCell(): MapPosition {
         val freeCells = getFreeCells()
         val i = Random(0).nextInt(freeCells.size)

@@ -11,6 +11,8 @@ import ru.hse.spb.model.Model
 object ConsoleView: View {
     private const val MAP_POSITION_X = 0
     private const val MAP_POSITION_Y = 0
+    private const val INFO_PADDING_X = 10
+    private const val INFO_PADDING_Y = 0
 
     private val screen = Screen(TerminalFacade.createTerminal())
 
@@ -92,7 +94,37 @@ object ConsoleView: View {
     }
 
     private fun drawInfoPanel(model: Model) {
+        val map = model.map
         val player = model.player
+
+        screen.putString(
+            MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+            MAP_POSITION_Y + INFO_PADDING_Y,
+            "level: " + player.getCurrentLevel(),
+            Terminal.Color.WHITE,
+            Terminal.Color.BLACK
+        )
+        screen.putString(
+            MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+            MAP_POSITION_Y + INFO_PADDING_Y + 1,
+            "health: " + player.getCurrentHealth(),
+            Terminal.Color.WHITE,
+            Terminal.Color.BLACK
+        )
+        screen.putString(
+            MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+            MAP_POSITION_Y + INFO_PADDING_Y + 2,
+            "strength: " + player.inclineDamage(),
+            Terminal.Color.WHITE,
+            Terminal.Color.BLACK
+        )
+        screen.putString(
+            MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+            MAP_POSITION_Y + INFO_PADDING_Y + 3,
+            "equipment: " + player.getEquipmentName(),
+            Terminal.Color.WHITE,
+            Terminal.Color.BLACK
+        )
     }
 
     private fun cellStateToString(state: Map.CellState): String {
