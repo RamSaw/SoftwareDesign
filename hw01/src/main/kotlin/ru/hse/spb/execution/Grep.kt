@@ -5,11 +5,10 @@ import java.nio.file.Path
 
 class Grep(
     private val regex: Regex, private val filePath: Path?,
-    prev: Executable?, private val linesToPrintAfter: Int = 0,
-    private val wordRegexp: Boolean = false
+    prev: Executable?, private val linesToPrintAfter: Int = 0
 ) : PipelineExecutable(prev) {
     companion object {
-        private val separator = "--"
+        private const val separator = "--"
     }
 
     override fun hasArguments() = filePath != null
@@ -38,12 +37,5 @@ class Grep(
         return result.toString()
     }
 
-    private fun lineMatches(line: String) =
-        regex.findAll(line).any { matchResult -> !wordRegexp || isWords(line, matchResult.range) }
-
-    private fun isWords(line: String, range: IntRange) =
-        (range.first == 0 || !isWordConstituentCharacter(line[range.first - 1])) &&
-                (range.endInclusive == line.lastIndex || !isWordConstituentCharacter(line[range.endInclusive + 1]))
-
-    private fun isWordConstituentCharacter(c: Char) = c.isLetterOrDigit() || c == '_'
+    private fun lineMatches(line: String) = regex.findAll(line).any()
 }

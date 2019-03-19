@@ -64,8 +64,8 @@ class GrepTest {
         assertEquals(
             expected,
             Grep(
-                Regex("Match"), null,
-                Echo(listOf(text), null), 0, true
+                Regex("\\bMatch\\b"), null,
+                Echo(listOf(text), null), 0
             ).execute()
         )
     }
@@ -78,7 +78,7 @@ class GrepTest {
             expected,
             Grep(
                 Regex("Matches"), null,
-                Echo(listOf(text), null), 0, true
+                Echo(listOf(text), null), 0
             ).execute()
         )
     }
@@ -91,7 +91,7 @@ class GrepTest {
             expected,
             Grep(
                 Regex("Matches"), null,
-                Echo(listOf(text), null), 0, true
+                Echo(listOf(text), null), 0
             ).execute()
         )
     }
@@ -104,7 +104,7 @@ class GrepTest {
             expected,
             Grep(
                 Regex("Matches"), null,
-                Echo(listOf(text), null), 0, true
+                Echo(listOf(text), null), 0
             ).execute()
         )
     }

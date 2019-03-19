@@ -59,13 +59,17 @@ object ExecutionParser: Parser {
                         override fun run() {
                         }
 
-                        fun getRegexp() =
-                            if (ignoreCase) Regex(regexString, RegexOption.IGNORE_CASE) else Regex(regexString)
+                        fun getRegexp(): Regex {
+                            val regexStringWithWordRegexp = if (wordRegexp) "\\b$regexString\\b" else regexString
+                            return if (ignoreCase) Regex(regexStringWithWordRegexp, RegexOption.IGNORE_CASE)
+                            else Regex(regexStringWithWordRegexp)
+                        }
+
                     }
                     grepArgumentsParser.parse(arguments)
                     Grep(
                         grepArgumentsParser.getRegexp(), grepArgumentsParser.file?.toPath(), result,
-                        grepArgumentsParser.linesToPrintAfter, grepArgumentsParser.wordRegexp
+                        grepArgumentsParser.linesToPrintAfter
                     )
                 }
                 else -> ExternalCommand(command[0], command.subList(1, command.size), result)
