@@ -6,6 +6,8 @@ import ru.hse.spb.model.Map.CellState.FREE
 import ru.hse.spb.model.Map.MapPosition
 import ru.hse.spb.model.engine.Mob
 import ru.hse.spb.model.engine.Player
+import ru.hse.spb.model.engine.strategy.AggressiveStrategy
+import ru.hse.spb.model.engine.strategy.FunkyStrategy
 import ru.hse.spb.model.engine.strategy.PassiveStrategy
 import ru.hse.spb.view.ConsoleView
 import ru.hse.spb.view.View
@@ -39,9 +41,9 @@ class WorldModel(override val map: Map) : Model {
             )
         ).map {
             when (random.nextInt(5)) {
-                1 -> Mob(currentRound, it, PassiveStrategy())
+                1 -> Mob(currentRound, it, AggressiveStrategy(this))
                 2 -> Mob(currentRound, it, PassiveStrategy())
-                else -> Mob(currentRound, it, PassiveStrategy())
+                else -> Mob(currentRound, it, FunkyStrategy(this))
             }
         })
     }
