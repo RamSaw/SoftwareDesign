@@ -12,30 +12,27 @@ class FunkyStrategy(private val model: Model) : MobStrategy {
         val mobPosition = mob.getCurrentPosition()
         val playerPosition = model.player.getCurrentPosition()
 
-        var x = mobPosition.x + when {
+        val x = mobPosition.x + when {
             playerPosition.x > mobPosition.x -> -1
             playerPosition.x == mobPosition.x -> 0
             else -> 1
         }
 
-        var y = mobPosition.y + when {
+        val y = mobPosition.y + when {
             playerPosition.y > mobPosition.y -> -1
             playerPosition.y == mobPosition.y -> 0
             else -> 1
         }
 
-        if (map.getCell(Map.MapPosition(x, y)) != Map.CellState.FREE) {
-            if (map.getCell(Map.MapPosition(mobPosition.x, y)) != Map.CellState.FREE) {
-                y = mobPosition.y
-                if (map.getCell(Map.MapPosition(x, y)) != Map.CellState.FREE) {
-                    x = mobPosition.x
-                }
-            } else {
-                x = mobPosition.x
-            }
+        if (map.getCell(Map.MapPosition(x, mobPosition.y)) != Map.CellState.WALL && x != mobPosition.x) {
+            return Map.MapPosition(x, mobPosition.y)
         }
 
-        return Map.MapPosition(x, y)
+        if (map.getCell(Map.MapPosition(mobPosition.x, y)) != Map.CellState.WALL) {
+            return Map.MapPosition(mobPosition.x, y)
+        }
+
+        return mobPosition
     }
 
     override fun isExpired(): Boolean {

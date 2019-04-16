@@ -1,7 +1,6 @@
 package ru.hse.spb.model.engine.strategy
 
 import ru.hse.spb.model.Map
-import ru.hse.spb.model.Map.CellState.FREE
 import ru.hse.spb.model.Map.MapPosition
 import ru.hse.spb.model.engine.Mob
 
@@ -20,7 +19,7 @@ class ConfusedStrategy(var timeout: Int) : MobStrategy {
             MapPosition(x, y + 1),
             MapPosition(x - 1, y),
             MapPosition(x, y - 1)
-        ).filter { map.getCell(it) == FREE }.shuffled().first()
+        ).filter { map.getCell(it) != Map.CellState.WALL }.shuffled().first()
     }
 
     override fun isExpired(): Boolean {
