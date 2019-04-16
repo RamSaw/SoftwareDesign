@@ -92,16 +92,11 @@ object ConsoleView: View {
     private fun drawMobs(model: Model) {
         for (mob in model.mobs) {
             val mobPosition = mob.getCurrentPosition()
-            val color = when (mob.type) {
-                Mob.MobType.SWEET -> Terminal.Color.YELLOW
-                Mob.MobType.DANGER -> Terminal.Color.RED
-            }
-
             screen.putString(
                 MAP_POSITION_X + mobPosition.x,
                 MAP_POSITION_Y + mobPosition.y,
                 "m",
-                color,
+                Terminal.Color.RED,
                 Terminal.Color.BLACK
             )
         }
