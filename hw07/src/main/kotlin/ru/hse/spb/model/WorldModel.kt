@@ -11,6 +11,7 @@ import ru.hse.spb.model.engine.Mob
 import ru.hse.spb.model.engine.Player
 import ru.hse.spb.model.engine.strategy.AggressiveStrategy
 import ru.hse.spb.model.engine.strategy.FunkyStrategy
+import ru.hse.spb.model.engine.strategy.MobStrategy
 import ru.hse.spb.model.engine.strategy.PassiveStrategy
 import ru.hse.spb.view.ConsoleView
 import ru.hse.spb.view.View
@@ -31,6 +32,8 @@ class WorldModel(override val map: Map) : Model {
     private var currentCombatField: MapPosition? = null
     private val combatSystem = CombatSystem()
 
+    private val strategies: Array<MobStrategy> = arrayOf(AggressiveStrategy(this), PassiveStrategy(), FunkyStrategy(this))
+
     init {
         decorateWithView { spawnMobs() }
     }
@@ -43,11 +46,8 @@ class WorldModel(override val map: Map) : Model {
                 max(freeCells.size / MOBS_THRESHOLD, 1)
             )
         ).map {
-            when (random.nextInt(5)) {
-                1 -> Mob(currentRound, it, AggressiveStrategy(this))
-                2 -> Mob(currentRound, it, PassiveStrategy())
-                else -> Mob(currentRound, it, FunkyStrategy(this))
-            }
+            val strategy = strategies[random.nextInt(strategies.size)]
+            Mob(currentRound, it, strategy)
         })
     }
 
