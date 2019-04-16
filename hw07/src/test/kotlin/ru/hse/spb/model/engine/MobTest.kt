@@ -3,6 +3,7 @@ package ru.hse.spb.model.engine
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import ru.hse.spb.model.Map
+import ru.hse.spb.model.engine.strategy.ConfusedStrategy
 import kotlin.math.abs
 
 class MobTest {
@@ -11,7 +12,7 @@ class MobTest {
     fun testMovement() {
         val map = Map.generate()
         val start = map.getFreeCells()[0]
-        val mob = DangerMob(1, start)
+        val mob = Mob(1, start, ConfusedStrategy(100))
         mob.move(map)
         assertTrue(
             abs(mob.getCurrentPosition().x - start.x)
