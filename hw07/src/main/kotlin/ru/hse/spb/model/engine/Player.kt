@@ -30,4 +30,12 @@ class Player(loc: MapPosition) : BasePlayer(loc) {
             equipment.takeOn()
         }
     }
+
+    override fun takeDamage(dmg: Int) {
+        health -= dmg
+    }
+
+    override fun getCurrentLevel() = level
+
+    override fun getCurrentHealth() = health
 }

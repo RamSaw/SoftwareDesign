@@ -22,4 +22,10 @@ class ConfusionPlayerDecorator(private val player: BasePlayer) : BasePlayer(play
     override fun takeOffEquipment() = player.takeOffEquipment()
 
     override fun takeOnEquipment() = player.takeOnEquipment()
+
+    override fun getCurrentLevel() = player.getCurrentLevel()
+
+    override fun getCurrentHealth() = player.getCurrentHealth()
+
+    override fun takeDamage(dmg: Int) = player.takeDamage(dmg)
 }
