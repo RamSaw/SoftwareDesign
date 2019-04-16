@@ -5,7 +5,11 @@ import ru.hse.spb.controller.Controller.Companion.PlayerAction.*
 import ru.hse.spb.model.Map.CellState.FREE
 import ru.hse.spb.model.Map.CellState.OCCUPIED
 import ru.hse.spb.model.Map.MapPosition
-import ru.hse.spb.model.engine.*
+import ru.hse.spb.model.engine.ConfusionPlayerDecorator
+import ru.hse.spb.model.engine.GameCharacter
+import ru.hse.spb.model.engine.Mob
+import ru.hse.spb.model.engine.Player
+import ru.hse.spb.model.engine.strategy.PassiveStrategy
 import ru.hse.spb.view.ConsoleView
 import ru.hse.spb.view.View
 import java.lang.Integer.max
@@ -37,10 +41,10 @@ class WorldModel(override val map: Map) : Model {
                 max(freeCells.size / MOBS_THRESHOLD, 1)
             )
         ).map {
-            if (random.nextInt(5) == 1) {
-                DangerMob(currentRound, it)
-            } else {
-                SweetMob(currentRound, it)
+            when (random.nextInt(5)) {
+                1 -> Mob(currentRound, it, PassiveStrategy())
+                2 -> Mob(currentRound, it, PassiveStrategy())
+                else -> Mob(currentRound, it, PassiveStrategy())
             }
         })
     }
