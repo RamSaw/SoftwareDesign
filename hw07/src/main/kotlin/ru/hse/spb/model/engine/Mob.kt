@@ -31,6 +31,8 @@ class Mob(
         return strategy.makeTurn(this, map)
     }
 
+    override fun inclineDamage() = strength
+
     fun setStrategy(strategy: MobStrategy) {
         temporaryStrategy = strategy
     }

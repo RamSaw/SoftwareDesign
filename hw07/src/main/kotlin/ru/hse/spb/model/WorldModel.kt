@@ -3,7 +3,10 @@ package ru.hse.spb.model
 import ru.hse.spb.controller.Controller.Companion.PlayerAction
 import ru.hse.spb.controller.Controller.Companion.PlayerAction.*
 import ru.hse.spb.model.Map.CellState.FREE
+import ru.hse.spb.model.Map.CellState.OCCUPIED
 import ru.hse.spb.model.Map.MapPosition
+import ru.hse.spb.model.engine.ConfusionPlayerDecorator
+import ru.hse.spb.model.engine.GameCharacter
 import ru.hse.spb.model.engine.Mob
 import ru.hse.spb.model.engine.Player
 import ru.hse.spb.model.engine.strategy.AggressiveStrategy
@@ -19,7 +22,7 @@ import kotlin.random.Random
  * This class implements core game mechanics and responses to user actions.
  */
 class WorldModel(override val map: Map) : Model {
-    override val player = Player(map.getStartCell())
+    override val player = ConfusionPlayerDecorator(Player(map.getStartCell()))
     override val mobs = mutableListOf<Mob>()
     override var currentRound = 0
 
@@ -37,7 +40,7 @@ class WorldModel(override val map: Map) : Model {
         val freeCells = map.getFreeCells()
         mobs.addAll(freeCells.shuffled(random).filter { !(it.x == pos.x && it.y == pos.y) }.take(
             random.nextInt(
-                max(freeCells.size / 5, 1)
+                max(freeCells.size / MOBS_THRESHOLD, 1)
             )
         ).map {
             when (random.nextInt(5)) {
@@ -77,6 +80,15 @@ class WorldModel(override val map: Map) : Model {
         view.draw(this)
     }
 
+    private inline fun decorateWithPosChange(
+        character: GameCharacter,
+        move: (character: GameCharacter) -> Unit
+    ) {
+        map.changeCellState(character.getCurrentPosition(), FREE)
+        move(character)
+        map.changeCellState(character.getCurrentPosition(), OCCUPIED)
+    }
+
     private fun movePlayer(action: PlayerAction) {
         var x = player.getCurrentPosition().x
         var y = player.getCurrentPosition().y
@@ -88,11 +100,12 @@ class WorldModel(override val map: Map) : Model {
             MOVE_RIGHT -> x++
             TAKE_OFF_EQUIPMENT -> player.takeOffEquipment()
             TAKE_ON_EQUIPMENT -> player.takeOnEquipment()
-            else -> {}
+            else -> {
+            }
         }
 
         if (map.getCell(MapPosition(x, y)) == FREE)
-            player.changePosition(x, y)
+            decorateWithPosChange(player) { player.changePosition(x, y) }
     }
 
     private fun moveMob(mob: Mob) {
@@ -102,7 +115,11 @@ class WorldModel(override val map: Map) : Model {
 
     private fun moveMobs() {
         for (mob in mobs) {
-            decorateWithView { moveMob(mob) }
+            decorateWithView { decorateWithPosChange(mob) { moveMob(mob) } }
         }
+    }
+
+    companion object {
+        private const val MOBS_THRESHOLD = 5
     }
 }

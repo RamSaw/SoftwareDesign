@@ -1,6 +1,7 @@
 package ru.hse.spb.model
 
 import ru.hse.spb.controller.Controller.Companion.PlayerAction
+import ru.hse.spb.model.engine.BasePlayer
 import ru.hse.spb.model.engine.Mob
 import ru.hse.spb.model.engine.Player
 
@@ -9,7 +10,7 @@ import ru.hse.spb.model.engine.Player
  */
 interface Model {
     val map: Map
-    val player: Player
+    val player: BasePlayer
     val mobs: List<Mob>
     var currentRound: Int
 
