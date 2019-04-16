@@ -1,8 +1,8 @@
 package ru.hse.spb.model
 
 import ru.hse.spb.model.Map.MapPosition
+import ru.hse.spb.model.engine.BasePlayer
 import ru.hse.spb.model.engine.Mob
-import ru.hse.spb.model.engine.Player
 
 /**
  * This class implements combat mechanics in the game.
@@ -13,7 +13,7 @@ class CombatSystem {
      *
      * @return field where combat is conducted.
      */
-    fun combat(player: Player, mobs: List<Mob>): MapPosition? {
+    fun combat(player: BasePlayer, mobs: List<Mob>): MapPosition? {
         mobs.filter {
             it.getCurrentPosition().x == player.getCurrentPosition().x
                     && it.getCurrentPosition().y == player.getCurrentPosition().y

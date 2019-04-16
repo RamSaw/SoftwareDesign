@@ -28,7 +28,7 @@ abstract class GameCharacter {
     /**
      * Return character`s strength to incline.
      */
-    fun inclineDamage() = strength
+    abstract fun inclineDamage(): Int
 
     /**
      * Change character`s position on the map.

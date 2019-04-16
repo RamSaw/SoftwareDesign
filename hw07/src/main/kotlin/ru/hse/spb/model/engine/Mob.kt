@@ -20,6 +20,12 @@ abstract class Mob(val type: MobType) : GameCharacter() {
         ).filter { map.getCell(it) == FREE }.shuffled().first()
     }
 
+    override fun inclineDamage() = strength
+
+    fun getConfused(confuseTime: Int) {
+        TODO()
+    }
+
     enum class MobType {
         DANGER,
         SWEET
