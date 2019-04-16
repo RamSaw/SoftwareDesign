@@ -10,8 +10,8 @@ import ru.hse.spb.model.engine.strategy.MobStrategy
 class Mob(
     override var level: Int,
     override var position: MapPosition,
-    private var strategy: MobStrategy) : GameCharacter() {
-
+    private var strategy: MobStrategy
+) : GameCharacter() {
     private var temporaryStrategy: MobStrategy? = null
 
     override var health = DEFAULT_HEALTH + AMPLIFIER * level
@@ -33,7 +33,17 @@ class Mob(
 
     override fun inclineDamage() = strength
 
+    override fun getCurrentLevel() = level
+
+    override fun getCurrentHealth() = health
+
+    override fun takeDamage(dmg: Int) {
+        health -= dmg
+    }
+
     fun setStrategy(strategy: MobStrategy) {
         temporaryStrategy = strategy
     }
+
+    fun getStrategy() = temporaryStrategy
 }
