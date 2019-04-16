@@ -4,6 +4,9 @@ import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
 import ru.hse.spb.model.engine.Mob
 
+/**
+ * Funky strategy - mob tries to get farther from the player.
+ */
 class FunkyStrategy(private val model: Model) : MobStrategy {
     override fun makeTurn(mob: Mob, map: Map): Map.MapPosition {
         val mobPosition = mob.getCurrentPosition()

@@ -5,6 +5,9 @@ import ru.hse.spb.model.Map.CellState.FREE
 import ru.hse.spb.model.Map.MapPosition
 import ru.hse.spb.model.engine.Mob
 
+/**
+ * Confused strategy - mob walks randomly.
+ */
 class ConfusedStrategy(var timeout: Int) : MobStrategy {
     override fun makeTurn(mob: Mob, map: Map): Map.MapPosition {
         timeout--
