@@ -1,7 +1,9 @@
 package ru.hse.spb.model
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
+import ru.hse.spb.model.engine.ConfusionPlayerDecorator
 import ru.hse.spb.model.engine.Mob
 import ru.hse.spb.model.engine.Player
 import ru.hse.spb.model.engine.strategy.ConfusedStrategy
@@ -9,33 +11,36 @@ import ru.hse.spb.model.engine.strategy.ConfusedStrategy
 class CombatSystemTest {
 
     @Test
-    fun testNoCombat() {
+    fun testBasicPlayer() {
         val player = Player(Map.MapPosition(0, 0))
-        val mobs = listOf(Mob(1, Map.MapPosition(1, 1), ConfusedStrategy(100)))
+        val oldHealth = player.getCurrentHealth()
+        val mob = Mob(1, Map.MapPosition(0, 0), ConfusedStrategy(100))
         val combatSystem = CombatSystem()
-        val field = combatSystem.combat(player, mobs)
-        assertNull(field)
+        combatSystem.combat(player, mob)
+        assertEquals(oldHealth - mob.inclineDamage(), player.getCurrentHealth())
+        assertNull(mob.getStrategy())
     }
 
     @Test
-    fun testOneMob() {
-        val player = Player(Map.MapPosition(0, 0))
+    fun testConfusionPlayer() {
+        val player = ConfusionPlayerDecorator(Player(Map.MapPosition(0, 0)))
         val oldHealth = player.getCurrentHealth()
-        val mobs = listOf(Mob(1, Map.MapPosition(0, 0), ConfusedStrategy(100)))
+        val mob = Mob(1, Map.MapPosition(0, 0), ConfusedStrategy(100))
         val combatSystem = CombatSystem()
-        val field = combatSystem.combat(player, mobs)
-        assertNotNull(field)
-        assertEquals(oldHealth - mobs[0].inclineDamage(), player.getCurrentHealth())
+        combatSystem.combat(player, mob)
+        assertEquals(oldHealth - mob.inclineDamage(), player.getCurrentHealth())
+        assertEquals(ConfusedStrategy(0).javaClass, mob.getStrategy()?.javaClass)
     }
 
     @Test
-    fun testTenMobs() {
-        val player = Player(Map.MapPosition(0, 0))
-        val oldHealth = player.getCurrentHealth()
-        val mobs = Array(10) { Mob(1, Map.MapPosition(0, 0), ConfusedStrategy(100)) }.toList()
+    fun testFightMobs() {
+        val bob = Mob(1, Map.MapPosition(0, 0), ConfusedStrategy(100))
+        val oldHealthBob = bob.getCurrentHealth()
+        val mob = Mob(1, Map.MapPosition(0, 0), ConfusedStrategy(100))
+        val oldHealthMob = mob.getCurrentHealth()
         val combatSystem = CombatSystem()
-        val field = combatSystem.combat(player, mobs)
-        assertNotNull(field)
-        assertEquals(oldHealth - mobs[0].inclineDamage() * 10, player.getCurrentHealth())
+        combatSystem.combat(bob, mob)
+        assertEquals(oldHealthBob - mob.inclineDamage(), bob.getCurrentHealth())
+        assertEquals(oldHealthMob - bob.inclineDamage(), mob.getCurrentHealth())
     }
 }

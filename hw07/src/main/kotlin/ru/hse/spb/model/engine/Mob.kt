@@ -10,7 +10,8 @@ import ru.hse.spb.model.engine.strategy.MobStrategy
 class Mob(
     override var level: Int,
     override var position: MapPosition,
-    private var strategy: MobStrategy) : GameCharacter() {
+    private var strategy: MobStrategy
+) : GameCharacter() {
 
     private var temporaryStrategy: MobStrategy? = null
 
@@ -36,4 +37,6 @@ class Mob(
     fun setStrategy(strategy: MobStrategy) {
         temporaryStrategy = strategy
     }
+
+    fun getStrategy() = temporaryStrategy
 }

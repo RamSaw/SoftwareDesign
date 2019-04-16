@@ -3,7 +3,7 @@ package ru.hse.spb.model.engine
 import ru.hse.spb.model.Map.MapPosition
 
 /**
- * This class represents player.
+ * This class represents basic player.
  */
 class Player(loc: MapPosition) : BasePlayer(loc) {
 

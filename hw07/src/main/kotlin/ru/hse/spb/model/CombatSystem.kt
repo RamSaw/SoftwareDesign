@@ -1,34 +1,36 @@
 package ru.hse.spb.model
 
-import ru.hse.spb.model.Map.MapPosition
-import ru.hse.spb.model.engine.BasePlayer
+import ru.hse.spb.model.engine.ConfusionPlayerDecorator
 import ru.hse.spb.model.engine.Mob
+import ru.hse.spb.model.engine.Player
 
 /**
  * This class implements combat mechanics in the game.
  */
 class CombatSystem {
+
     /**
-     * Incline damage to player and mobs according to their positions.
-     *
-     * @return field where combat is conducted.
+     * Incline damage to basic player and mob.
      */
-    fun combat(player: BasePlayer, mobs: List<Mob>): MapPosition? {
-        mobs.filter {
-            it.getCurrentPosition().x == player.getCurrentPosition().x
-                    && it.getCurrentPosition().y == player.getCurrentPosition().y
-        }
-            .forEach {
-                it.takeDamage(player.inclineDamage())
-                if (it.getCurrentHealth() > 0)
-                    player.takeDamage(it.inclineDamage())
-            }
-        return if (mobs.any {
-                it.getCurrentPosition().x == player.getCurrentPosition().x
-                        && it.getCurrentPosition().y == player.getCurrentPosition().y
-            })
-            player.getCurrentPosition()
-        else
-            null
+    fun combat(player: Player, mob: Mob) {
+        mob.takeDamage(player.inclineDamage())
+        player.takeDamage(mob.inclineDamage())
+    }
+
+    /**
+     * Incline damage to confusion player and mob.
+     */
+    fun combat(player: ConfusionPlayerDecorator, mob: Mob) {
+        mob.takeDamage(player.inclineDamage())
+        player.confuseAfterAttack(mob)
+        player.takeDamage(mob.inclineDamage())
+    }
+
+    /**
+     * Incline damage to mob and mob.
+     */
+    fun combat(bob: Mob, mob: Mob) {
+        mob.takeDamage(bob.inclineDamage())
+        bob.takeDamage(mob.inclineDamage())
     }
 }
