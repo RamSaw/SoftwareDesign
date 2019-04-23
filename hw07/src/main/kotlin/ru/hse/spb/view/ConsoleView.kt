@@ -125,7 +125,7 @@ object ConsoleView : View, Serializable {
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
             MAP_POSITION_Y + INFO_PADDING_Y + 1,
-            "equipment: " + player.getEquipmentName(),
+            "equipment: " + player.getEquipmentNames().joinToString(),
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
         )

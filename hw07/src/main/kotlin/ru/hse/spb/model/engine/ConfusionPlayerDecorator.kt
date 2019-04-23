@@ -19,9 +19,7 @@ class ConfusionPlayerDecorator(private val player: BasePlayer) : BasePlayer(play
         confuseTime += AMPLIFIER
     }
 
-    override fun takeOffEquipment() = player.takeOffEquipment()
-
-    override fun takeOnEquipment() = player.takeOnEquipment()
+    override fun takeOnOffEquipment(equipmentId: Int) = player.takeOnOffEquipment(equipmentId)
 
     override fun getCurrentLevel() = player.getCurrentLevel()
 

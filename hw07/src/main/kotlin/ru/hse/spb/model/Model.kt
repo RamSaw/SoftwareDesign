@@ -12,6 +12,9 @@ interface Model {
     val mobs: List<Mob>
     var currentRound: Int
 
+    /**
+     * Checks whether the game is finished or not.
+     */
     fun isGameFinished() : Boolean
 
     /**
@@ -19,10 +22,19 @@ interface Model {
      */
     fun movePlayer(move: PlayerMove)
 
+    /**
+     * Takes on equipment if it is off and vice versa.
+     */
     fun takeOnOffPlayerEquipment(equipmentId: Int)
 
+    /**
+     * Finishes game.
+     */
     fun finishGame()
 
+    /**
+     * Describes player move direction.
+     */
     enum class PlayerMove {
         MOVE_UP,
         MOVE_DOWN,

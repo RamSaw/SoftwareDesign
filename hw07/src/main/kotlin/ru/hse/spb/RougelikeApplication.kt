@@ -6,9 +6,9 @@ import ru.hse.spb.model.WorldModel
 import ru.hse.spb.view.ConsoleView
 
 fun main() {
+    val view = ConsoleView
     val map = Map.generate()
     val model = WorldModel(map)
-    val view = ConsoleView
     val controller = Controller(model, view)
 
     controller.run()

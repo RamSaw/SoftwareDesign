@@ -20,6 +20,9 @@ abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
      */
     abstract fun levelUp()
 
+    /**
+     * Takes on equipment if it is off and vice versa.
+     */
     abstract fun takeOnOffEquipment(equipmentId: Int)
 
     fun getEquipmentNames(): List<String> = equipment.map { it.name }
