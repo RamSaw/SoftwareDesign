@@ -108,6 +108,10 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         }
     }
 
+    fun changeCellState(pos:MapPosition, state:CellState){
+        field[pos.y][pos.x] = state
+    }
+
     /**
      * This class represents map coordinates.
      */
@@ -118,6 +122,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
      */
     enum class CellState {
         FREE,
+        OCCUPIED,
         WALL
     }
 }

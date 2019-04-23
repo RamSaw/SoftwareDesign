@@ -17,18 +17,16 @@ abstract class GameCharacter {
     /**
      * Decrease character`s health for given amount.
      */
-    fun takeDamage(dmg: Int) {
-        health -= dmg
-    }
+    abstract fun takeDamage(dmg: Int)
 
-    fun getCurrentLevel() = level
+    abstract fun getCurrentLevel(): Int
 
-    fun getCurrentHealth() = health
+    abstract fun getCurrentHealth(): Int
 
     /**
      * Return character`s strength to incline.
      */
-    fun inclineDamage() = strength
+    abstract fun inclineDamage(): Int
 
     /**
      * Change character`s position on the map.

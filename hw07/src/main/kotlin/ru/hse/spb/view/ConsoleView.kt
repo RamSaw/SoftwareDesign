@@ -13,7 +13,7 @@ import java.lang.Integer.max
 /**
  * Simple view implementation, uses console graphics.
  */
-object ConsoleView: View {
+object ConsoleView : View {
     private const val MAP_POSITION_X = 0
     private const val MAP_POSITION_Y = 0
     private const val INFO_PADDING_X = 10
@@ -74,7 +74,8 @@ object ConsoleView: View {
                     MAP_POSITION_Y + i,
                     cellStateToString(row[j]),
                     Terminal.Color.WHITE,
-                    Terminal.Color.BLACK)
+                    Terminal.Color.BLACK
+                )
             }
         }
     }
@@ -86,22 +87,18 @@ object ConsoleView: View {
             MAP_POSITION_Y + playerPosition.y,
             "p",
             Terminal.Color.GREEN,
-            Terminal.Color.BLACK)
+            Terminal.Color.BLACK
+        )
     }
 
     private fun drawMobs(model: Model) {
         for (mob in model.mobs) {
             val mobPosition = mob.getCurrentPosition()
-            val color = when (mob.type) {
-                Mob.MobType.SWEET -> Terminal.Color.YELLOW
-                Mob.MobType.DANGER -> Terminal.Color.RED
-            }
-
             screen.putString(
                 MAP_POSITION_X + mobPosition.x,
                 MAP_POSITION_Y + mobPosition.y,
                 "m",
-                color,
+                Terminal.Color.RED,
                 Terminal.Color.BLACK
             )
         }
@@ -164,7 +161,7 @@ object ConsoleView: View {
     private fun cellStateToString(state: Map.CellState): String {
         return when (state) {
             Map.CellState.FREE -> " "
-            Map.CellState.WALL -> "#"
+            Map.CellState.WALL, Map.CellState.OCCUPIED -> "#"
         }
     }
 }
