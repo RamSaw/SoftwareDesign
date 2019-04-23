@@ -1,12 +1,13 @@
 package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map.MapPosition
+import java.io.Serializable
 
 
 /**
  *  This class represents all game characters.
  */
-abstract class GameCharacter {
+abstract class GameCharacter : Serializable {
     protected abstract var health: Int
     protected abstract var level: Int
     protected abstract var strength: Int

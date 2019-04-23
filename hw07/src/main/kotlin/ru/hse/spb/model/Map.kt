@@ -1,18 +1,17 @@
 package ru.hse.spb.model
 
 import java.io.File
+import java.io.Serializable
 import kotlin.random.Random
 
 /**
  * This class represents game field.
  */
-class Map private constructor(val field: Array<Array<CellState>>) {
+class Map private constructor(val field: Array<Array<CellState>>) : Serializable {
     companion object Factory {
         private const val DEFAULT_FIELD_WIDTH = 20
         private const val DEFAULT_FIELD_HEIGHT = 20
         private const val WALL_PERCENTAGE = 25
-
-        private val random = Random(0)
 
         /**
          * Generates new map with random walls.
@@ -26,7 +25,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
                         j == 0 || j == DEFAULT_FIELD_WIDTH - 1) {
                         row[j] = CellState.WALL
                     } else {
-                        row[j] = when (random.nextInt(0, 100)) {
+                        row[j] = when ((0..100).random()) {
                             in 0..WALL_PERCENTAGE -> CellState.WALL
                             else -> CellState.FREE
                         }
@@ -115,7 +114,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
     /**
      * This class represents map coordinates.
      */
-    class MapPosition(var x: Int, var y: Int)
+    class MapPosition(var x: Int, var y: Int) : Serializable
 
     /**
      * This class represents map cell state.

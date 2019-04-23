@@ -9,8 +9,8 @@ import ru.hse.spb.model.engine.Player
  * This interface represents model of the game.
  */
 interface Model {
-    val map: Map
     val player: BasePlayer
+    val map: Map
     val mobs: List<Mob>
     var currentRound: Int
 
