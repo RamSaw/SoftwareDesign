@@ -3,11 +3,12 @@ package ru.hse.spb.model
 import ru.hse.spb.model.engine.ConfusionPlayerDecorator
 import ru.hse.spb.model.engine.Mob
 import ru.hse.spb.model.engine.Player
+import java.io.Serializable
 
 /**
  * This class implements combat mechanics in the game.
  */
-class CombatSystem {
+class CombatSystem : Serializable {
 
     /**
      * Incline damage to basic player and mob.

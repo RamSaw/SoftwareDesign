@@ -13,23 +13,23 @@ import ru.hse.spb.model.engine.strategy.MobStrategy
 import ru.hse.spb.model.engine.strategy.PassiveStrategy
 import ru.hse.spb.view.ConsoleView
 import ru.hse.spb.view.View
+import java.io.*
 import java.lang.Integer.max
-import kotlin.random.Random
 
 
 /**
  * This class implements core game mechanics and responses to user actions.
  */
-class WorldModel(override val map: Map) : Model {
+class WorldModel(override val map: Map) : Model, Serializable {
     override val player = ConfusionPlayerDecorator(Player(map.getStartCell()))
     override val mobs = mutableListOf<Mob>()
     override var currentRound = 0
 
     private val view: View = ConsoleView
-    private val random = Random(0)
     private val combatSystem = CombatSystem()
 
-    private val strategies: Array<MobStrategy> = arrayOf(AggressiveStrategy(this), PassiveStrategy(), FunkyStrategy(this))
+    private val strategies: Array<MobStrategy> =
+        arrayOf(AggressiveStrategy(this), PassiveStrategy(), FunkyStrategy(this))
 
     private var gameFinished = false
 
@@ -48,12 +48,10 @@ class WorldModel(override val map: Map) : Model {
     private fun spawnMobs() {
         val pos = player.getCurrentPosition()
         val freeCells = map.getFreeCells()
-        mobs.addAll(freeCells.shuffled(random).filter { !(it.x == pos.x && it.y == pos.y) }.take(
-            random.nextInt(
-                max(freeCells.size / MOBS_THRESHOLD, 1)
-            )
+        mobs.addAll(freeCells.shuffled().filter { !(it.x == pos.x && it.y == pos.y) }.take(
+            (0 until max(freeCells.size / MOBS_THRESHOLD, 1)).random()
         ).map {
-            val strategy = strategies[random.nextInt(strategies.size)]
+            val strategy = strategies[(0 until strategies.size).random()]
             Mob(currentRound, it, strategy)
         })
     }
@@ -144,5 +142,24 @@ class WorldModel(override val map: Map) : Model {
 
     companion object {
         private const val MOBS_THRESHOLD = 5
+        private const val SAVED_GAME_FILENAME = "saves/savedGame"
+        private const val FAILED_LOAD_MESSAGE = "Failed to load save file."
+
+        fun save(game: WorldModel) {
+            File(SAVED_GAME_FILENAME).parentFile.mkdirs()
+            ObjectOutputStream(FileOutputStream(SAVED_GAME_FILENAME)).use {
+                it.writeObject(game)
+            }
+        }
+
+        fun load(): WorldModel {
+            try {
+                ObjectInputStream(FileInputStream(SAVED_GAME_FILENAME)).use {
+                    return it.readObject() as WorldModel
+                }
+            } catch (e: Exception) {
+                throw FailedLoadException(FAILED_LOAD_MESSAGE)
+            }
+        }
     }
 }

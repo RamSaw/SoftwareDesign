@@ -9,12 +9,13 @@ import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
 import ru.hse.spb.model.engine.Mob
+import java.io.Serializable
 import java.lang.Integer.max
 
 /**
  * Simple view implementation, uses console graphics.
  */
-object ConsoleView : View {
+object ConsoleView : View, Serializable {
     private const val MAP_POSITION_X = 0
     private const val MAP_POSITION_Y = 0
     private const val INFO_PADDING_X = 10

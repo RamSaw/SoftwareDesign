@@ -1,8 +1,8 @@
 package ru.hse.spb.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 import ru.hse.spb.model.engine.ConfusionPlayerDecorator
 import ru.hse.spb.model.engine.Mob
 import ru.hse.spb.model.engine.Player
