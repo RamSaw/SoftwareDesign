@@ -15,28 +15,11 @@ class Controller(private val model: Model,
     fun run() {
         while (true) {
             val action = view.getAction()
+            action.execute(model)
 
-            if (action == PlayerAction.QUIT) {
+            if (model.isGameFinished()) {
                 break
             }
-
-            model.move(action)
-        }
-    }
-
-    companion object {
-        /**
-         * This class represents player action.
-         */
-        enum class PlayerAction {
-            MOVE_UP,
-            MOVE_DOWN,
-            MOVE_LEFT,
-            MOVE_RIGHT,
-            TAKE_OFF_EQUIPMENT,
-            TAKE_ON_EQUIPMENT,
-            QUIT,
-            UNKNOWN
         }
     }
 }

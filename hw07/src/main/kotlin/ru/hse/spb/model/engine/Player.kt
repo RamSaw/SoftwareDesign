@@ -15,19 +15,21 @@ class Player(loc: MapPosition) : BasePlayer(loc) {
         strength += AMPLIFIER
     }
 
-    override fun takeOffEquipment() {
-        if (equipment.isOnCharacter) {
-            health -= equipment.additionalHealth
-            strength -= equipment.additionalStrength
-            equipment.takeOff()
+    override fun takeOnOffEquipment(equipmentId: Int) {
+        if (equipmentId >= equipment.size || equipmentId < 0) {
+            return
         }
-    }
 
-    override fun takeOnEquipment() {
-        if (!equipment.isOnCharacter) {
-            health += equipment.additionalHealth
-            strength += equipment.additionalStrength
-            equipment.takeOn()
+        val eq = equipment[equipmentId]
+
+        if (eq.isOnCharacter) {
+            health -= eq.additionalHealth
+            strength -= eq.additionalStrength
+            eq.takeOff()
+        } else {
+            health += eq.additionalHealth
+            strength += eq.additionalStrength
+            eq.takeOn()
         }
     }
 

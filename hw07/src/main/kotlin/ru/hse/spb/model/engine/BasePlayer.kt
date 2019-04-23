@@ -9,9 +9,9 @@ import ru.hse.spb.model.Map.MapPosition
 abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
     override var level: Int = 1
     override var position: Map.MapPosition = loc
-    protected val equipment = Equipment(EQUIPMENT_NAME, true, DEFAULT_HEALTH, DEFAULT_STRENGTH)
-    override var health: Int = DEFAULT_HEALTH + equipment.additionalHealth
-    override var strength: Int = DEFAULT_STRENGTH + equipment.additionalStrength
+    protected val equipment = arrayOf(Equipment(EQUIPMENT_NAME, true, DEFAULT_HEALTH, DEFAULT_STRENGTH))
+    override var health: Int = DEFAULT_HEALTH + equipment.filter { it.isOnCharacter }.map { it.additionalHealth }.sum()
+    override var strength: Int = DEFAULT_STRENGTH + equipment.filter { it.isOnCharacter }.map { it.additionalStrength }.sum()
     protected val AMPLIFIER = 3
 
 
@@ -20,11 +20,9 @@ abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
      */
     abstract fun levelUp()
 
-    abstract fun takeOffEquipment()
+    abstract fun takeOnOffEquipment(equipmentId: Int)
 
-    abstract fun takeOnEquipment()
-
-    fun getEquipmentName(): String = equipment.name
+    fun getEquipmentNames(): List<String> = equipment.map { it.name }
 
     companion object {
         private const val EQUIPMENT_NAME = "GODSWORD"

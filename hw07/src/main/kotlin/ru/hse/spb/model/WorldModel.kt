@@ -1,7 +1,5 @@
 package ru.hse.spb.model
 
-import ru.hse.spb.controller.Controller.Companion.PlayerAction
-import ru.hse.spb.controller.Controller.Companion.PlayerAction.*
 import ru.hse.spb.model.Map.CellState.FREE
 import ru.hse.spb.model.Map.CellState.OCCUPIED
 import ru.hse.spb.model.Map.MapPosition
@@ -33,8 +31,18 @@ class WorldModel(override val map: Map) : Model {
 
     private val strategies: Array<MobStrategy> = arrayOf(AggressiveStrategy(this), PassiveStrategy(), FunkyStrategy(this))
 
+    private var gameFinished = false
+
     init {
         decorateWithView { spawnMobs() }
+    }
+
+    override fun isGameFinished(): Boolean {
+        return gameFinished
+    }
+
+    override fun finishGame() {
+        gameFinished = true
     }
 
     private fun spawnMobs() {
@@ -50,17 +58,15 @@ class WorldModel(override val map: Map) : Model {
         })
     }
 
-    override fun move(action: PlayerAction) {
-        if (player.getCurrentHealth() <= 0) {
-            return
-        }
-
-        decorateWithView { movePlayer(action) }
+    private fun finishMove() {
         moveMobs()
         if (mobs.isEmpty()) {
             currentRound++
             player.levelUp()
             decorateWithView { spawnMobs() }
+        }
+        if (player.getCurrentHealth() <= 0) {
+            gameFinished = true
         }
     }
 
@@ -83,19 +89,15 @@ class WorldModel(override val map: Map) : Model {
         map.changeCellState(character.getCurrentPosition(), OCCUPIED)
     }
 
-    private fun movePlayer(action: PlayerAction) {
+    override fun movePlayer(move: Model.PlayerMove) {
         var x = player.getCurrentPosition().x
         var y = player.getCurrentPosition().y
 
-        when (action) {
-            MOVE_UP -> y++
-            MOVE_DOWN -> y--
-            MOVE_LEFT -> x--
-            MOVE_RIGHT -> x++
-            TAKE_OFF_EQUIPMENT -> player.takeOffEquipment()
-            TAKE_ON_EQUIPMENT -> player.takeOnEquipment()
-            else -> {
-            }
+        when (move) {
+            Model.PlayerMove.MOVE_UP -> y++
+            Model.PlayerMove.MOVE_DOWN -> y--
+            Model.PlayerMove.MOVE_LEFT -> x--
+            Model.PlayerMove.MOVE_RIGHT -> x++
         }
 
         if (map.getCell(MapPosition(x, y)) == FREE)
@@ -107,6 +109,13 @@ class WorldModel(override val map: Map) : Model {
             })
             decorateWithView { combatAftermath() }
         }
+
+        decorateWithView { finishMove() }
+    }
+
+    override fun takeOnOffPlayerEquipment(equipmentId: Int) {
+        player.takeOnOffEquipment(equipmentId)
+        decorateWithView { finishMove() }
     }
 
     private fun moveMob(mob: Mob) {

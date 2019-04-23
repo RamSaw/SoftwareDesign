@@ -4,6 +4,7 @@ import com.googlecode.lanterna.TerminalFacade
 import com.googlecode.lanterna.input.Key
 import com.googlecode.lanterna.screen.Screen
 import com.googlecode.lanterna.terminal.Terminal
+import ru.hse.spb.actions.*
 import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
@@ -30,28 +31,33 @@ object ConsoleView : View {
         screen.stopScreen()
     }
 
-    override fun getAction(): Controller.Companion.PlayerAction {
-        var action = Controller.Companion.PlayerAction.UNKNOWN
+    override fun getAction(): Action {
+        var action : Action?
 
-        while (action == Controller.Companion.PlayerAction.UNKNOWN) {
+        while (true) {
             val key = screen.readInput() ?: continue
 
             action = when (key.kind) {
-                Key.Kind.ArrowDown -> Controller.Companion.PlayerAction.MOVE_UP
-                Key.Kind.ArrowUp -> Controller.Companion.PlayerAction.MOVE_DOWN
-                Key.Kind.ArrowLeft -> Controller.Companion.PlayerAction.MOVE_LEFT
-                Key.Kind.ArrowRight -> Controller.Companion.PlayerAction.MOVE_RIGHT
+                Key.Kind.ArrowDown -> MoveDownAction
+                Key.Kind.ArrowUp -> MoveUpAction
+                Key.Kind.ArrowLeft -> MoveLeftAction
+                Key.Kind.ArrowRight -> MoveRightAction
                 Key.Kind.NormalKey -> when (key.character) {
-                    'b' -> Controller.Companion.PlayerAction.TAKE_ON_EQUIPMENT
-                    'n' -> Controller.Companion.PlayerAction.TAKE_OFF_EQUIPMENT
-                    'q' -> Controller.Companion.PlayerAction.QUIT
-                    else -> Controller.Companion.PlayerAction.UNKNOWN
+                    'q' -> QuitGameAction
+                    's' -> SaveGameAction
+                    'l' -> LoadGameAction
+                    in '0'..'9' -> TakeOnOffEquipmentAction(key.character.toInt() - '0'.toInt())
+                    else -> null
                 }
-                else -> Controller.Companion.PlayerAction.UNKNOWN
+                else -> null
+            }
+
+            if (action != null) {
+                break
             }
         }
 
-        return action
+        return action!!
     }
 
     override fun draw(model: Model) {
