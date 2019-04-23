@@ -1,16 +1,28 @@
 package ru.hse.spb.model
 
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class WorldModelTest {
     private val filename = "saves/savedGame"
 
+    @BeforeEach
+    @AfterEach
+    fun deleteSave() {
+        while (!File(filename).deleteRecursively()) {
+        }
+    }
+
     @Test
     fun testSaveNoSaveFile() {
-        File(filename).deleteRecursively()
+        assertFalse(Files.exists(Paths.get(filename)))
         assertThrows<FailedLoadException> { WorldModel.load() }
     }
 
@@ -19,7 +31,6 @@ class WorldModelTest {
         File(filename).parentFile.mkdirs()
         File(filename).writeText("KEK")
         assertThrows<FailedLoadException> { WorldModel.load() }
-
     }
 
     @Test
