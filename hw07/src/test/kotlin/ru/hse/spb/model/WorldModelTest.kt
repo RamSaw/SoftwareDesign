@@ -22,32 +22,38 @@ class WorldModelTest {
 
     @Test
     fun testSaveNoSaveFile() {
+        val model = WorldModel(Map.generate())
         assertFalse(Files.exists(Paths.get(filename)))
-        assertThrows<FailedLoadException> { WorldModel.load() }
+        assertThrows<FailedLoadException> { model.load() }
     }
 
     @Test
     fun testBadSaveFile() {
+        val model = WorldModel(Map.generate())
         File(filename).parentFile.mkdirs()
         File(filename).writeText("KEK")
-        assertThrows<FailedLoadException> { WorldModel.load() }
+        assertThrows<FailedLoadException> { model.load() }
     }
 
     @Test
     fun testSave() {
         val model = WorldModel(Map.generate())
-        WorldModel.save(model)
-        val savedModel = WorldModel.load()
-        assertArrayEquals(savedModel.map.field, model.map.field)
+        model.save()
+        val newModel = WorldModel(Map.generate())
+        newModel.load()
+        assertArrayEquals(newModel.map.field, model.map.field)
     }
 
     @Test
     fun testTwoSaves() {
         val model = WorldModel(Map.generate())
-        WorldModel.save(model)
-        val savedModel = WorldModel.load()
-        WorldModel.save(model)
-        val sameModel = WorldModel.load()
-        assertArrayEquals(savedModel.map.field, sameModel.map.field)
+        model.save()
+        val newModel = WorldModel(Map.generate())
+        newModel.load()
+
+        model.save()
+        val sameModel = WorldModel(Map.generate())
+        sameModel.load()
+        assertArrayEquals(newModel.map.field, sameModel.map.field)
     }
 }
