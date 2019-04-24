@@ -33,6 +33,16 @@ interface Model {
     fun finishGame()
 
     /**
+     * Saves state no the disk.
+     */
+    fun save()
+
+    /**
+     * Loads state from the disk.
+     */
+    fun load()
+
+    /**
      * Describes player move direction.
      */
     enum class PlayerMove {

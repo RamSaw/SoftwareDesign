@@ -20,15 +20,15 @@ import java.lang.Integer.max
 /**
  * This class implements core game mechanics and responses to user actions.
  */
-class WorldModel(override val map: Map) : Model, Serializable {
-    override val player = ConfusionPlayerDecorator(Player(map.getStartCell()))
-    override val mobs = mutableListOf<Mob>()
+class WorldModel(override var map: Map) : Model, Serializable {
+    override var player = ConfusionPlayerDecorator(Player(map.getStartCell()))
+    override var mobs = mutableListOf<Mob>()
     override var currentRound = 0
 
-    private val view: View = ConsoleView
-    private val combatSystem = CombatSystem()
+    private var view: View = ConsoleView
+    private var combatSystem = CombatSystem()
 
-    private val strategies: Array<MobStrategy> =
+    private var strategies: Array<MobStrategy> =
         arrayOf(AggressiveStrategy(this), PassiveStrategy(), FunkyStrategy(this))
 
     private var gameFinished = false
@@ -140,26 +140,38 @@ class WorldModel(override val map: Map) : Model, Serializable {
         }
     }
 
+    override fun save() {
+        File(SAVED_GAME_FILENAME).parentFile.mkdirs()
+        ObjectOutputStream(FileOutputStream(SAVED_GAME_FILENAME)).use {
+            it.writeObject(this)
+        }
+    }
+
+    override fun load() {
+        try {
+            ObjectInputStream(FileInputStream(SAVED_GAME_FILENAME)).use {
+                val model = it.readObject() as WorldModel
+                loadFromModel(model)
+            }
+        } catch (e: Exception) {
+            throw FailedLoadException(FAILED_LOAD_MESSAGE)
+        }
+    }
+
+    private fun loadFromModel(model: WorldModel) {
+        this.map = model.map
+        this.player = model.player
+        this.mobs = model.mobs
+        this.currentRound = model.currentRound
+        this.view = model.view
+        this.combatSystem = model.combatSystem
+        this.strategies = model.strategies
+        this.gameFinished = model.gameFinished
+    }
+
     companion object {
         private const val MOBS_THRESHOLD = 5
         private const val SAVED_GAME_FILENAME = "saves/savedGame"
         private const val FAILED_LOAD_MESSAGE = "Failed to load save file."
-
-        fun save(game: WorldModel) {
-            File(SAVED_GAME_FILENAME).parentFile.mkdirs()
-            ObjectOutputStream(FileOutputStream(SAVED_GAME_FILENAME)).use {
-                it.writeObject(game)
-            }
-        }
-
-        fun load(): WorldModel {
-            try {
-                ObjectInputStream(FileInputStream(SAVED_GAME_FILENAME)).use {
-                    return it.readObject() as WorldModel
-                }
-            } catch (e: Exception) {
-                throw FailedLoadException(FAILED_LOAD_MESSAGE)
-            }
-        }
     }
 }
