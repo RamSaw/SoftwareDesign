@@ -32,6 +32,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
         arrayOf(AggressiveStrategy(this), PassiveStrategy(), FunkyStrategy(this))
 
     private var gameFinished = false
+    private var gameStarted = false
 
     init {
         decorateWithView { spawnMobs() }
@@ -57,6 +58,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
     }
 
     private fun finishMove() {
+        gameStarted = true
         moveMobs()
         if (mobs.isEmpty()) {
             currentRound++
@@ -92,8 +94,8 @@ class WorldModel(override var map: Map) : Model, Serializable {
         var y = player.getCurrentPosition().y
 
         when (move) {
-            Model.PlayerMove.MOVE_UP -> y++
-            Model.PlayerMove.MOVE_DOWN -> y--
+            Model.PlayerMove.MOVE_UP -> y--
+            Model.PlayerMove.MOVE_DOWN -> y++
             Model.PlayerMove.MOVE_LEFT -> x--
             Model.PlayerMove.MOVE_RIGHT -> x++
         }
@@ -148,6 +150,10 @@ class WorldModel(override var map: Map) : Model, Serializable {
     }
 
     override fun load() {
+        if (gameStarted) {
+            return
+        }
+
         try {
             ObjectInputStream(FileInputStream(SAVED_GAME_FILENAME)).use {
                 val model = it.readObject() as WorldModel
@@ -167,6 +173,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
         this.combatSystem = model.combatSystem
         this.strategies = model.strategies
         this.gameFinished = model.gameFinished
+        this.gameStarted = model.gameStarted
     }
 
     companion object {
