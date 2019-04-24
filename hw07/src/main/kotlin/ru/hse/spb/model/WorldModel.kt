@@ -157,7 +157,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
         try {
             ObjectInputStream(FileInputStream(SAVED_GAME_FILENAME)).use {
                 val model = it.readObject() as WorldModel
-                loadFromModel(model)
+                decorateWithView { loadFromModel(model) }
             }
         } catch (e: Exception) {
             throw FailedLoadException(FAILED_LOAD_MESSAGE)

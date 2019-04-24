@@ -21,6 +21,13 @@ object ConsoleView : View, Serializable {
     private const val INFO_PADDING_X = 10
     private const val INFO_PADDING_Y = 0
 
+    private val CONTROL_INFO = arrayOf(
+        "quit: q",
+        "save: s",
+        "load: l (works only before the first move)",
+        "move: arrows",
+        "take equipment on/off: corresponding number")
+
     private val screen = Screen(TerminalFacade.createTerminal())
 
     init {
@@ -159,6 +166,21 @@ object ConsoleView : View, Serializable {
                 MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
                 MAP_POSITION_Y + INFO_PADDING_Y + 4,
                 "GAME OVER",
+                Terminal.Color.WHITE,
+                Terminal.Color.BLACK
+            )
+        }
+
+        drawControlInfo(MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+                      MAP_POSITION_Y + INFO_PADDING_Y + 5)
+    }
+
+    private fun drawControlInfo(x: Int, y: Int) {
+        for ((i, message) in CONTROL_INFO.withIndex()) {
+            screen.putString(
+                x,
+                y + i,
+                message,
                 Terminal.Color.WHITE,
                 Terminal.Color.BLACK
             )
