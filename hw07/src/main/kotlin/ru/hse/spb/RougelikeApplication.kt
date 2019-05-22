@@ -5,8 +5,8 @@ import ru.hse.spb.model.Map
 import ru.hse.spb.model.WorldModel
 import ru.hse.spb.view.ConsoleView
 
-fun main() {
-    val map = Map.generate()
+fun main(args: Array<String>) {
+    val map = if (args.isEmpty()) Map.generate() else Map.load(args[0])
     val model = WorldModel(map)
     val view = ConsoleView
     val controller = Controller(model, view)
