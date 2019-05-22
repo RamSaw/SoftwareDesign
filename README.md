@@ -13,4 +13,4 @@ To exit the game press 'q'.
 
 To load specific map pass a path to map file as an argument to the application.
 
-If no argument passed then map will be generated randomly.
+If no argument is passed then map will be generated randomly.
