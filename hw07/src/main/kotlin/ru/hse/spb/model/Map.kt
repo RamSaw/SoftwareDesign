@@ -18,12 +18,48 @@ class Map private constructor(val field: Array<Array<CellState>>) {
          * Generates new map with random walls.
          */
         fun generate(): Map {
+            var map = Map(generateField())
+
+            while (!checkConnectivity(map)) {
+                map = Map(generateField())
+            }
+            return map
+        }
+
+        private fun checkConnectivity(map: Map): Boolean {
+            val visited = Array(DEFAULT_FIELD_HEIGHT) { Array(DEFAULT_FIELD_WIDTH) { false } }
+            fun dfs(position: MapPosition) {
+                if (visited[position.y][position.x])
+                    return
+
+                visited[position.y][position.x] = true
+                for (j in -1..1)
+                    for (i in -1..1) {
+                        val newPosition = MapPosition(position.x + i, position.y + j)
+                        if (map.getCell(newPosition) == CellState.FREE)
+                            dfs(newPosition)
+                    }
+            }
+            dfs(map.getStartCell())
+            for (j in 0..(DEFAULT_FIELD_HEIGHT - 1))
+                for (i in 0..(DEFAULT_FIELD_WIDTH - 1)) {
+                    val positionToCheck = MapPosition(i, j)
+                    if (!visited[positionToCheck.y][positionToCheck.x] &&
+                        map.getCell(positionToCheck) == CellState.FREE) {
+                        return false
+                    }
+                }
+            return true
+        }
+
+        private fun generateField(): Array<Array<CellState>> {
             val field = Array(DEFAULT_FIELD_HEIGHT) { Array(DEFAULT_FIELD_WIDTH) { CellState.FREE } }
 
             for ((i, row) in field.withIndex()) {
                 for (j in row.indices) {
                     if (i == 0 || i == DEFAULT_FIELD_HEIGHT - 1 ||
-                        j == 0 || j == DEFAULT_FIELD_WIDTH - 1) {
+                        j == 0 || j == DEFAULT_FIELD_WIDTH - 1
+                    ) {
                         row[j] = CellState.WALL
                     } else {
                         row[j] = when (random.nextInt(0, 100)) {
@@ -33,8 +69,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
                     }
                 }
             }
-
-            return Map(field)
+            return field
         }
 
         /**
