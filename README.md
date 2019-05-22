@@ -10,3 +10,5 @@ To exit the game press 'q'.
 'b' to take on equipment
 
 'n' to take off equipment
+
+To load specific map use numbers on the keyboard. There can be at most nine maps.
