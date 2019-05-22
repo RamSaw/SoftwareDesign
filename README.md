@@ -11,4 +11,4 @@ To exit the game press 'q'.
 
 'n' to take off equipment
 
-To load specific map use numbers on the keyboard. There can be at most nine maps.
+To load specific map pass a path to map file as an argument to the application.
