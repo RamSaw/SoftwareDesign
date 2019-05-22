@@ -12,3 +12,5 @@ To exit the game press 'q'.
 'n' to take off equipment
 
 To load specific map pass a path to map file as an argument to the application.
+
+If no argument passed then map will be generated randomly.
