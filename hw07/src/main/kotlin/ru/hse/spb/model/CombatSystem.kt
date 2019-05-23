@@ -1,33 +1,27 @@
 package ru.hse.spb.model
 
 import ru.hse.spb.model.Map.MapPosition
-import ru.hse.spb.model.engine.Mob
-import ru.hse.spb.model.engine.Player
+import ru.hse.spb.model.engine.GameCharacter
 
 /**
  * This class implements combat mechanics in the game.
  */
 class CombatSystem {
     /**
-     * Incline damage to player and mobs according to their positions.
+     * Incline damage to attackingCharacter and attackedCharacters according to their positions.
      *
      * @return field where combat is conducted.
      */
-    fun combat(player: Player, mobs: List<Mob>): MapPosition? {
-        mobs.filter {
-            it.getCurrentPosition().x == player.getCurrentPosition().x
-                    && it.getCurrentPosition().y == player.getCurrentPosition().y
+    fun combat(attackingCharacter: GameCharacter, attackedCharacters: List<GameCharacter>): MapPosition? {
+        attackedCharacters.filter {
+            it.getCurrentPosition() == attackingCharacter.getCurrentPosition()
+        }.forEach {
+            it.takeDamage(attackingCharacter.inclineDamage())
         }
-            .forEach {
-                it.takeDamage(player.inclineDamage())
-                if (it.getCurrentHealth() > 0)
-                    player.takeDamage(it.inclineDamage())
-            }
-        return if (mobs.any {
-                it.getCurrentPosition().x == player.getCurrentPosition().x
-                        && it.getCurrentPosition().y == player.getCurrentPosition().y
+        return if (attackedCharacters.any {
+                it.getCurrentPosition() == attackingCharacter.getCurrentPosition()
             })
-            player.getCurrentPosition()
+            attackingCharacter.getCurrentPosition()
         else
             null
     }

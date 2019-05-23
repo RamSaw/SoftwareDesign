@@ -22,8 +22,10 @@ class CombatSystemTest {
         val oldHealth = player.getCurrentHealth()
         val mobs = listOf(DangerMob(1, Map.MapPosition(0, 0)))
         val combatSystem = CombatSystem()
-        val field = combatSystem.combat(player, mobs)
-        assertNotNull(field)
+        val field1 = combatSystem.combat(player, mobs)
+        assertNotNull(field1)
+        val field2 = combatSystem.combat(mobs[0], listOf(player))
+        assertEquals(field1, field2)
         assertEquals(oldHealth - mobs[0].inclineDamage(), player.getCurrentHealth())
     }
 
@@ -33,8 +35,12 @@ class CombatSystemTest {
         val oldHealth = player.getCurrentHealth()
         val mobs = Array(10) { DangerMob(1, Map.MapPosition(0, 0)) }.toList()
         val combatSystem = CombatSystem()
-        val field = combatSystem.combat(player, mobs)
-        assertNotNull(field)
+        val field1 = combatSystem.combat(player, mobs)
+        assertNotNull(field1)
+        for (mob in mobs) {
+            val field2 = combatSystem.combat(mob, listOf(player))
+            assertEquals(field1, field2)
+        }
         assertEquals(oldHealth - mobs[0].inclineDamage() * 10, player.getCurrentHealth())
     }
 }

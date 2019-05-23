@@ -69,6 +69,9 @@ class WorldModel(override val map: Map, override val view: View) : Model {
 
     private fun combat() {
         currentCombatField = combatSystem.combat(player, mobs)
+        for (mob in mobs) {
+            combatSystem.combat(mob, listOf(player))
+        }
     }
 
     private fun combatAftermath() {
