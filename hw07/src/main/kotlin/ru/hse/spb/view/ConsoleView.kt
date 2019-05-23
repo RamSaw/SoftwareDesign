@@ -168,7 +168,7 @@ object ConsoleView: View {
     private fun cellStateToString(state: Map.CellState): String {
         return when (state) {
             Map.CellState.FREE -> " "
-            Map.CellState.WALL -> "#"
+            Map.CellState.WALL, Map.CellState.OCCUPIED -> "#"
         }
     }
 }
