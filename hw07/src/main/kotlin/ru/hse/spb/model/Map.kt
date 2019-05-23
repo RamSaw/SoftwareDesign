@@ -138,7 +138,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
     fun getCell(position: MapPosition): CellState {
         return when {
             position.y !in 0 until field.size -> CellState.WALL
-            field.isNotEmpty() && position.x !in 0 until field[0].size -> CellState.WALL
+            position.x !in 0 until field[0].size -> CellState.WALL
             else -> field[position.y][position.x]
         }
     }
