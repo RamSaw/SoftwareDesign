@@ -12,8 +12,6 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         private const val DEFAULT_FIELD_HEIGHT = 20
         private const val WALL_PERCENTAGE = 25
 
-        private val random = Random(0)
-
         /**
          * Generates new map with random walls.
          */
@@ -62,7 +60,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
                     ) {
                         row[j] = CellState.WALL
                     } else {
-                        row[j] = when (random.nextInt(0, 100)) {
+                        row[j] = when (Random.nextInt(0, 100)) {
                             in 0..WALL_PERCENTAGE -> CellState.WALL
                             else -> CellState.FREE
                         }
@@ -110,7 +108,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
      */
     fun getStartCell(): MapPosition {
         val freeCells = getFreeCells()
-        val i = Random(0).nextInt(freeCells.size)
+        val i = Random.nextInt(freeCells.size)
 
         return freeCells[i]
     }
