@@ -1,7 +1,9 @@
 package ru.hse.spb.model
 
 import java.io.File
+import java.lang.IllegalArgumentException
 import kotlin.random.Random
+import kotlin.system.exitProcess
 
 /**
  * This class represents game field.
@@ -15,17 +17,19 @@ class Map private constructor(val field: Array<Array<CellState>>) {
         /**
          * Generates new map with random walls.
          */
-        fun generate(): Map {
-            var map = Map(generateField())
+        fun generate(width: Int = DEFAULT_FIELD_WIDTH, height: Int = DEFAULT_FIELD_HEIGHT): Map {
+            var map = Map(generateField(width, height))
 
             while (!checkConnectivity(map)) {
-                map = Map(generateField())
+                map = Map(generateField(width, height))
             }
             return map
         }
 
         private fun checkConnectivity(map: Map): Boolean {
-            val visited = Array(DEFAULT_FIELD_HEIGHT) { Array(DEFAULT_FIELD_WIDTH) { false } }
+            val width = map.getWidth()
+            val height = map.getHeight()
+            val visited = Array(height) { Array(width) { false } }
             fun dfs(position: MapPosition) {
                 if (visited[position.y][position.x])
                     return
@@ -33,14 +37,16 @@ class Map private constructor(val field: Array<Array<CellState>>) {
                 visited[position.y][position.x] = true
                 for (j in -1..1)
                     for (i in -1..1) {
+                        if (i != 0 && j != 0)
+                            continue
                         val newPosition = MapPosition(position.x + i, position.y + j)
                         if (map.getCell(newPosition) == CellState.FREE)
                             dfs(newPosition)
                     }
             }
             dfs(map.getStartCell())
-            for (j in 0..(DEFAULT_FIELD_HEIGHT - 1))
-                for (i in 0..(DEFAULT_FIELD_WIDTH - 1)) {
+            for (j in 0..(height - 1))
+                for (i in 0..(width - 1)) {
                     val positionToCheck = MapPosition(i, j)
                     if (!visited[positionToCheck.y][positionToCheck.x] &&
                         map.getCell(positionToCheck) == CellState.FREE) {
@@ -50,13 +56,13 @@ class Map private constructor(val field: Array<Array<CellState>>) {
             return true
         }
 
-        private fun generateField(): Array<Array<CellState>> {
-            val field = Array(DEFAULT_FIELD_HEIGHT) { Array(DEFAULT_FIELD_WIDTH) { CellState.FREE } }
+        private fun generateField(width: Int, height: Int): Array<Array<CellState>> {
+            val field = Array(height) { Array(width) { CellState.FREE } }
 
             for ((i, row) in field.withIndex()) {
                 for (j in row.indices) {
-                    if (i == 0 || i == DEFAULT_FIELD_HEIGHT - 1 ||
-                        j == 0 || j == DEFAULT_FIELD_WIDTH - 1
+                    if (i == 0 || i == height - 1 ||
+                        j == 0 || j == width - 1
                     ) {
                         row[j] = CellState.WALL
                     } else {
@@ -101,6 +107,13 @@ class Map private constructor(val field: Array<Array<CellState>>) {
             field.isNotEmpty() -> field[0].size
             else -> 0
         }
+    }
+
+    /**
+     * Map height getter.
+     */
+    fun getHeight(): Int {
+        return field.size
     }
 
     /**
