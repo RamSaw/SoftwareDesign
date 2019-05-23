@@ -14,3 +14,5 @@ To exit the game press 'q'.
 To load specific map pass a path to map file as an argument to the application.
 
 If no argument is passed then map will be generated randomly.
+
+If you specify two command line arguments then they will be interpreted as width and height so they must be intergers
