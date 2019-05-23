@@ -38,7 +38,7 @@ class WorldModel(override val map: Map, override val view: View) : Model {
     private fun spawnMobs() {
         val pos = player.getCurrentPosition()
         val freeCells = map.getFreeCells()
-        mobs.addAll(freeCells.shuffled(random).filter { !(it.x == pos.x && it.y == pos.y) }.take(
+        mobs.addAll(freeCells.shuffled(random).filter { it != pos }.take(
             random.nextInt(
                 max(freeCells.size / PERCENTAGE_OF_FIELD_SIZE_RANDOM_UNTIL, 1)
             )

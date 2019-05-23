@@ -146,7 +146,7 @@ class Map private constructor(val field: Array<Array<CellState>>) {
     /**
      * This class represents map coordinates.
      */
-    class MapPosition(var x: Int, var y: Int)
+    data class MapPosition(var x: Int, var y: Int)
 
     /**
      * This class represents map cell state.
