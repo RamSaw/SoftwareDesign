@@ -1,6 +1,7 @@
 package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map.MapPosition
+import java.lang.Integer.max
 
 /**
  * This class represents player.
@@ -24,7 +25,7 @@ class Player(loc: MapPosition) : GameCharacter() {
 
     fun takeOffEquipment() {
         if (equipment.isOnCharacter) {
-            health -= equipment.additionalHealth
+            health = max(1, health - equipment.additionalHealth)
             strength -= equipment.additionalStrength
             equipment.takeOff()
         }
