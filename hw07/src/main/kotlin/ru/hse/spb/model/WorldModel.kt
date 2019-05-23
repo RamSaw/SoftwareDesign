@@ -17,12 +17,11 @@ import kotlin.random.Random
 /**
  * This class implements core game mechanics and responses to user actions.
  */
-class WorldModel(override val map: Map) : Model {
+class WorldModel(override val map: Map, override val view: View) : Model {
     override val player = Player(map.getStartCell())
     override val mobs = mutableListOf<Mob>()
     override var currentRound = 0
 
-    private val view: View = ConsoleView
     private val random = Random(0)
     private var currentCombatField: MapPosition? = null
     private val combatSystem = CombatSystem()
