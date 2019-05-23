@@ -18,6 +18,11 @@ import kotlin.random.Random
  * This class implements core game mechanics and responses to user actions.
  */
 class WorldModel(override val map: Map, override val view: View) : Model {
+    companion object {
+        private const val PERCENTAGE_OF_FIELD_SIZE_RANDOM_UNTIL = 5
+        private const val DANGER_MOB_PROBABILITY_RANDOM_UNTIL = 5
+    }
+
     override val player = Player(map.getStartCell())
     override val mobs = mutableListOf<Mob>()
     override var currentRound = 0
@@ -35,10 +40,10 @@ class WorldModel(override val map: Map, override val view: View) : Model {
         val freeCells = map.getFreeCells()
         mobs.addAll(freeCells.shuffled(random).filter { !(it.x == pos.x && it.y == pos.y) }.take(
             random.nextInt(
-                max(freeCells.size / 5, 1)
+                max(freeCells.size / PERCENTAGE_OF_FIELD_SIZE_RANDOM_UNTIL, 1)
             )
         ).map {
-            if (random.nextInt(5) == 1) {
+            if (random.nextInt(DANGER_MOB_PROBABILITY_RANDOM_UNTIL) == 1) {
                 DangerMob(currentRound, it)
             } else {
                 SweetMob(currentRound, it)
