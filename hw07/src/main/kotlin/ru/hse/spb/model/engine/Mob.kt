@@ -7,7 +7,7 @@ import ru.hse.spb.model.Map.MapPosition
 /**
  * This class represents mob(non playable characters).
  */
-abstract class Mob(val type: MobType) : GameCharacter() {
+abstract class Mob : GameCharacter() {
     fun move(map: Map): MapPosition {
         val x = position.x
         val y = position.y
@@ -18,10 +18,5 @@ abstract class Mob(val type: MobType) : GameCharacter() {
             MapPosition(x - 1, y),
             MapPosition(x, y - 1)
         ).filter { map.getCell(it) == FREE }.shuffled().first()
-    }
-
-    enum class MobType {
-        DANGER,
-        SWEET
     }
 }

@@ -7,7 +7,10 @@ import com.googlecode.lanterna.terminal.Terminal
 import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
+import ru.hse.spb.model.engine.DangerMob
 import ru.hse.spb.model.engine.Mob
+import ru.hse.spb.model.engine.SweetMob
+import java.lang.IllegalStateException
 import java.lang.Integer.max
 
 /**
@@ -92,9 +95,10 @@ object ConsoleView: View {
     private fun drawMobs(model: Model) {
         for (mob in model.mobs) {
             val mobPosition = mob.getCurrentPosition()
-            val color = when (mob.type) {
-                Mob.MobType.SWEET -> Terminal.Color.YELLOW
-                Mob.MobType.DANGER -> Terminal.Color.RED
+            val color = when (mob) {
+                is SweetMob -> Terminal.Color.YELLOW
+                is DangerMob -> Terminal.Color.RED
+                else -> throw IllegalStateException("unknown mob type")
             }
 
             screen.putString(
