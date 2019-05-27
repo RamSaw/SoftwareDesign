@@ -1,34 +1,64 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.11'
+    id 'org.jetbrains.kotlin.jvm' version'1.3.21'
+    id 'com.google.protobuf' version '0.8.8'
+    id 'idea'
+    id 'application'
+}
+
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+    mavenLocal()
 }
 
 group 'ru.hse.spb'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'kotlin'
-apply plugin: 'application'
-mainClassName = 'ru.hse.spb.RougelikeApplicationKt'
-
-repositories {
-    mavenCentral()
-}
+def grpcVersion = '1.+'
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    def kotlinVerion = plugins.findPlugin("org.jetbrains.kotlin.jvm").kotlinPluginVersion
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVerion}"
+    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    compileOnly "javax.annotation:javax.annotation-api:1.2"
     compile group: 'com.googlecode.lanterna', name: 'lanterna', version: '2.1.8'
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.0")
 
+    testImplementation "io.grpc:grpc-testing:${grpcVersion}" // gRCP testing utilities
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-core:2.25.1"
 }
 
-jar {
-    manifest { attributes 'Main-Class': 'ru.hse.spb.RougelikeApplicationKt' }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+protobuf {
+    protoc { artifact = 'com.google.protobuf:protoc:3.7.1' }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+    }
+    generateProtoTasks {
+        all()*.plugins { grpc {} }
+    }
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+startScripts.enabled = false
+
+task roguelikeServer(type: CreateStartScripts) {
+    mainClassName = 'ru.hse.spb.roguelike.RoguelikeServer'
+    applicationName = 'roguelike-server'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
 }
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+
+task roguelikeClient(type: CreateStartScripts) {
+    mainClassName = 'ru.hse.spb.roguelike.RoguelikeClient'
+    applicationName = 'roguelike-client'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = startScripts.classpath
+}
+
+applicationDistribution.into('bin') {
+    from(roguelikeServer)
+    from(roguelikeClient)
+    fileMode = 0755
 }
