@@ -11,8 +11,7 @@ import ru.hse.spb.view.View
  * This class interacts with user and provides actions to model.
  */
 class Controller(private val model: Model,
-                 private val view: View,
-                 private val communicator: StreamObserver<PlayerRequest>) {
+                 private val view: View) {
     companion object {
         fun makeTurn(model: Model,
                      view: View,
@@ -32,6 +31,7 @@ class Controller(private val model: Model,
      */
     fun run() {
         while (true) {
+            view.draw(model)
             val action = view.getAction()
             action.execute(model)
 

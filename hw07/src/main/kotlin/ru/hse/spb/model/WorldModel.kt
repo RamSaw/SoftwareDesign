@@ -79,7 +79,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
             players.values.forEach { it.levelUp() }
             spawnMobs()
         }
-        if (players.values.none { it.getCurrentHealth() <= 0 }) {
+        if (players.values.all { it.getCurrentHealth() == 0 }) {
             gameFinished = true
         }
     }
@@ -100,20 +100,22 @@ class WorldModel(override var map: Map) : Model, Serializable {
 
     override fun movePlayer(move: Model.PlayerMove) {
         val player = players[getActivePlayer()]!!
-        val playerPosition = player.getCurrentPosition()
+        var x = player.getCurrentPosition().x
+        var y = player.getCurrentPosition().y
 
         when (move) {
-            Model.PlayerMove.MOVE_UP -> playerPosition.y--
-            Model.PlayerMove.MOVE_DOWN -> playerPosition.y++
-            Model.PlayerMove.MOVE_LEFT -> playerPosition.x--
-            Model.PlayerMove.MOVE_RIGHT -> playerPosition.x++
+            Model.PlayerMove.MOVE_UP -> y--
+            Model.PlayerMove.MOVE_DOWN -> y++
+            Model.PlayerMove.MOVE_LEFT -> x--
+            Model.PlayerMove.MOVE_RIGHT -> x++
         }
 
-        if (map.getCell(playerPosition) == FREE)
-             decorateWithPosChange(player) { player.changePosition(playerPosition.x, playerPosition.y) }
-        else if (map.getCell(playerPosition) == OCCUPIED) {
+        if (map.getCell(Map.MapPosition(x, y)) == FREE)
+            decorateWithPosChange(player) { player.changePosition(x, y) }
+        else if (map.getCell(Map.MapPosition(x, y)) == OCCUPIED) {
             combatSystem.combat(player, mobs.first {
-                it.getCurrentPosition() == playerPosition
+                it.getCurrentPosition().x == x
+                        && it.getCurrentPosition().y == y
             })
             combatAftermath()
         }
@@ -137,10 +139,10 @@ class WorldModel(override var map: Map) : Model, Serializable {
             if (mobFighter != null) {
                 combatSystem.combat(mobFighter, mob)
             } else {
-                val playerFigher = players.values.first {
+                val playerFighter = players.values.first {
                     it.getCurrentPosition() == nextPosition
                 }
-                combatSystem.combat(playerFigher, mob)
+                combatSystem.combat(playerFighter, mob)
             }
             combatAftermath()
         }
