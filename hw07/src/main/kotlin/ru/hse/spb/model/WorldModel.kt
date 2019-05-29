@@ -144,7 +144,6 @@ class WorldModel(override var map: Map) : Model, Serializable {
                 }
                 combatSystem.combat(playerFighter, mob)
             }
-            combatAftermath()
         }
     }
 
@@ -152,6 +151,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
         for (mob in mobs) {
             decorateWithPosChange(mob) { moveMob(mob) }
         }
+        combatAftermath()
     }
 
     override fun save() {
