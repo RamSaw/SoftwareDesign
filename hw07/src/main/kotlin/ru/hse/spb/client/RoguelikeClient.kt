@@ -56,23 +56,25 @@ internal constructor(private val channel: ManagedChannel) {
     private var view : View? = null
     private val model: Model = WorldModel(Map.generate())
     private var isGameInitialized = false
-
+    private val lockToWait = java.lang.Object()
+    private var isFinished = false
+    private var isListLastOperation = false
 
     val communicatorRef = AtomicReference<StreamObserver<PlayerRequest>>()
     private val communicator = stub.communicate(object: StreamObserver<ServerReply> {
         override fun onNext(value: ServerReply?) {
-            if (value!!.sessions.isNotBlank()) {
+            if (isListLastOperation) {
                 println("Sessions are:")
-                println(value.sessions)
+                println(value!!.sessions)
                 return
             }
             if (view == null) {
                 println("Starting game")
-                view = ConsoleView(value.playerId.toInt())
+                view = ConsoleView(value!!.playerId.toInt())
                 model.updateFromByteArray(value.model.toByteArray())
                 isGameInitialized = true
             } else {
-                model.updateFromByteArray(value.model.toByteArray())
+                model.updateFromByteArray(value!!.model.toByteArray())
             }
             view!!.draw(model)
             Controller.makeTurn(model, view!!, communicatorRef.get())
@@ -83,6 +85,10 @@ internal constructor(private val channel: ManagedChannel) {
 
         override fun onCompleted() {
             println("Ending game")
+            synchronized(lockToWait) {
+                isFinished = true
+                lockToWait.notify()
+            }
         }
     })
 
@@ -90,12 +96,14 @@ internal constructor(private val channel: ManagedChannel) {
     fun connect(name: String) {
         println("Will try to connect to {$name} session...")
         val request = PlayerRequest.newBuilder().setSessionName(name).build()
+        isListLastOperation = false
         communicator.onNext(request)
     }
 
     /** List current sessions on server */
     fun list() {
         val request = PlayerRequest.newBuilder().setSessionName("list").build()
+        isListLastOperation = true
         communicator.onNext(request)
     }
 
@@ -121,6 +129,11 @@ internal constructor(private val channel: ManagedChannel) {
                     } else {
                         client.connect(input!!)
                         sessionIsChosen = true
+                    }
+                }
+                while (!client.isFinished) {
+                    synchronized(client.lockToWait) {
+                        client.lockToWait.wait()
                     }
                 }
             } finally {

@@ -99,7 +99,8 @@ class WorldModel(override var map: Map) : Model, Serializable {
     }
 
     override fun movePlayer(move: Model.PlayerMove) {
-        val playerPosition = players[getActivePlayer()]!!.getCurrentPosition()
+        val player = players[getActivePlayer()]!!
+        val playerPosition = player.getCurrentPosition()
 
         when (move) {
             Model.PlayerMove.MOVE_UP -> playerPosition.y--
@@ -109,14 +110,12 @@ class WorldModel(override var map: Map) : Model, Serializable {
         }
 
         if (map.getCell(playerPosition) == FREE)
-            players.values.forEach { player -> decorateWithPosChange(player) { player.changePosition(playerPosition.x, playerPosition.y) } }
+             decorateWithPosChange(player) { player.changePosition(playerPosition.x, playerPosition.y) }
         else if (map.getCell(playerPosition) == OCCUPIED) {
-            players.values.forEach {player ->
-                combatSystem.combat(player, mobs.first {
-                    it.getCurrentPosition() == playerPosition
-                })
-                combatAftermath()
-            }
+            combatSystem.combat(player, mobs.first {
+                it.getCurrentPosition() == playerPosition
+            })
+            combatAftermath()
         }
 
         finishMove()

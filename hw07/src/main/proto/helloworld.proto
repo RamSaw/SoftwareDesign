@@ -13,6 +13,7 @@ service ConnectionSetUpper {
 
 message PlayerRequest {
     string sessionName = 1;
+    bytes action = 2;
 }
 
 message ServerReply {

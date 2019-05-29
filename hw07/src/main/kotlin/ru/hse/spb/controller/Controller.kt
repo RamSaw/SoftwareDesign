@@ -1,6 +1,8 @@
 package ru.hse.spb.controller
 
+import com.google.protobuf.ByteString
 import io.grpc.stub.StreamObserver
+import ru.hse.spb.actions.Action
 import ru.hse.spb.model.Model
 import ru.hse.spb.roguelike.PlayerRequest
 import ru.hse.spb.view.View
@@ -19,8 +21,8 @@ class Controller(private val model: Model,
                 return
             }
             val action = view.getAction()
-            action.execute(model)
-            view.draw(model)
+            communicator.onNext(PlayerRequest.newBuilder()
+                .setAction(ByteString.copyFrom(Action.toByteArray(action))).build())
         }
     }
 

@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.stub.StreamObserver
+import ru.hse.spb.actions.Action
 import ru.hse.spb.model.Model
 import ru.hse.spb.roguelike.ConnectionSetUpperGrpc
 import ru.hse.spb.roguelike.PlayerRequest
@@ -70,6 +71,9 @@ class RoguelikeServer(private val port: Int) {
                         responseBuilder.playerId = playerId.toString()
                     }
                     model = gameSessions.getOrCreate(sessionName!!)
+                    if (!value.action.isEmpty) {
+                        Action.fromByteArray(value.action.toByteArray()).execute(model)
+                    }
                     responseBuilder.model = ByteString.copyFrom(model.toByteArray())
                     responseObserver!!.onNext(responseBuilder.build())
                 }
