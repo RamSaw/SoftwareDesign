@@ -56,6 +56,8 @@ interface Model {
 
     fun addPlayer(): Int
 
+    fun removePlayer(playerId: Int)
+
     /**
      * Describes players move direction.
      */

@@ -18,24 +18,34 @@ package ru.hse.spb.client
 
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
-import io.grpc.StatusRuntimeException
-import ru.hse.spb.roguelike.ConnectionReply
-import ru.hse.spb.roguelike.ConnectionRequest
+import io.grpc.stub.StreamObserver
+import ru.hse.spb.controller.Controller
+import ru.hse.spb.model.Map
+import ru.hse.spb.model.Model
+import ru.hse.spb.model.WorldModel
 import ru.hse.spb.roguelike.ConnectionSetUpperGrpc
+import ru.hse.spb.roguelike.PlayerRequest
+import ru.hse.spb.roguelike.ServerReply
+import ru.hse.spb.view.ConsoleView
+import ru.hse.spb.view.View
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 import java.util.logging.Logger
+
 
 /**
  * Roguelike client application.
  */
 class RoguelikeClient
 internal constructor(private val channel: ManagedChannel) {
-    private val blockingStub: ConnectionSetUpperGrpc.ConnectionSetUpperBlockingStub
-            = ConnectionSetUpperGrpc.newBlockingStub(channel)
+    private val stub: ConnectionSetUpperGrpc.ConnectionSetUpperStub
+            = ConnectionSetUpperGrpc.newStub(channel)
 
     constructor(host: String, port: Int) : this(ManagedChannelBuilder.forAddress(host, port)
         .usePlaintext()
-        .build())
+        .build()) {
+        communicatorRef.set(communicator)
+    }
 
 
     @Throws(InterruptedException::class)
@@ -43,32 +53,50 @@ internal constructor(private val channel: ManagedChannel) {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
     }
 
+    private var view : View? = null
+    private val model: Model = WorldModel(Map.generate())
+    private var isGameInitialized = false
+
+
+    val communicatorRef = AtomicReference<StreamObserver<PlayerRequest>>()
+    private val communicator = stub.communicate(object: StreamObserver<ServerReply> {
+        override fun onNext(value: ServerReply?) {
+            if (value!!.sessions.isNotBlank()) {
+                println("Sessions are:")
+                println(value.sessions)
+                return
+            }
+            if (view == null) {
+                println("Starting game")
+                view = ConsoleView(value.playerId.toInt())
+                model.updateFromByteArray(value.model.toByteArray())
+                isGameInitialized = true
+            } else {
+                model.updateFromByteArray(value.model.toByteArray())
+            }
+            view!!.draw(model)
+            Controller.makeTurn(model, view!!, communicatorRef.get())
+        }
+
+        override fun onError(t: Throwable?) {
+        }
+
+        override fun onCompleted() {
+            println("Ending game")
+        }
+    })
+
     /** Connect to server.  */
     fun connect(name: String) {
         println("Will try to connect to {$name} session...")
-        val request = ConnectionRequest.newBuilder().setSessionName(name).build()
-        val response: ConnectionReply =  try {
-            blockingStub.tryToConnect(request)
-        } catch (e: StatusRuntimeException) {
-            System.err.println("RPC failed: {${e.status}}")
-            return
-        }
-
-        println("Your player id: ${response.playerId}")
+        val request = PlayerRequest.newBuilder().setSessionName(name).build()
+        communicator.onNext(request)
     }
 
     /** List current sessions on server */
     fun list() {
-        val request = ConnectionRequest.newBuilder().setSessionName("list").build()
-        val response: ConnectionReply =  try {
-            blockingStub.tryToConnect(request)
-        } catch (e: StatusRuntimeException) {
-            System.err.println("RPC failed: {${e.status}}")
-            return
-        }
-
-        println("Sessions:")
-        println(response.playerId)
+        val request = PlayerRequest.newBuilder().setSessionName("list").build()
+        communicator.onNext(request)
     }
 
     companion object {
@@ -95,7 +123,6 @@ internal constructor(private val channel: ManagedChannel) {
                         sessionIsChosen = true
                     }
                 }
-                println("Starting game")
             } finally {
                 client.shutdown()
             }

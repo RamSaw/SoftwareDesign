@@ -15,6 +15,10 @@ import java.lang.Integer.max
  * This class implements core game mechanics and responses to user actions.
  */
 class WorldModel(override var map: Map) : Model, Serializable {
+    override fun removePlayer(playerId: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getActivePlayer(): Int {
         return activePlayer
     }
@@ -194,6 +198,8 @@ class WorldModel(override var map: Map) : Model, Serializable {
         this.map = model.map
         this.players = model.players
         this.mobs = model.mobs
+        this.playerIds = model.playerIds
+        this.activePlayer = model.activePlayer
         this.currentRound = model.currentRound
         this.combatSystem = model.combatSystem
         this.strategies = model.strategies

@@ -1,11 +1,13 @@
 package ru.hse.spb.server
 
+import com.google.protobuf.ByteString
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.stub.StreamObserver
-import ru.hse.spb.roguelike.ConnectionReply
-import ru.hse.spb.roguelike.ConnectionRequest
+import ru.hse.spb.model.Model
 import ru.hse.spb.roguelike.ConnectionSetUpperGrpc
+import ru.hse.spb.roguelike.PlayerRequest
+import ru.hse.spb.roguelike.ServerReply
 import java.io.IOException
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -47,19 +49,39 @@ class RoguelikeServer(private val port: Int) {
     }
 
     private inner class ConnectionSetUpperImpl : ConnectionSetUpperGrpc.ConnectionSetUpperImplBase() {
-        override fun tryToConnect(req: ConnectionRequest, responseObserver: StreamObserver<ConnectionReply>) {
-            if (req.sessionName == "list") {
-                val sessionsToPrint = gameSessions.listSessions().joinToString("\n")
-                val reply = ConnectionReply.newBuilder().setPlayerId(sessionsToPrint).build()
-                responseObserver.onNext(reply)
-                responseObserver.onCompleted()
-                return
+        override fun communicate(responseObserver: StreamObserver<ServerReply>?): StreamObserver<PlayerRequest>? {
+            return object: StreamObserver<PlayerRequest> {
+                private var playerId: Int? = null
+                private var sessionName: String? = null
+
+                override fun onNext(value: PlayerRequest?) {
+                    if (value!!.sessionName == "list") {
+                        val sessionsToPrint = gameSessions.listSessions().joinToString("\n")
+                        val reply = ServerReply.newBuilder().setSessions(sessionsToPrint).build()
+                        responseObserver!!.onNext(reply)
+                        return
+                    }
+                    val responseBuilder = ServerReply.newBuilder()
+                    var model: Model?
+                    if (sessionName == null) {
+                        sessionName = value.sessionName
+                        model = gameSessions.getOrCreate(sessionName!!)
+                        playerId = model.addPlayer()
+                        responseBuilder.playerId = playerId.toString()
+                    }
+                    model = gameSessions.getOrCreate(sessionName!!)
+                    responseBuilder.model = ByteString.copyFrom(model.toByteArray())
+                    responseObserver!!.onNext(responseBuilder.build())
+                }
+
+                override fun onError(t: Throwable?) {
+                    responseObserver!!.onError(t)
+                }
+
+                override fun onCompleted() {
+                    gameSessions.get(sessionName!!).removePlayer(playerId!!)
+                }
             }
-            val model = gameSessions.getOrCreate(req.sessionName)
-            val playerId = model.addPlayer()
-            val reply = ConnectionReply.newBuilder().setPlayerId(playerId.toString()).build()
-            responseObserver.onNext(reply)
-            responseObserver.onCompleted()
         }
     }
 

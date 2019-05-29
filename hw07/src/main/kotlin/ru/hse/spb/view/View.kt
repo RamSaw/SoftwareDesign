@@ -21,4 +21,9 @@ interface View {
      * Closes view session.
      */
     fun stop()
+
+    /**
+     * Returns player id.
+     */
+    fun getPlayerId(): Int
 }

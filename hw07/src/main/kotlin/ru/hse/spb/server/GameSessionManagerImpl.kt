@@ -5,6 +5,8 @@ import ru.hse.spb.model.Model
 import ru.hse.spb.model.WorldModel
 
 class GameSessionManagerImpl : GameSessionManager {
+    override fun get(sessionName: String): Model = sessions.getValue(sessionName)
+
     override fun listSessions() = sessions.keys
 
     private val sessions = HashMap<String, Model>()

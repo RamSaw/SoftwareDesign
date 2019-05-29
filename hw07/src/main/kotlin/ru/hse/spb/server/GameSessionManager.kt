@@ -6,4 +6,6 @@ interface GameSessionManager {
     fun getOrCreate(sessionName: String): Model
 
     fun listSessions(): Set<String>
+
+    fun get(sessionName: String): Model
 }

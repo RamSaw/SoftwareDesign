@@ -8,13 +8,15 @@ option objc_class_prefix = "RL";
 package roguelike;
 
 service ConnectionSetUpper {
-    rpc TryToConnect (ConnectionRequest) returns (ConnectionReply) {}
+    rpc Communicate (stream PlayerRequest) returns (stream ServerReply) {}
 }
 
-message ConnectionRequest {
+message PlayerRequest {
     string sessionName = 1;
 }
 
-message ConnectionReply {
+message ServerReply {
     string playerId = 1;
+    string sessions = 2;
+    bytes model = 3;
 }

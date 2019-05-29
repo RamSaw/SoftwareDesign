@@ -15,6 +15,8 @@ import java.lang.Integer.max
  * Simple view implementation, uses console graphics.
  */
 class ConsoleView(private val playerId: Int) : View, Serializable {
+    override fun getPlayerId(): Int = playerId
+
     companion object {
         private const val MAP_POSITION_X = 0
         private const val MAP_POSITION_Y = 0
