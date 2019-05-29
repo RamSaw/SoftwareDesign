@@ -7,14 +7,14 @@ option objc_class_prefix = "RL";
 
 package roguelike;
 
-service Greeter {
-    rpc SayHello (HelloRequest) returns (HelloReply) {}
+service ConnectionSetUpper {
+    rpc TryToConnect (ConnectionRequest) returns (ConnectionReply) {}
 }
 
-message HelloRequest {
-    string name = 1;
+message ConnectionRequest {
+    string sessionName = 1;
 }
 
-message HelloReply {
-    string message = 1;
+message ConnectionReply {
+    string playerId = 1;
 }

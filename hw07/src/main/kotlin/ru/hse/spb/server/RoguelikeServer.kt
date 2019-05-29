@@ -1,27 +1,11 @@
-/*
- * Copyright 2015 The gRPC Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package ru.hse.spb.server
 
 import io.grpc.Server
 import io.grpc.ServerBuilder
-import ru.hse.spb.roguelike.GreeterGrpc
-import ru.hse.spb.roguelike.HelloReply
-import ru.hse.spb.roguelike.HelloRequest
 import io.grpc.stub.StreamObserver
+import ru.hse.spb.roguelike.ConnectionReply
+import ru.hse.spb.roguelike.ConnectionRequest
+import ru.hse.spb.roguelike.ConnectionSetUpperGrpc
 import java.io.IOException
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -29,15 +13,14 @@ import java.util.logging.Logger
 /**
  * Roguelike server.
  */
-class RoguelikeServer {
+class RoguelikeServer(private val port: Int) {
     private var server: Server? = null
+    private val gameSessions = GameSessionManagerImpl()
 
     @Throws(IOException::class)
     private fun start() {
-        /* The port on which the server should run */
-        val port = 50051
         server = ServerBuilder.forPort(port)
-            .addService(GreeterImpl())
+            .addService(ConnectionSetUpperImpl())
             .build()
             .start()
         logger.log(Level.INFO, "Server started, listening on {0}", port)
@@ -63,10 +46,18 @@ class RoguelikeServer {
         server?.awaitTermination()
     }
 
-    internal class GreeterImpl : GreeterGrpc.GreeterImplBase() {
-
-        override fun sayHello(req: HelloRequest, responseObserver: StreamObserver<HelloReply>) {
-            val reply = HelloReply.newBuilder().setMessage("Hello ${req.name}").build()
+    private inner class ConnectionSetUpperImpl : ConnectionSetUpperGrpc.ConnectionSetUpperImplBase() {
+        override fun tryToConnect(req: ConnectionRequest, responseObserver: StreamObserver<ConnectionReply>) {
+            if (req.sessionName == "list") {
+                val sessionsToPrint = gameSessions.listSessions().joinToString("\n")
+                val reply = ConnectionReply.newBuilder().setPlayerId(sessionsToPrint).build()
+                responseObserver.onNext(reply)
+                responseObserver.onCompleted()
+                return
+            }
+            val model = gameSessions.getOrCreate(req.sessionName)
+            val playerId = model.addPlayer()
+            val reply = ConnectionReply.newBuilder().setPlayerId(playerId.toString()).build()
             responseObserver.onNext(reply)
             responseObserver.onCompleted()
         }
@@ -81,9 +72,18 @@ class RoguelikeServer {
         @Throws(IOException::class, InterruptedException::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            val server = RoguelikeServer()
+            if (args.size != 1) {
+                printUsage()
+                return
+            }
+            val port = args[0].toInt()
+            val server = RoguelikeServer(port)
             server.start()
             server.blockUntilShutdown()
+        }
+
+        private fun printUsage() {
+            println("Args: <port>")
         }
     }
 }

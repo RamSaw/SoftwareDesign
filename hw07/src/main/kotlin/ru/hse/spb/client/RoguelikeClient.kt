@@ -19,26 +19,21 @@ package ru.hse.spb.client
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import io.grpc.StatusRuntimeException
-import ru.hse.spb.roguelike.GreeterGrpc
-import ru.hse.spb.roguelike.HelloReply
-import ru.hse.spb.roguelike.HelloRequest
+import ru.hse.spb.roguelike.ConnectionReply
+import ru.hse.spb.roguelike.ConnectionRequest
+import ru.hse.spb.roguelike.ConnectionSetUpperGrpc
 import java.util.concurrent.TimeUnit
-import java.util.logging.Level
 import java.util.logging.Logger
 
 /**
- * Rogualike client application.
+ * Roguelike client application.
  */
 class RoguelikeClient
-/** Construct client for accessing RouteGuide server using the existing channel.  */
 internal constructor(private val channel: ManagedChannel) {
-    private val blockingStub: GreeterGrpc.GreeterBlockingStub
-            = GreeterGrpc.newBlockingStub(channel)
+    private val blockingStub: ConnectionSetUpperGrpc.ConnectionSetUpperBlockingStub
+            = ConnectionSetUpperGrpc.newBlockingStub(channel)
 
-    /** Construct client connecting to HelloWorld server at `host:port`.  */
     constructor(host: String, port: Int) : this(ManagedChannelBuilder.forAddress(host, port)
-        // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
-        // needing certificates.
         .usePlaintext()
         .build())
 
@@ -48,38 +43,66 @@ internal constructor(private val channel: ManagedChannel) {
         channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
     }
 
-    /** Say hello to server.  */
-    fun greet(name: String) {
-        logger.log(Level.INFO, "Will try to greet {0}...", name)
-        val request = HelloRequest.newBuilder().setName(name).build()
-        val response: HelloReply =  try {
-            blockingStub.sayHello(request)
+    /** Connect to server.  */
+    fun connect(name: String) {
+        println("Will try to connect to {$name} session...")
+        val request = ConnectionRequest.newBuilder().setSessionName(name).build()
+        val response: ConnectionReply =  try {
+            blockingStub.tryToConnect(request)
         } catch (e: StatusRuntimeException) {
-            logger.log(Level.WARNING, "RPC failed: {0}", e.status)
+            System.err.println("RPC failed: {${e.status}}")
             return
         }
 
-        logger.info("Greeting: ${response.message}")
+        println("Your player id: ${response.playerId}")
+    }
+
+    /** List current sessions on server */
+    fun list() {
+        val request = ConnectionRequest.newBuilder().setSessionName("list").build()
+        val response: ConnectionReply =  try {
+            blockingStub.tryToConnect(request)
+        } catch (e: StatusRuntimeException) {
+            System.err.println("RPC failed: {${e.status}}")
+            return
+        }
+
+        println("Sessions:")
+        println(response.playerId)
     }
 
     companion object {
         private val logger = Logger.getLogger(RoguelikeClient::class.java.name)
 
-        /**
-         * Greet server. If provided, the first element of `args` is the name to use in the
-         * greeting.
-         */
         @Throws(Exception::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            val client = RoguelikeClient("localhost", 50051)
+            if (args.size != 2) {
+                printUsage()
+                return
+            }
+            val client = RoguelikeClient(args[0], args[1].toInt())
             try {
                 /* Access a service running on the local machine on port 50051 */
-                val user = if (args.isNotEmpty()) args[0] else "world"
-                client.greet(user)
+                var sessionIsChosen = false
+                while (!sessionIsChosen) {
+                    println("Please enter 'list' command to list sessions or enter session name")
+                    val input = readLine()
+                    if (input == "list") {
+                        client.list()
+                    } else {
+                        client.connect(input!!)
+                        sessionIsChosen = true
+                    }
+                }
+                println("Starting game")
             } finally {
                 client.shutdown()
             }
+        }
+
+        private fun printUsage() {
+            println("Args: <ip> <port>")
         }
     }
 }

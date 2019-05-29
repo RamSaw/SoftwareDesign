@@ -5,28 +5,28 @@ import com.googlecode.lanterna.input.Key
 import com.googlecode.lanterna.screen.Screen
 import com.googlecode.lanterna.terminal.Terminal
 import ru.hse.spb.actions.*
-import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
-import ru.hse.spb.model.engine.Mob
+import ru.hse.spb.model.engine.BasePlayer
 import java.io.Serializable
 import java.lang.Integer.max
 
 /**
  * Simple view implementation, uses console graphics.
  */
-object ConsoleView : View, Serializable {
-    private const val MAP_POSITION_X = 0
-    private const val MAP_POSITION_Y = 0
-    private const val INFO_PADDING_X = 10
-    private const val INFO_PADDING_Y = 0
-
-    private val CONTROL_INFO = arrayOf(
-        "quit: q",
-        "save: s",
-        "load: l (works only before the first move)",
-        "move: arrows",
-        "take equipment on/off: corresponding number")
+class ConsoleView(private val playerId: Int) : View, Serializable {
+    companion object {
+        private const val MAP_POSITION_X = 0
+        private const val MAP_POSITION_Y = 0
+        private const val INFO_PADDING_X = 10
+        private const val INFO_PADDING_Y = 0
+        private val CONTROL_INFO = arrayOf(
+            "quit: q",
+            "save: s",
+            "load: l (works only before the first move)",
+            "move: arrows",
+            "take equipment on/off: corresponding number")
+    }
 
     private val screen = Screen(TerminalFacade.createTerminal())
 
@@ -71,7 +71,7 @@ object ConsoleView : View, Serializable {
     override fun draw(model: Model) {
         drawMap(model)
         drawMobs(model)
-        drawPlayer(model)
+        drawPlayer(model, playerId)
         drawInfoPanel(model)
 
         screen.refresh()
@@ -94,13 +94,19 @@ object ConsoleView : View, Serializable {
         }
     }
 
-    private fun drawPlayer(model: Model) {
-        val playerPosition = model.player.getCurrentPosition()
+    private fun drawPlayer(model: Model, yourPlayerId: Int) {
+        drawPlayer(model.players.getValue(yourPlayerId), Terminal.Color.GREEN)
+        model.players.filterKeys { i -> i != yourPlayerId }
+            .values.forEach { drawPlayer(it, Terminal.Color.YELLOW) }
+    }
+
+    private fun drawPlayer(player: BasePlayer, color: Terminal.Color) {
+        val playerPosition = player.getCurrentPosition()
         screen.putString(
             MAP_POSITION_X + playerPosition.x,
             MAP_POSITION_Y + playerPosition.y,
             "p",
-            Terminal.Color.GREEN,
+            color,
             Terminal.Color.BLACK
         )
     }
@@ -120,7 +126,7 @@ object ConsoleView : View, Serializable {
 
     private fun drawInfoPanel(model: Model) {
         val map = model.map
-        val player = model.player
+        val player = model.players.getValue(playerId)
 
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,

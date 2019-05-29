@@ -5,12 +5,12 @@ import ru.hse.spb.model.Model
 import ru.hse.spb.model.engine.Mob
 
 /**
- * Aggressive strategy - mob tries to get closer to the player.
+ * Aggressive strategy - mob tries to get closer to the players.
  */
 class AggressiveStrategy(private val model: Model) : MobStrategy {
     override fun makeTurn(mob: Mob, map: Map): Map.MapPosition {
         val mobPosition = mob.getCurrentPosition()
-        val playerPosition = model.player.getCurrentPosition()
+        val playerPosition = model.players.getValue(model.getActivePlayer()).getCurrentPosition()
 
         val x = mobPosition.x + when {
             playerPosition.x > mobPosition.x -> 1

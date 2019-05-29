@@ -3,7 +3,7 @@ package ru.hse.spb.model.engine
 import ru.hse.spb.model.engine.strategy.ConfusedStrategy
 
 /**
- * This class adds confusion action to player.
+ * This class adds confusion action to players.
  */
 class ConfusionPlayerDecorator(private val player: BasePlayer) : BasePlayer(player.getCurrentPosition()) {
     private var confuseTime = 5

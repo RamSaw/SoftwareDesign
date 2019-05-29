@@ -3,7 +3,7 @@ package ru.hse.spb.model.engine
 import java.io.Serializable
 
 /**
- * This class represents equipment which gives extra stats to player.
+ * This class represents equipment which gives extra stats to players.
  */
 data class Equipment(
     val name: String,

@@ -7,7 +7,7 @@ import ru.hse.spb.model.engine.Mob
  * This interface represents model of the game.
  */
 interface Model {
-    val player: BasePlayer
+    val players: kotlin.collections.Map<Int, BasePlayer>
     val map: Map
     val mobs: List<Mob>
     var currentRound: Int
@@ -38,12 +38,26 @@ interface Model {
     fun save()
 
     /**
+     * Serializes byte array to disk.
+     */
+    fun toByteArray(): ByteArray
+
+    /**
+     * Creates model from byte array.
+     */
+    fun updateFromByteArray(byteArray: ByteArray)
+
+    /**
      * Loads state from the disk.
      */
     fun load()
 
+    fun getActivePlayer(): Int
+
+    fun addPlayer(): Int
+
     /**
-     * Describes player move direction.
+     * Describes players move direction.
      */
     enum class PlayerMove {
         MOVE_UP,

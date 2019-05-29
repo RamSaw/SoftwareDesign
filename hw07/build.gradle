@@ -29,6 +29,8 @@ dependencies {
     testImplementation "io.grpc:grpc-testing:${grpcVersion}" // gRCP testing utilities
     testImplementation "junit:junit:4.12"
     testImplementation "org.mockito:mockito-core:2.25.1"
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.0")
 }
 
 protobuf {
@@ -61,4 +63,11 @@ applicationDistribution.into('bin') {
     from(roguelikeServer)
     from(roguelikeClient)
     fileMode = 0755
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
 }

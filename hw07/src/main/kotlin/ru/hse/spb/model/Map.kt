@@ -70,7 +70,7 @@ class Map private constructor(val field: Array<Array<CellState>>) : Serializable
     }
 
     /**
-     * Selects player start cell.
+     * Selects players start cell.
      */
     fun getStartCell(): MapPosition {
         val freeCells = getFreeCells()
@@ -114,7 +114,7 @@ class Map private constructor(val field: Array<Array<CellState>>) : Serializable
     /**
      * This class represents map coordinates.
      */
-    class MapPosition(var x: Int, var y: Int) : Serializable
+    data class MapPosition(var x: Int, var y: Int) : Serializable
 
     /**
      * This class represents map cell state.
