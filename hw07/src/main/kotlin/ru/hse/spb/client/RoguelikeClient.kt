@@ -41,7 +41,7 @@ internal constructor(private val channel: ManagedChannel) {
     private var view : View? = null
     private val model: Model = WorldModel(Map.generate())
     private var isGameInitialized = false
-    private val lockToWait = java.lang.Object()
+    private val lockToWait = Object()
     private var isFinished = false
     private var isListLastOperation = false
 
@@ -55,14 +55,16 @@ internal constructor(private val channel: ManagedChannel) {
             }
             if (view == null) {
                 println("Starting game")
-                view = ConsoleView(value!!.playerId.toInt())
-                model.updateFromByteArray(value.model.toByteArray())
+                model.updateFromByteArray(value!!.model.toByteArray())
+                view = ConsoleView(value.playerId.toInt())
                 isGameInitialized = true
             } else {
                 model.updateFromByteArray(value!!.model.toByteArray())
             }
             view!!.draw(model)
-            Controller.makeTurn(model, view!!, communicatorRef.get())
+            val threadToReadInput = Thread(Runnable { Controller.makeOnlineTurn(model, view!!, communicatorRef.get()) })
+            threadToReadInput.isDaemon = true
+            threadToReadInput.start()
         }
 
         override fun onError(t: Throwable?) {

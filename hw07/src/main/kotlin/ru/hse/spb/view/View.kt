@@ -15,7 +15,7 @@ interface View {
     /**
      * Reads user action.
      */
-    fun getAction(): Action
+    fun getAction(model: Model): Action?
 
     /**
      * Closes view session.
@@ -26,4 +26,5 @@ interface View {
      * Returns player id.
      */
     fun getPlayerId(): Int
+
 }

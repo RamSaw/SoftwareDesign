@@ -66,6 +66,7 @@ class RoguelikeServer(private val port: Int) {
                     var model: Model?
                     if (sessionName == null) {
                         sessionName = value.sessionName
+                        gameSessions.addClient(sessionName!!, responseObserver!!)
                         model = gameSessions.getOrCreate(sessionName!!)
                         playerId = model.addPlayer()
                         responseBuilder.playerId = playerId.toString()
@@ -75,7 +76,10 @@ class RoguelikeServer(private val port: Int) {
                         Action.fromByteArray(value.action.toByteArray()).execute(model)
                     }
                     responseBuilder.model = ByteString.copyFrom(model.toByteArray())
-                    responseObserver!!.onNext(responseBuilder.build())
+                    val response = responseBuilder.build()
+                    for (client in gameSessions.getClients(sessionName!!)) {
+                        client.onNext(response)
+                    }
                 }
 
                 override fun onError(t: Throwable?) {
@@ -84,6 +88,7 @@ class RoguelikeServer(private val port: Int) {
 
                 override fun onCompleted() {
                     gameSessions.get(sessionName!!).removePlayer(playerId!!)
+                    gameSessions.removeClient(sessionName!!, responseObserver!!)
                 }
             }
         }

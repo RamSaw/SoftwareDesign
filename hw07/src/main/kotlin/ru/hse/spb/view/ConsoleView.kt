@@ -22,17 +22,19 @@ class ConsoleView(private val playerId: Int) : View, Serializable {
         private const val MAP_POSITION_Y = 0
         private const val INFO_PADDING_X = 10
         private const val INFO_PADDING_Y = 0
-        private val CONTROL_INFO = arrayOf(
-            "quit: q",
-            "save: s",
-            "load: l (works only before the first move)",
-            "move: arrows",
-            "take equipment on/off: corresponding number")
     }
+
+    private val controlInfo = mutableListOf(
+        "quit: q",
+        "save: s",
+        "load: l (works only before the first move)",
+        "move: arrows",
+        "take equipment on/off: corresponding number")
 
     private val screen = Screen(TerminalFacade.createTerminal())
 
     init {
+        controlInfo.add("your player id: $playerId")
         screen.startScreen()
         screen.cursorPosition = null
     }
@@ -41,10 +43,10 @@ class ConsoleView(private val playerId: Int) : View, Serializable {
         screen.stopScreen()
     }
 
-    override fun getAction(): Action {
-        var action : Action?
+    override fun getAction(model: Model): Action? {
+        var action : Action? = null
 
-        while (true) {
+        while (model.getActivePlayer() == playerId) {
             val key = screen.readInput() ?: continue
 
             action = when (key.kind) {
@@ -67,13 +69,13 @@ class ConsoleView(private val playerId: Int) : View, Serializable {
             }
         }
 
-        return action!!
+        return action
     }
 
     override fun draw(model: Model) {
         drawMap(model)
         drawMobs(model)
-        drawPlayer(model, playerId)
+        drawPlayer(model)
         drawInfoPanel(model)
 
         screen.refresh()
@@ -96,9 +98,10 @@ class ConsoleView(private val playerId: Int) : View, Serializable {
         }
     }
 
-    private fun drawPlayer(model: Model, yourPlayerId: Int) {
-        drawPlayer(model.players.getValue(yourPlayerId), Terminal.Color.GREEN)
-        model.players.filterKeys { i -> i != yourPlayerId }
+    private fun drawPlayer(model: Model) {
+        drawPlayer(model.players.getValue(model.getActivePlayer()), Terminal.Color.BLUE)
+        drawPlayer(model.players.getValue(playerId), Terminal.Color.GREEN)
+        model.players.filterKeys { i -> i != playerId && i != model.getActivePlayer() }
             .values.forEach { drawPlayer(it, Terminal.Color.YELLOW) }
     }
 
@@ -181,10 +184,17 @@ class ConsoleView(private val playerId: Int) : View, Serializable {
 
         drawControlInfo(MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
                       MAP_POSITION_Y + INFO_PADDING_Y + 5)
+        screen.putString(
+            MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+            MAP_POSITION_Y + INFO_PADDING_Y + 5 + controlInfo.size,
+            "active player id: ${model.getActivePlayer()}",
+            Terminal.Color.WHITE,
+            Terminal.Color.BLACK
+        )
     }
 
     private fun drawControlInfo(x: Int, y: Int) {
-        for ((i, message) in CONTROL_INFO.withIndex()) {
+        for ((i, message) in controlInfo.withIndex()) {
             screen.putString(
                 x,
                 y + i,

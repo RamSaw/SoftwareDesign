@@ -67,4 +67,6 @@ interface Model {
         MOVE_LEFT,
         MOVE_RIGHT,
     }
+
+    fun nextActivePlayer()
 }

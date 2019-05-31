@@ -16,19 +16,29 @@ import java.lang.Integer.max
  */
 class WorldModel(override var map: Map) : Model, Serializable {
     override fun removePlayer(playerId: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (players.keys.toList()[activePlayerIdInkeyList] == playerId) {
+            players.remove(playerId)
+            nextActivePlayer()
+        }
     }
 
     override fun getActivePlayer(): Int {
-        return activePlayer
+        return players.keys.toList()[activePlayerIdInkeyList]
+    }
+
+    override fun nextActivePlayer() {
+        activePlayerIdInkeyList = if (players.isEmpty()) {
+            -1
+        } else {
+            (activePlayerIdInkeyList + 1) % players.size
+        }
     }
 
     override fun addPlayer(): Int {
         val playerId = (players.keys.max() ?: -1) + 1
         players[playerId] = ConfusionPlayerDecorator(Player(map.getStartCell()))
-        playerIds.add(playerId)
-        if (activePlayer == -1) {
-            activePlayer = 0
+        if (activePlayerIdInkeyList == -1) {
+            nextActivePlayer()
         }
         return playerId
     }
@@ -44,8 +54,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
 
     private var gameFinished = false
     private var gameStarted = false
-    private var activePlayer = -1
-    private var playerIds = mutableListOf<Int>()
+    private var activePlayerIdInkeyList = -1
 
     init {
         spawnMobs()
@@ -73,7 +82,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
     private fun finishMove() {
         gameStarted = true
         moveMobs()
-        activePlayer = (activePlayer + 1) % playerIds.size
+        nextActivePlayer()
         if (mobs.isEmpty()) {
             currentRound++
             players.values.forEach { it.levelUp() }
@@ -199,8 +208,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
         this.map = model.map
         this.players = model.players
         this.mobs = model.mobs
-        this.playerIds = model.playerIds
-        this.activePlayer = model.activePlayer
+        this.activePlayerIdInkeyList = model.activePlayerIdInkeyList
         this.currentRound = model.currentRound
         this.combatSystem = model.combatSystem
         this.strategies = model.strategies

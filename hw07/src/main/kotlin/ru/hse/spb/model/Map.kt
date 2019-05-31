@@ -12,6 +12,7 @@ class Map private constructor(val field: Array<Array<CellState>>) : Serializable
         private const val DEFAULT_FIELD_WIDTH = 20
         private const val DEFAULT_FIELD_HEIGHT = 20
         private const val WALL_PERCENTAGE = 25
+        private val RANDOM = Random(342)
 
         /**
          * Generates new map with random walls.
@@ -74,7 +75,7 @@ class Map private constructor(val field: Array<Array<CellState>>) : Serializable
      */
     fun getStartCell(): MapPosition {
         val freeCells = getFreeCells()
-        val i = Random(0).nextInt(freeCells.size)
+        val i = RANDOM.nextInt(freeCells.size)
 
         return freeCells[i]
     }
