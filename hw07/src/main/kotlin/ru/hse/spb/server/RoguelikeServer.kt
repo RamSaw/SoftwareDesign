@@ -5,7 +5,6 @@ import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.stub.StreamObserver
 import ru.hse.spb.actions.Action
-import ru.hse.spb.model.Model
 import ru.hse.spb.roguelike.ConnectionSetUpperGrpc
 import ru.hse.spb.roguelike.PlayerRequest
 import ru.hse.spb.roguelike.ServerReply
@@ -56,29 +55,37 @@ class RoguelikeServer(private val port: Int) {
                 private var sessionName: String? = null
 
                 override fun onNext(value: PlayerRequest?) {
+                    val responseBuilder = ServerReply.newBuilder()
+
                     if (value!!.sessionName == "list") {
                         val sessionsToPrint = gameSessions.listSessions().joinToString("\n")
                         val reply = ServerReply.newBuilder().setSessions(sessionsToPrint).build()
                         responseObserver!!.onNext(reply)
                         return
                     }
-                    val responseBuilder = ServerReply.newBuilder()
-                    var model: Model?
-                    if (sessionName == null) {
+                    else if (sessionName == null) {
                         sessionName = value.sessionName
                         gameSessions.addClient(sessionName!!, responseObserver!!)
-                        model = gameSessions.getOrCreate(sessionName!!)
+                        val model = gameSessions.getOrCreate(sessionName!!)
                         playerId = model.addPlayer()
                         responseBuilder.playerId = playerId.toString()
+                        responseBuilder.model = ByteString.copyFrom(model.toByteArray())
+                        val response = responseBuilder.build()
+                        for (client in gameSessions.getClients(sessionName!!)) {
+                            client.onNext(response)
+                        }
                     }
-                    model = gameSessions.getOrCreate(sessionName!!)
-                    if (!value.action.isEmpty) {
+                    else if (!value.action.isEmpty) {
+                        val model = gameSessions.getOrCreate(sessionName!!)
+                        if (playerId != model.getActivePlayer()) {
+                            return
+                        }
                         Action.fromByteArray(value.action.toByteArray()).execute(model)
-                    }
-                    responseBuilder.model = ByteString.copyFrom(model.toByteArray())
-                    val response = responseBuilder.build()
-                    for (client in gameSessions.getClients(sessionName!!)) {
-                        client.onNext(response)
+                        responseBuilder.model = ByteString.copyFrom(model.toByteArray())
+                        val response = responseBuilder.build()
+                        for (client in gameSessions.getClients(sessionName!!)) {
+                            client.onNext(response)
+                        }
                     }
                 }
 

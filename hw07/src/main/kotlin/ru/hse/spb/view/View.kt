@@ -15,7 +15,7 @@ interface View {
     /**
      * Reads user action.
      */
-    fun getAction(model: Model): Action?
+    fun getAction(): Action
 
     /**
      * Closes view session.

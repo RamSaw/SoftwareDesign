@@ -14,8 +14,8 @@ import ru.hse.spb.roguelike.ServerReply
 import ru.hse.spb.view.ConsoleView
 import ru.hse.spb.view.View
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
-import java.util.logging.Logger
 
 
 /**
@@ -40,12 +40,12 @@ internal constructor(private val channel: ManagedChannel) {
 
     private var view : View? = null
     private val model: Model = WorldModel(Map.generate())
-    private var isGameInitialized = false
     private val lockToWait = Object()
     private var isFinished = false
     private var isListLastOperation = false
+    private val isGameInitialized = AtomicBoolean(false)
 
-    val communicatorRef = AtomicReference<StreamObserver<PlayerRequest>>()
+    private val communicatorRef = AtomicReference<StreamObserver<PlayerRequest>>()
     private val communicator = stub.communicate(object: StreamObserver<ServerReply> {
         override fun onNext(value: ServerReply?) {
             if (isListLastOperation) {
@@ -57,14 +57,11 @@ internal constructor(private val channel: ManagedChannel) {
                 println("Starting game")
                 model.updateFromByteArray(value!!.model.toByteArray())
                 view = ConsoleView(value.playerId.toInt())
-                isGameInitialized = true
+                isGameInitialized.set(true)
             } else {
                 model.updateFromByteArray(value!!.model.toByteArray())
             }
             view!!.draw(model)
-            val threadToReadInput = Thread(Runnable { Controller.makeOnlineTurn(model, view!!, communicatorRef.get()) })
-            threadToReadInput.isDaemon = true
-            threadToReadInput.start()
         }
 
         override fun onError(t: Throwable?) {
@@ -95,7 +92,6 @@ internal constructor(private val channel: ManagedChannel) {
     }
 
     companion object {
-        private val logger = Logger.getLogger(RoguelikeClient::class.java.name)
 
         @Throws(Exception::class)
         @JvmStatic
@@ -119,6 +115,15 @@ internal constructor(private val channel: ManagedChannel) {
                         client.list()
                     } else {
                         client.connect(input!!)
+                        val threadToReadInput = Thread(Runnable {
+                            while (!client.isGameInitialized.get()) {
+                                continue
+                            }
+                            while (!client.isFinished) {
+                                Controller.makeOnlineTurn(client.view!!, client.communicatorRef.get())
+                            }
+                        })
+                        threadToReadInput.start()
                         sessionIsChosen = true
                     }
                 }

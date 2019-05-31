@@ -43,10 +43,10 @@ class ConsoleView(private val playerId: Int) : View, Serializable {
         screen.stopScreen()
     }
 
-    override fun getAction(model: Model): Action? {
-        var action : Action? = null
+    override fun getAction(): Action {
+        var action: Action?
 
-        while (model.getActivePlayer() == playerId) {
+        while (true) {
             val key = screen.readInput() ?: continue
 
             action = when (key.kind) {
@@ -69,7 +69,7 @@ class ConsoleView(private val playerId: Int) : View, Serializable {
             }
         }
 
-        return action
+        return action!!
     }
 
     override fun draw(model: Model) {

@@ -15,21 +15,17 @@ import kotlin.system.exitProcess
 class Controller(private val model: Model,
                  private val view: View) {
     companion object {
-        fun makeOnlineTurn(model: Model,
-                           view: View,
-                           communicator: StreamObserver<PlayerRequest>) {
-            if (model.getActivePlayer() != view.getPlayerId()) {
-                return
-            }
-            val action = view.getAction(model)
+        fun makeOnlineTurn(
+            view: View,
+            communicator: StreamObserver<PlayerRequest>
+        ) {
+            val action = view.getAction()
             if (action is QuitGameAction) {
                 communicator.onCompleted()
                 exitProcess(0)
             }
-            if (action != null) {
-                communicator.onNext(PlayerRequest.newBuilder()
-                    .setAction(ByteString.copyFrom(Action.toByteArray(action))).build())
-            }
+            communicator.onNext(PlayerRequest.newBuilder()
+                .setAction(ByteString.copyFrom(Action.toByteArray(action))).build())
         }
     }
 
@@ -40,8 +36,8 @@ class Controller(private val model: Model,
     fun run() {
         while (true) {
             view.draw(model)
-            val action = view.getAction(model)
-            action!!.execute(model)
+            val action = view.getAction()
+            action.execute(model)
 
             if (model.isGameFinished()) {
                 break
