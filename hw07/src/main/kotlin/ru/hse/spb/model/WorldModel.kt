@@ -16,10 +16,8 @@ import java.lang.Integer.max
  */
 class WorldModel(override var map: Map) : Model, Serializable {
     override fun removePlayer(playerId: Int) {
-        if (players.keys.toList()[activePlayerIdInkeyList] == playerId) {
-            players.remove(playerId)
-            nextActivePlayer()
-        }
+        players.remove(playerId)
+        nextActivePlayer()
     }
 
     override fun getActivePlayer(): Int {

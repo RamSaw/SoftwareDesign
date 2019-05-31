@@ -49,14 +49,21 @@ class RoguelikeServer(private val port: Int) {
     }
 
     private inner class ConnectionSetUpperImpl : ConnectionSetUpperGrpc.ConnectionSetUpperImplBase() {
+        private fun sendModelToAllPlayers(sessionName: String, responseBuilder: ServerReply.Builder = ServerReply.newBuilder()) {
+            val model = gameSessions.getOrCreate(sessionName)
+            responseBuilder.model = ByteString.copyFrom(model.toByteArray())
+            val response = responseBuilder.build()
+            for (client in gameSessions.getClients(sessionName)) {
+                client.onNext(response)
+            }
+        }
+
         override fun communicate(responseObserver: StreamObserver<ServerReply>?): StreamObserver<PlayerRequest>? {
             return object: StreamObserver<PlayerRequest> {
                 private var playerId: Int? = null
                 private var sessionName: String? = null
 
                 override fun onNext(value: PlayerRequest?) {
-                    val responseBuilder = ServerReply.newBuilder()
-
                     if (value!!.sessionName == "list") {
                         val sessionsToPrint = gameSessions.listSessions().joinToString("\n")
                         val reply = ServerReply.newBuilder().setSessions(sessionsToPrint).build()
@@ -64,16 +71,13 @@ class RoguelikeServer(private val port: Int) {
                         return
                     }
                     else if (sessionName == null) {
+                        val responseBuilder = ServerReply.newBuilder()
                         sessionName = value.sessionName
                         gameSessions.addClient(sessionName!!, responseObserver!!)
                         val model = gameSessions.getOrCreate(sessionName!!)
                         playerId = model.addPlayer()
                         responseBuilder.playerId = playerId.toString()
-                        responseBuilder.model = ByteString.copyFrom(model.toByteArray())
-                        val response = responseBuilder.build()
-                        for (client in gameSessions.getClients(sessionName!!)) {
-                            client.onNext(response)
-                        }
+                        sendModelToAllPlayers(sessionName!!, responseBuilder)
                     }
                     else if (!value.action.isEmpty) {
                         val model = gameSessions.getOrCreate(sessionName!!)
@@ -81,11 +85,7 @@ class RoguelikeServer(private val port: Int) {
                             return
                         }
                         Action.fromByteArray(value.action.toByteArray()).execute(model)
-                        responseBuilder.model = ByteString.copyFrom(model.toByteArray())
-                        val response = responseBuilder.build()
-                        for (client in gameSessions.getClients(sessionName!!)) {
-                            client.onNext(response)
-                        }
+                        sendModelToAllPlayers(sessionName!!)
                     }
                 }
 
@@ -96,6 +96,7 @@ class RoguelikeServer(private val port: Int) {
                 override fun onCompleted() {
                     gameSessions.get(sessionName!!).removePlayer(playerId!!)
                     gameSessions.removeClient(sessionName!!, responseObserver!!)
+                    sendModelToAllPlayers(sessionName!!)
                 }
             }
         }
