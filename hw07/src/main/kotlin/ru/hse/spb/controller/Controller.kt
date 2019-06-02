@@ -4,6 +4,7 @@ import com.google.protobuf.ByteString
 import io.grpc.stub.StreamObserver
 import ru.hse.spb.actions.Action
 import ru.hse.spb.actions.QuitGameAction
+import ru.hse.spb.model.FailedLoadException
 import ru.hse.spb.model.Model
 import ru.hse.spb.roguelike.PlayerRequest
 import ru.hse.spb.view.View
@@ -37,7 +38,14 @@ class Controller(private val model: Model,
         while (true) {
             view.draw(model)
             val action = view.getAction()
-            action.execute(model)
+            try {
+                action.execute(model)
+            } catch (e: FailedLoadException) {
+                System.err.println("Failed loading map of saved game. Probably you have no saved games.")
+                System.err.println("Exception message: " + e.message)
+            } catch (e: Exception) {
+                System.err.println("Unexpected exception: " + e.message)
+            }
 
             if (model.isGameFinished()) {
                 break

@@ -48,18 +48,24 @@ internal constructor(private val channel: ManagedChannel) {
     private val communicatorRef = AtomicReference<StreamObserver<PlayerRequest>>()
     private val communicator = stub.communicate(object: StreamObserver<ServerReply> {
         override fun onNext(value: ServerReply?) {
+            if (value!!.errorMessage.isNotEmpty()) {
+                System.err.println("Error occurred on server after your action.")
+                System.err.println("Server response:")
+                System.err.println(value.errorMessage)
+                return
+            }
             if (isListLastOperation) {
                 println("Sessions are:")
-                println(value!!.sessions)
+                println(value.sessions)
                 return
             }
             if (view == null) {
                 println("Starting game")
-                model.updateFromByteArray(value!!.model.toByteArray())
+                model.updateFromByteArray(value.model.toByteArray())
                 view = ConsoleView(value.playerId.toInt())
                 isGameInitialized.set(true)
             } else {
-                model.updateFromByteArray(value!!.model.toByteArray())
+                model.updateFromByteArray(value.model.toByteArray())
             }
             view!!.draw(model)
         }

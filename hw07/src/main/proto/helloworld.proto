@@ -20,4 +20,5 @@ message ServerReply {
     string playerId = 1;
     string sessions = 2;
     bytes model = 3;
+    string errorMessage = 4;
 }

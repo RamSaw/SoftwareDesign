@@ -5,6 +5,7 @@ import io.grpc.Server
 import io.grpc.ServerBuilder
 import io.grpc.stub.StreamObserver
 import ru.hse.spb.actions.Action
+import ru.hse.spb.model.FailedLoadException
 import ru.hse.spb.roguelike.ConnectionSetUpperGrpc
 import ru.hse.spb.roguelike.PlayerRequest
 import ru.hse.spb.roguelike.ServerReply
@@ -58,6 +59,11 @@ class RoguelikeServer(private val port: Int) {
             }
         }
 
+        private fun sendErrosMessage(errorMessage: String, client: StreamObserver<ServerReply>) {
+            val response = ServerReply.newBuilder().setErrorMessage(errorMessage).build()
+            client.onNext(response)
+        }
+
         override fun communicate(responseObserver: StreamObserver<ServerReply>?): StreamObserver<PlayerRequest>? {
             return object: StreamObserver<PlayerRequest> {
                 private var playerId: Int? = null
@@ -84,8 +90,20 @@ class RoguelikeServer(private val port: Int) {
                         if (playerId != model.getActivePlayer()) {
                             return
                         }
-                        Action.fromByteArray(value.action.toByteArray()).execute(model)
-                        sendModelToAllPlayers(sessionName!!)
+                        var errorMessage: String? = null
+                        try {
+                            Action.fromByteArray(value.action.toByteArray()).execute(model)
+                        } catch (e: FailedLoadException) {
+                            errorMessage = "Failed loading map of saved game. Probably you have no saved games.\n" +
+                                    "Exception message: " + e.message
+                        } catch (e: Exception) {
+                            errorMessage = "Unexpected exception: " + e.message
+                        }
+                        if (errorMessage != null) {
+                            sendErrosMessage(errorMessage, responseObserver!!)
+                        } else {
+                            sendModelToAllPlayers(sessionName!!)
+                        }
                     }
                 }
 
