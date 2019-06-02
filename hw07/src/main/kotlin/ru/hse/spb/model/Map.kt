@@ -1,9 +1,7 @@
 package ru.hse.spb.model
 
 import java.io.File
-import java.lang.IllegalArgumentException
 import kotlin.random.Random
-import kotlin.system.exitProcess
 
 /**
  * This class represents game field.
@@ -26,24 +24,30 @@ class Map private constructor(val field: Array<Array<CellState>>) {
             return map
         }
 
+        private enum class Direction(val dx: Int, val dy: Int) {
+            UP(0, -1),
+            RIGHT(1, 0),
+            DOWN(0, 1),
+            LEFT(-1, 0),
+        }
+
         private fun checkConnectivity(map: Map): Boolean {
             val width = map.getWidth()
             val height = map.getHeight()
             val visited = Array(height) { Array(width) { false } }
+
             fun dfs(position: MapPosition) {
                 if (visited[position.y][position.x])
                     return
 
                 visited[position.y][position.x] = true
-                for (j in -1..1)
-                    for (i in -1..1) {
-                        if (i != 0 && j != 0)
-                            continue
-                        val newPosition = MapPosition(position.x + i, position.y + j)
-                        if (map.getCell(newPosition) == CellState.FREE)
-                            dfs(newPosition)
-                    }
+                for (delta in Direction.values()) {
+                    val newPosition = MapPosition(position.x + delta.dx, position.y + delta.dy)
+                    if (map.getCell(newPosition) == CellState.FREE)
+                        dfs(newPosition)
+                }
             }
+
             dfs(map.getStartCell())
             for (j in 0..(height - 1))
                 for (i in 0..(width - 1)) {
