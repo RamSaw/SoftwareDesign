@@ -120,11 +120,16 @@ class WorldModel(override var map: Map) : Model, Serializable {
         if (map.getCell(Map.MapPosition(x, y)) == FREE)
             decorateWithPosChange(player) { player.changePosition(x, y) }
         else if (map.getCell(Map.MapPosition(x, y)) == OCCUPIED) {
-            combatSystem.combat(player, mobs.first {
-                it.getCurrentPosition().x == x
-                        && it.getCurrentPosition().y == y
-            })
-            combatAftermath()
+            if (players.values.all {
+                it.getCurrentPosition().x != x
+                        && it.getCurrentPosition().y != y
+            }) {
+                combatSystem.combat(player, mobs.first {
+                    it.getCurrentPosition().x == x
+                            && it.getCurrentPosition().y == y
+                })
+                combatAftermath()
+            }
         }
 
         finishMove()
