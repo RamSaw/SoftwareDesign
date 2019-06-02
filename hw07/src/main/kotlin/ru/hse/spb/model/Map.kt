@@ -49,8 +49,8 @@ class Map private constructor(val field: Array<Array<CellState>>) {
             }
 
             dfs(map.getStartCell())
-            for (j in 0..(height - 1))
-                for (i in 0..(width - 1)) {
+            for (j in 0 until height)
+                for (i in 0 until width) {
                     val positionToCheck = MapPosition(i, j)
                     if (!visited[positionToCheck.y][positionToCheck.x] &&
                         map.getCell(positionToCheck) == CellState.FREE) {
