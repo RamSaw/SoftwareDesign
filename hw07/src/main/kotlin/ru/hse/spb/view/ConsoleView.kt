@@ -29,7 +29,11 @@ class ConsoleView(private val playerId: Int) : View, Serializable {
         "save: s",
         "load: l (works only before the first move)",
         "move: arrows",
-        "take equipment on/off: corresponding number")
+        "take equipment on/off: corresponding number",
+        "color map:",
+        "Blue - current player who has a turn.",
+        "Green - your player (green when you have a turn too).",
+        "Yellow - others.")
 
     private val screen = Screen(TerminalFacade.createTerminal())
 
