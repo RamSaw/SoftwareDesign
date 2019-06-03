@@ -97,6 +97,34 @@ internal constructor(private val channel: ManagedChannel) {
         communicator.onNext(request)
     }
 
+    fun start() {
+        var sessionIsChosen = false
+        while (!sessionIsChosen) {
+            println("Please enter 'list' command to list sessions or enter session name")
+            val input = readLine()
+            if (input == "list") {
+                list()
+            } else {
+                connect(input!!)
+                val threadToReadInput = Thread(Runnable {
+                    while (!isGameInitialized.get()) {
+                        continue
+                    }
+                    while (!isFinished) {
+                        Controller.makeOnlineTurn(view!!, communicatorRef.get())
+                    }
+                })
+                threadToReadInput.start()
+                sessionIsChosen = true
+            }
+        }
+        while (!isFinished) {
+            synchronized(lockToWait) {
+                lockToWait.wait()
+            }
+        }
+    }
+
     companion object {
         @Throws(Exception::class)
         @JvmStatic
@@ -111,32 +139,7 @@ internal constructor(private val channel: ManagedChannel) {
             }
             val client = RoguelikeClient(args[0], args[1].toInt())
             try {
-                /* Access a service running on the local machine on port 50051 */
-                var sessionIsChosen = false
-                while (!sessionIsChosen) {
-                    println("Please enter 'list' command to list sessions or enter session name")
-                    val input = readLine()
-                    if (input == "list") {
-                        client.list()
-                    } else {
-                        client.connect(input!!)
-                        val threadToReadInput = Thread(Runnable {
-                            while (!client.isGameInitialized.get()) {
-                                continue
-                            }
-                            while (!client.isFinished) {
-                                Controller.makeOnlineTurn(client.view!!, client.communicatorRef.get())
-                            }
-                        })
-                        threadToReadInput.start()
-                        sessionIsChosen = true
-                    }
-                }
-                while (!client.isFinished) {
-                    synchronized(client.lockToWait) {
-                        client.lockToWait.wait()
-                    }
-                }
+                client.start()
             } finally {
                 client.shutdown()
             }
