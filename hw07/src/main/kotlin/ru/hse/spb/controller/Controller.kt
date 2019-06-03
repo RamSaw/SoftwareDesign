@@ -13,28 +13,21 @@ import kotlin.system.exitProcess
 /**
  * This class interacts with user and provides actions to model.
  */
-class Controller(private val model: Model,
-                 private val view: View) {
-    companion object {
-        fun makeOnlineTurn(
-            view: View,
-            communicator: StreamObserver<PlayerRequest>
-        ) {
-            val action = view.getAction()
-            if (action is QuitGameAction) {
-                communicator.onCompleted()
-                exitProcess(0)
-            }
-            communicator.onNext(PlayerRequest.newBuilder()
-                .setAction(ByteString.copyFrom(Action.toByteArray(action))).build())
+object Controller {
+    fun makeOnlineTurn(view: View, communicator: StreamObserver<PlayerRequest>) {
+        val action = view.getAction()
+        if (action is QuitGameAction) {
+            communicator.onCompleted()
+            exitProcess(0)
         }
+        communicator.onNext(PlayerRequest.newBuilder()
+            .setAction(ByteString.copyFrom(Action.toByteArray(action))).build())
     }
-
 
     /**
      * Main game loop.
      */
-    fun run() {
+    fun run(model: Model, view: View) {
         while (true) {
             view.draw(model)
             val action = view.getAction()

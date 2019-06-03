@@ -11,9 +11,8 @@ object RoguelikeSinglePlayerApplication {
         val model = WorldModel(map)
         val playerId = model.addPlayer()
         val view = ConsoleView(playerId)
-        val controller = Controller(model, view)
+        Controller.run(model, view)
 
-        controller.run()
         view.stop()
     }
 }
