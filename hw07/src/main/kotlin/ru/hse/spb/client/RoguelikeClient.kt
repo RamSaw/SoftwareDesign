@@ -31,9 +31,9 @@ internal constructor(private val channel: ManagedChannel) {
     private var isFinished = false
     private var isListLastOperation = false
     private val isGameInitialized = AtomicBoolean(false)
-
     private val communicatorRef = AtomicReference<StreamObserver<PlayerRequest>>()
-    private val communicator = stub.communicate(object: StreamObserver<ServerReply> {
+
+    private inner class ClientHandler : StreamObserver<ServerReply> {
         override fun onNext(value: ServerReply?) {
             if (value!!.errorMessage.isNotEmpty()) {
                 System.err.println("Error occurred on server after your action.")
@@ -67,7 +67,9 @@ internal constructor(private val channel: ManagedChannel) {
                 lockToWait.notify()
             }
         }
-    })
+    }
+
+    private val communicator = stub.communicate(ClientHandler())
 
     constructor(host: String, port: Int) : this(ManagedChannelBuilder.forAddress(host, port)
         .usePlaintext()
