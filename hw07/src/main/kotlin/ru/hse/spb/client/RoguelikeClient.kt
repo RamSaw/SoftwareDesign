@@ -25,19 +25,6 @@ class RoguelikeClient
 internal constructor(private val channel: ManagedChannel) {
     private val stub: ConnectionSetUpperGrpc.ConnectionSetUpperStub
             = ConnectionSetUpperGrpc.newStub(channel)
-
-    constructor(host: String, port: Int) : this(ManagedChannelBuilder.forAddress(host, port)
-        .usePlaintext()
-        .build()) {
-        communicatorRef.set(communicator)
-    }
-
-
-    @Throws(InterruptedException::class)
-    fun shutdown() {
-        channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
-    }
-
     private var view : View? = null
     private val model: Model = WorldModel(Map.generate())
     private val lockToWait = Object()
@@ -82,6 +69,17 @@ internal constructor(private val channel: ManagedChannel) {
         }
     })
 
+    constructor(host: String, port: Int) : this(ManagedChannelBuilder.forAddress(host, port)
+        .usePlaintext()
+        .build()) {
+        communicatorRef.set(communicator)
+    }
+
+    @Throws(InterruptedException::class)
+    fun shutdown() {
+        channel.shutdown().awaitTermination(5, TimeUnit.SECONDS)
+    }
+
     /** Connect to server.  */
     fun connect(name: String) {
         println("Will try to connect to {$name} session...")
@@ -98,7 +96,6 @@ internal constructor(private val channel: ManagedChannel) {
     }
 
     companion object {
-
         @Throws(Exception::class)
         @JvmStatic
         fun main(args: Array<String>) {

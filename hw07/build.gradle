@@ -46,14 +46,14 @@ protobuf {
 startScripts.enabled = false
 
 task roguelikeServer(type: CreateStartScripts) {
-    mainClassName = 'ru.hse.spb.roguelike.RoguelikeServer'
+    mainClassName = 'ru.hse.spb.server.RoguelikeServer'
     applicationName = 'roguelike-server'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath
 }
 
 task roguelikeClient(type: CreateStartScripts) {
-    mainClassName = 'ru.hse.spb.roguelike.RoguelikeClient'
+    mainClassName = 'ru.hse.spb.client.RoguelikeClient'
     applicationName = 'roguelike-client'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath

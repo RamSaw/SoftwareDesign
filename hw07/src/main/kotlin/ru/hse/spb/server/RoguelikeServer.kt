@@ -140,7 +140,7 @@ class RoguelikeServer(private val port: Int) {
         }
 
         private fun printUsage() {
-            println("Args: <port>")
+            println("Args: <port>. Preferable is 50051 port.")
         }
     }
 }
