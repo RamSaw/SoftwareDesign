@@ -33,7 +33,7 @@ internal constructor(private val channel: ManagedChannel) {
     private val isGameInitialized = AtomicBoolean(false)
     private val communicatorRef = AtomicReference<StreamObserver<PlayerRequest>>()
 
-    private inner class ClientHandler : StreamObserver<ServerReply> {
+    private inner class ServerResponseHandler : StreamObserver<ServerReply> {
         override fun onNext(value: ServerReply?) {
             if (value!!.errorMessage.isNotEmpty()) {
                 System.err.println("Error occurred on server after your action.")
@@ -69,7 +69,7 @@ internal constructor(private val channel: ManagedChannel) {
         }
     }
 
-    private val communicator = stub.communicate(ClientHandler())
+    private val communicator = stub.communicate(ServerResponseHandler())
 
     constructor(host: String, port: Int) : this(ManagedChannelBuilder.forAddress(host, port)
         .usePlaintext()
