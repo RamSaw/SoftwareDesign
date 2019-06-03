@@ -21,7 +21,7 @@ class RoguelikeServer(private val port: Int) {
     private val gameSessions = GameSessionManagerImpl()
 
     @Throws(IOException::class)
-    private fun start() {
+    public fun start() {
         server = ServerBuilder.forPort(port)
             .addService(ConnectionSetUpperImpl())
             .build()
@@ -45,7 +45,7 @@ class RoguelikeServer(private val port: Int) {
      * Await termination on the main thread since the grpc library uses daemon threads.
      */
     @Throws(InterruptedException::class)
-    private fun blockUntilShutdown() {
+    public fun blockUntilShutdown() {
         server?.awaitTermination()
     }
 
@@ -122,25 +122,5 @@ class RoguelikeServer(private val port: Int) {
 
     companion object {
         private val logger = Logger.getLogger(RoguelikeServer::class.java.name)
-
-        /**
-         * Main launches the server from the command line.
-         */
-        @Throws(IOException::class, InterruptedException::class)
-        @JvmStatic
-        fun main(args: Array<String>) {
-            if (args.size != 1) {
-                printUsage()
-                return
-            }
-            val port = args[0].toInt()
-            val server = RoguelikeServer(port)
-            server.start()
-            server.blockUntilShutdown()
-        }
-
-        private fun printUsage() {
-            println("Args: <port>. Preferable is 50051 port.")
-        }
     }
 }

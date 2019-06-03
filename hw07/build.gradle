@@ -19,7 +19,7 @@ def grpcVersion = '1.+'
 
 dependencies {
     def kotlinVerion = plugins.findPlugin("org.jetbrains.kotlin.jvm").kotlinPluginVersion
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVerion}"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVerion}"
     implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
@@ -31,6 +31,11 @@ dependencies {
     testImplementation "org.mockito:mockito-core:2.25.1"
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.0")
+}
+
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin/'
+    test.java.srcDirs += 'src/test/kotlin/'
 }
 
 protobuf {
@@ -57,6 +62,34 @@ task roguelikeClient(type: CreateStartScripts) {
     applicationName = 'roguelike-client'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath
+}
+
+task serverJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'ru.hse.spb.server.RoguelikeServerApplicationKt'
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    from sourceSets.main.allSource
+    from sourceSets.main.output
+
+    baseName = 'roguelike-server'
+}
+
+task clientJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'ru.hse.spb.client.RoguelikeClientApplicationKt'
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    from sourceSets.main.allSource
+    from sourceSets.main.output
+
+    baseName = 'roguelike-client'
 }
 
 applicationDistribution.into('bin') {
