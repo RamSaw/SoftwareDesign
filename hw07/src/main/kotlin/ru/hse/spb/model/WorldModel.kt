@@ -86,7 +86,7 @@ class WorldModel(override var map: Map) : Model, Serializable {
             players.values.forEach { it.levelUp() }
             spawnMobs()
         }
-        if (players.values.all { it.getCurrentHealth() == 0 }) {
+        if (players.values.all { it.getCurrentHealth() <= 0 }) {
             gameFinished = true
         }
     }
