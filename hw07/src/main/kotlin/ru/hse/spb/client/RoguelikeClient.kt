@@ -3,7 +3,6 @@ package ru.hse.spb.client
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import io.grpc.stub.StreamObserver
-import ru.hse.spb.RoguelikeSinglePlayerApplication
 import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
@@ -83,7 +82,7 @@ internal constructor(private val channel: ManagedChannel) {
     }
 
     /** Connect to server.  */
-    fun connect(name: String) {
+    private fun connect(name: String) {
         println("Will try to connect to {$name} session...")
         val request = PlayerRequest.newBuilder().setSessionName(name).build()
         isListLastOperation = false
@@ -91,7 +90,7 @@ internal constructor(private val channel: ManagedChannel) {
     }
 
     /** List current sessions on server */
-    fun list() {
+    private fun list() {
         val request = PlayerRequest.newBuilder().setSessionName("list").build()
         isListLastOperation = true
         communicator.onNext(request)

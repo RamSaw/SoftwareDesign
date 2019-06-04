@@ -59,7 +59,7 @@ class RoguelikeServer(private val port: Int) {
             }
         }
 
-        private fun sendErrosMessage(errorMessage: String, client: StreamObserver<ServerReply>) {
+        private fun sendErrorMessage(errorMessage: String, client: StreamObserver<ServerReply>) {
             val response = ServerReply.newBuilder().setErrorMessage(errorMessage).build()
             client.onNext(response)
         }
@@ -100,7 +100,7 @@ class RoguelikeServer(private val port: Int) {
                             errorMessage = "Unexpected exception: " + e.message
                         }
                         if (errorMessage != null) {
-                            sendErrosMessage(errorMessage, responseObserver!!)
+                            sendErrorMessage(errorMessage, responseObserver!!)
                         } else {
                             sendModelToAllPlayers(sessionName!!)
                         }
