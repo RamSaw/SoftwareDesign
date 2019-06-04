@@ -13,20 +13,18 @@ To exit the game press 'q'.
 
 To run server you need to do the following:
 
-`
 ./gradlew build
 
 ./gradlew serverJar
 
 java -jar ./build/libs/roguelike-server-1.0-SNAPSHOT.jar <port number>
-`
+
 
 To run client you need to do the following:
 
-`
 ./gradlew build
 
 ./gradlew clientJar
 
 java -jar ./build/libs/roguelike-client-1.0-SNAPSHOT.jar <args>
-`
+
