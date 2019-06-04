@@ -21,7 +21,7 @@ class RoguelikeServer(private val port: Int) {
     private val gameSessions = GameSessionManagerImpl()
 
     @Throws(IOException::class)
-    public fun start() {
+    fun start() {
         server = ServerBuilder.forPort(port)
             .addService(ConnectionSetUpperImpl())
             .build()
@@ -45,7 +45,7 @@ class RoguelikeServer(private val port: Int) {
      * Await termination on the main thread since the grpc library uses daemon threads.
      */
     @Throws(InterruptedException::class)
-    public fun blockUntilShutdown() {
+    fun blockUntilShutdown() {
         server?.awaitTermination()
     }
 
