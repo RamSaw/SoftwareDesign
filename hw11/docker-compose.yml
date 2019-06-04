@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4567-4584:4567-4584"
+    environment:
+      - SERVICES=sqs
+  create_and_initialize_queues:
+    build: .
+    command: ["python", "create_and_initialize_queues.py"]
+    depends_on:
+      - localstack
+    links:
+      - localstack
+  a_to_b:
+    build: .
+    command: ["python", "send_receive_message.py", "A", "B"]
+    depends_on:
+      - create_and_initialize_queues
+  b_to_a:
+    build: .
+    command: ["python", "send_receive_message.py", "B", "A"]
+    depends_on:
+      - create_and_initialize_queues
