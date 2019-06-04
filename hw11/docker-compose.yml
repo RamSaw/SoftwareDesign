@@ -1,9 +1,9 @@
 version: '3.7'
 services:
   localstack:
-    image: localstack/localstack
+    image: localstack/localstack:latest
     ports:
-      - "4567-4584:4567-4584"
+      - "4576:4576"
     environment:
       - SERVICES=sqs
   create_and_initialize_queues:
