@@ -20,9 +20,9 @@ def grpcVersion = '1.+'
 dependencies {
     def kotlinVerion = plugins.findPlugin("org.jetbrains.kotlin.jvm").kotlinPluginVersion
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVerion}"
-    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
-    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
-    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    compile "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    compile "io.grpc:grpc-protobuf:${grpcVersion}"
+    compile "io.grpc:grpc-stub:${grpcVersion}"
     compileOnly "javax.annotation:javax.annotation-api:1.2"
     compile group: 'com.googlecode.lanterna', name: 'lanterna', version: '2.1.8'
 
@@ -51,14 +51,14 @@ protobuf {
 startScripts.enabled = false
 
 task roguelikeServer(type: CreateStartScripts) {
-    mainClassName = 'ru.hse.spb.server.RoguelikeServer'
+    mainClassName = 'ru.hse.spb.server.RoguelikeServerApplicationKt'
     applicationName = 'roguelike-server'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath
 }
 
 task roguelikeClient(type: CreateStartScripts) {
-    mainClassName = 'ru.hse.spb.client.RoguelikeClient'
+    mainClassName = 'ru.hse.spb.client.RoguelikeClientApplicationKt'
     applicationName = 'roguelike-client'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = startScripts.classpath
