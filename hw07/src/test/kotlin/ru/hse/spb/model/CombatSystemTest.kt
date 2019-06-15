@@ -1,8 +1,5 @@
 package ru.hse.spb.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import ru.hse.spb.model.engine.DangerMob
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
