@@ -86,9 +86,9 @@ class Map private constructor(val field: Array<Array<CellState>>) : Serializable
          */
         fun load(path: String): Map {
             try {
-
                 val reader = File(path).inputStream().bufferedReader()
-                val (height, width) = reader.readLine().split(' ').map(String::toInt)
+                val firstLine = reader.readLine() ?: throw MapFormatException("Expected height and width in the beginning")
+                val (height, width) = firstLine.split(' ').map(String::toInt)
                 val field = Array(height) { Array(width) { CellState.FREE } }
 
                 for (row in field) {
