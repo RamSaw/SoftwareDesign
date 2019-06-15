@@ -130,7 +130,6 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
             } else {
                 combatSystem.combat(player, mob)
             }
-            decorateWithView { combatAftermath() }
         }
     }
 
@@ -138,6 +137,7 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
         for (mob in mobs) {
             decorateWithView { decorateWithPosChange(mob) { moveMob(mob) } }
         }
+        decorateWithView { combatAftermath() }
     }
 
     override fun save() {
