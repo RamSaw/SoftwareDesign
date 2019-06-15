@@ -10,7 +10,7 @@ interface View {
     /**
      * Draws model current state.
      */
-    fun draw(model: Model)
+    fun draw(model: Model?)
 
     /**
      * Reads user action.

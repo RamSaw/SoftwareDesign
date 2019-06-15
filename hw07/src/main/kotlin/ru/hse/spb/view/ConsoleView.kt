@@ -4,6 +4,7 @@ import com.googlecode.lanterna.TerminalFacade
 import com.googlecode.lanterna.input.Key
 import com.googlecode.lanterna.screen.Screen
 import com.googlecode.lanterna.terminal.Terminal
+import com.googlecode.lanterna.terminal.TerminalSize
 import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
@@ -23,8 +24,10 @@ object ConsoleView: View {
     private const val INFO_PADDING_Y = 0
 
     private val screen = Screen(TerminalFacade.createTerminal())
+    private var currentModel: Model? = null
 
     init {
+        screen.terminal.addResizeListener(Terminal.ResizeListener { draw(currentModel) })
         screen.startScreen()
         screen.cursorPosition = null
     }
@@ -57,13 +60,16 @@ object ConsoleView: View {
         return action
     }
 
-    override fun draw(model: Model) {
-        drawMap(model)
-        drawMobs(model)
-        drawPlayer(model)
-        drawInfoPanel(model)
+    override fun draw(model: Model?) {
+        currentModel = model ?: return
+        screen.updateScreenSize()
 
-        screen.refresh()
+        drawMap(currentModel!!)
+        drawMobs(currentModel!!)
+        drawPlayer(currentModel!!)
+        drawInfoPanel(currentModel!!)
+
+        screen.completeRefresh()
     }
 
     private fun drawMap(model: Model) {
