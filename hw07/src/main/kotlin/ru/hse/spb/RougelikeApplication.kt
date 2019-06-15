@@ -2,6 +2,7 @@ package ru.hse.spb
 
 import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
+import ru.hse.spb.model.MapFormatException
 import ru.hse.spb.model.WorldModel
 import ru.hse.spb.view.ConsoleView
 import java.io.FileNotFoundException
@@ -16,6 +17,8 @@ fun main(args: Array<String>) {
                 Map.load(args[0])
             } catch (e: FileNotFoundException) {
                 exitWithError("File not found. Error message: " + e.message)
+            } catch (e: MapFormatException) {
+                exitWithError("Wrong file format. Error message: " + e.message)
             }
         }
         2 -> {

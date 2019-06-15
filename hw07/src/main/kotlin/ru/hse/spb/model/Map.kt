@@ -84,22 +84,31 @@ class Map private constructor(val field: Array<Array<CellState>>) {
          * Loads map from a file.
          */
         fun load(path: String): Map {
-            val reader = File(path).inputStream().bufferedReader()
-            val (height, width) = reader.readLine().split(' ').map(String::toInt)
-            val field = Array(height) { Array(width) { CellState.FREE } }
+            try {
 
-            for (row in field) {
-                val currentLine = reader.readLine()
+                val reader = File(path).inputStream().bufferedReader()
+                val (height, width) = reader.readLine().split(' ').map(String::toInt)
+                val field = Array(height) { Array(width) { CellState.FREE } }
 
-                for (i in row.indices) {
-                    row[i] = when (currentLine[i]) {
-                        ' ' -> CellState.FREE
-                        else -> CellState.WALL
+                for (row in field) {
+                    val currentLine = reader.readLine()
+
+                    if (currentLine == null || currentLine.length != width) {
+                        throw MapFormatException("Unexpected field size")
+                    }
+
+                    for (i in row.indices) {
+                        row[i] = when (currentLine[i]) {
+                            ' ' -> CellState.FREE
+                            else -> CellState.WALL
+                        }
                     }
                 }
-            }
 
-            return Map(field)
+                return Map(field)
+            } catch (e: NumberFormatException) {
+                throw MapFormatException("Expected two integers for field height and width")
+            }
         }
     }
 
