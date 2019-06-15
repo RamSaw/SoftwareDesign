@@ -1,12 +1,13 @@
 package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map.MapPosition
+import java.io.Serializable
 
 
 /**
  *  This class represents all game characters.
  */
-abstract class GameCharacter {
+abstract class GameCharacter : Serializable {
     protected abstract var health: Int
     protected abstract var level: Int
     protected abstract var strength: Int
@@ -17,18 +18,16 @@ abstract class GameCharacter {
     /**
      * Decrease character`s health for given amount.
      */
-    fun takeDamage(dmg: Int) {
-        health -= dmg
-    }
+    abstract fun takeDamage(dmg: Int)
 
-    fun getCurrentLevel() = level
+    abstract fun getCurrentLevel(): Int
 
-    fun getCurrentHealth() = health
+    abstract fun getCurrentHealth(): Int
 
     /**
      * Return character`s strength to incline.
      */
-    fun inclineDamage() = strength
+    abstract fun inclineDamage(): Int
 
     /**
      * Change character`s position on the map.
