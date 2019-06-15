@@ -1,6 +1,6 @@
 package ru.hse.spb.view
 
-import ru.hse.spb.controller.Controller
+import ru.hse.spb.actions.Action
 import ru.hse.spb.model.Model
 
 /**
@@ -15,7 +15,7 @@ interface View {
     /**
      * Reads user action.
      */
-    fun getAction(): Controller.Companion.PlayerAction
+    fun getAction(): Action
 
     /**
      * Closes view session.

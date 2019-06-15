@@ -1,7 +1,7 @@
 package ru.hse.spb.model.engine
 
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.engine.strategy.ConfusedStrategy
 import kotlin.math.abs

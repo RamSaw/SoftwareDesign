@@ -3,11 +3,12 @@ package ru.hse.spb.model.engine.strategy
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Map.MapPosition
 import ru.hse.spb.model.engine.Mob
+import java.io.Serializable
 
 /**
  * This interface represents mob strategy.
  */
-interface MobStrategy {
+interface MobStrategy : Serializable{
     /**
      * Decides where to move mob.
      */

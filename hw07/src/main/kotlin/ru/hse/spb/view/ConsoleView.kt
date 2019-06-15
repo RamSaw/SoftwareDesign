@@ -4,20 +4,29 @@ import com.googlecode.lanterna.TerminalFacade
 import com.googlecode.lanterna.input.Key
 import com.googlecode.lanterna.screen.Screen
 import com.googlecode.lanterna.terminal.Terminal
+import ru.hse.spb.actions.*
 import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.Model
 import ru.hse.spb.model.engine.Mob
+import java.io.Serializable
 import java.lang.Integer.max
 
 /**
  * Simple view implementation, uses console graphics.
  */
-object ConsoleView : View {
+object ConsoleView : View, Serializable {
     private const val MAP_POSITION_X = 0
     private const val MAP_POSITION_Y = 0
     private const val INFO_PADDING_X = 10
     private const val INFO_PADDING_Y = 0
+
+    private val CONTROL_INFO = arrayOf(
+        "quit: q",
+        "save: s",
+        "load: l (works only before the first move)",
+        "move: arrows",
+        "take equipment on/off: corresponding number")
 
     private val screen = Screen(TerminalFacade.createTerminal())
 
@@ -30,28 +39,33 @@ object ConsoleView : View {
         screen.stopScreen()
     }
 
-    override fun getAction(): Controller.Companion.PlayerAction {
-        var action = Controller.Companion.PlayerAction.UNKNOWN
+    override fun getAction(): Action {
+        var action : Action?
 
-        while (action == Controller.Companion.PlayerAction.UNKNOWN) {
+        while (true) {
             val key = screen.readInput() ?: continue
 
             action = when (key.kind) {
-                Key.Kind.ArrowDown -> Controller.Companion.PlayerAction.MOVE_UP
-                Key.Kind.ArrowUp -> Controller.Companion.PlayerAction.MOVE_DOWN
-                Key.Kind.ArrowLeft -> Controller.Companion.PlayerAction.MOVE_LEFT
-                Key.Kind.ArrowRight -> Controller.Companion.PlayerAction.MOVE_RIGHT
+                Key.Kind.ArrowDown -> MoveDownAction
+                Key.Kind.ArrowUp -> MoveUpAction
+                Key.Kind.ArrowLeft -> MoveLeftAction
+                Key.Kind.ArrowRight -> MoveRightAction
                 Key.Kind.NormalKey -> when (key.character) {
-                    'b' -> Controller.Companion.PlayerAction.TAKE_ON_EQUIPMENT
-                    'n' -> Controller.Companion.PlayerAction.TAKE_OFF_EQUIPMENT
-                    'q' -> Controller.Companion.PlayerAction.QUIT
-                    else -> Controller.Companion.PlayerAction.UNKNOWN
+                    'q' -> QuitGameAction
+                    's' -> SaveGameAction
+                    'l' -> LoadGameAction
+                    in '0'..'9' -> TakeOnOffEquipmentAction(key.character.toInt() - '0'.toInt())
+                    else -> null
                 }
-                else -> Controller.Companion.PlayerAction.UNKNOWN
+                else -> null
+            }
+
+            if (action != null) {
+                break
             }
         }
 
-        return action
+        return action!!
     }
 
     override fun draw(model: Model) {
@@ -118,7 +132,7 @@ object ConsoleView : View {
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
             MAP_POSITION_Y + INFO_PADDING_Y + 1,
-            "equipment: " + player.getEquipmentName(),
+            "equipment: " + player.getEquipmentNames().joinToString(),
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
         )
@@ -152,6 +166,21 @@ object ConsoleView : View {
                 MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
                 MAP_POSITION_Y + INFO_PADDING_Y + 4,
                 "GAME OVER",
+                Terminal.Color.WHITE,
+                Terminal.Color.BLACK
+            )
+        }
+
+        drawControlInfo(MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+                      MAP_POSITION_Y + INFO_PADDING_Y + 5)
+    }
+
+    private fun drawControlInfo(x: Int, y: Int) {
+        for ((i, message) in CONTROL_INFO.withIndex()) {
+            screen.putString(
+                x,
+                y + i,
+                message,
                 Terminal.Color.WHITE,
                 Terminal.Color.BLACK
             )
