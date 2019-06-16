@@ -10,22 +10,22 @@ class PlayerTest {
     @Test
     fun testTakeOffTakeOnEquipment() {
         val player = Player(Map.MapPosition(0, 0))
-        val oldHealth = player.getCurrentHealth()
+        val oldHealth = player.health
         val oldStrength = player.inclineDamage()
         player.takeOnOffEquipment(0)
         player.takeOnOffEquipment(0)
-        assertEquals(oldHealth, player.getCurrentHealth())
+        assertEquals(oldHealth, player.health)
         assertEquals(oldStrength, player.inclineDamage())
     }
 
     @Test
     fun levelUp() {
         val player = Player(Map.MapPosition(0, 0))
-        val oldHealth = player.getCurrentHealth()
+        val oldHealth = player.health
         val oldStrength = player.inclineDamage()
         player.levelUp()
         assertTrue(oldStrength < player.inclineDamage())
-        assertTrue(oldHealth < player.getCurrentHealth())
-        assertTrue(player.getCurrentLevel() == 2)
+        assertTrue(oldHealth < player.health)
+        assertTrue(player.level == 2)
     }
 }

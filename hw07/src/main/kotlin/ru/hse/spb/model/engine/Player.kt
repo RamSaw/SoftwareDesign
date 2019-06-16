@@ -12,8 +12,8 @@ class Player(loc: MapPosition) : BasePlayer(loc) {
 
     override fun levelUp() {
         level++
-        health += AMPLIFIER
-        strength += AMPLIFIER
+        baseHealth += AMPLIFIER
+        baseStrength += AMPLIFIER
     }
 
     override fun takeOnOffEquipment(equipmentId: Int) {
@@ -24,21 +24,15 @@ class Player(loc: MapPosition) : BasePlayer(loc) {
         val eq = equipment[equipmentId]
 
         if (eq.isOnCharacter) {
-            health = max(1, health - eq.additionalHealth)
-            strength -= eq.additionalStrength
-            eq.takeOff()
+            if (health > eq.additionalHealth) {
+                eq.takeOff()
+            }
         } else {
-            health += eq.additionalHealth
-            strength += eq.additionalStrength
             eq.takeOn()
         }
     }
 
     override fun takeDamage(dmg: Int) {
-        health -= dmg
+        baseHealth -= dmg
     }
-
-    override fun getCurrentLevel() = level
-
-    override fun getCurrentHealth() = health
 }

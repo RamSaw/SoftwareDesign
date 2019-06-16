@@ -45,7 +45,7 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
     }
 
     private fun spawnMobs() {
-        val pos = player.getCurrentPosition()
+        val pos = player.position
         val freeCells = map.getFreeCells()
         mobs.addAll(freeCells.shuffled().filter { !(it.x == pos.x && it.y == pos.y) }.take(
             (0 until max(freeCells.size / MOBS_THRESHOLD, 1)).random()
@@ -63,15 +63,15 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
             player.levelUp()
             decorateWithView { spawnMobs() }
         }
-        if (player.getCurrentHealth() <= 0) {
+        if (player.health <= 0) {
             gameFinished = true
             deleteSavedModel()
         }
     }
 
     private fun combatAftermath() {
-        mobs.filter { it.getCurrentHealth() <= 0 }.forEach { map.changeCellState(it.getCurrentPosition(), FREE) }
-        mobs.removeIf { it.getCurrentHealth() <= 0 }
+        mobs.filter { it.health <= 0 }.forEach { map.changeCellState(it.position, FREE) }
+        mobs.removeIf { it.health <= 0 }
     }
 
     private inline fun decorateWithView(move: () -> Unit) {
@@ -83,14 +83,14 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
         character: GameCharacter,
         move: (character: GameCharacter) -> Unit
     ) {
-        map.changeCellState(character.getCurrentPosition(), FREE)
+        map.changeCellState(character.position, FREE)
         move(character)
-        map.changeCellState(character.getCurrentPosition(), OCCUPIED)
+        map.changeCellState(character.position, OCCUPIED)
     }
 
     override fun movePlayer(move: Model.PlayerMove) {
-        var x = player.getCurrentPosition().x
-        var y = player.getCurrentPosition().y
+        var x = player.position.x
+        var y = player.position.y
 
         when (move) {
             Model.PlayerMove.MOVE_UP -> y--
@@ -103,8 +103,7 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
             decorateWithPosChange(player) { player.changePosition(x, y) }
         else if (map.getCell(MapPosition(x, y)) == OCCUPIED) {
             combatSystem.combat(player, mobs.first {
-                it.getCurrentPosition().x == x
-                        && it.getCurrentPosition().y == y
+                it.position.x == x && it.position.y == y
             })
             decorateWithView { combatAftermath() }
         }
@@ -123,8 +122,8 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
             mob.changePosition(nextPosition.x, nextPosition.y)
         } else {
             val fighter = mobs.firstOrNull {
-                it.getCurrentPosition().x == nextPosition.x
-                        && it.getCurrentPosition().y == nextPosition.y
+                it.position.x == nextPosition.x
+                        && it.position.y == nextPosition.y
             }
             if (fighter != null) {
                 combatSystem.combat(fighter, mob)

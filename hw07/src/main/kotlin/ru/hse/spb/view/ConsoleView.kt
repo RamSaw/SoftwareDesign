@@ -98,7 +98,7 @@ object ConsoleView : View, Serializable {
     }
 
     private fun drawPlayer(model: Model) {
-        val playerPosition = model.player.getCurrentPosition()
+        val playerPosition = model.player.position
         screen.putString(
             MAP_POSITION_X + playerPosition.x,
             MAP_POSITION_Y + playerPosition.y,
@@ -110,7 +110,7 @@ object ConsoleView : View, Serializable {
 
     private fun drawMobs(model: Model) {
         for (mob in model.mobs) {
-            val mobPosition = mob.getCurrentPosition()
+            val mobPosition = mob.position
             screen.putString(
                 MAP_POSITION_X + mobPosition.x,
                 MAP_POSITION_Y + mobPosition.y,
@@ -128,7 +128,7 @@ object ConsoleView : View, Serializable {
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
             MAP_POSITION_Y + INFO_PADDING_Y,
-            "level: " + player.getCurrentLevel(),
+            "level: " + player.level,
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
         )
@@ -147,7 +147,7 @@ object ConsoleView : View, Serializable {
             Terminal.Color.BLACK
         )
 
-        val health = max(player.getCurrentHealth(), 0)
+        val health = max(player.health, 0)
 
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,

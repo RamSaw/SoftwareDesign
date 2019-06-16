@@ -9,8 +9,8 @@ import ru.hse.spb.model.engine.Mob
  */
 class FunkyStrategy(private val model: Model) : MobStrategy {
     override fun makeTurn(mob: Mob, map: Map): Map.MapPosition {
-        val mobPosition = mob.getCurrentPosition()
-        val playerPosition = model.player.getCurrentPosition()
+        val mobPosition = mob.position
+        val playerPosition = model.player.position
 
         val x = mobPosition.x + when {
             playerPosition.x > mobPosition.x -> -1

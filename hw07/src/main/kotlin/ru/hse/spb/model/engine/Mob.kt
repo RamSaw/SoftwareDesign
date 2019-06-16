@@ -16,6 +16,8 @@ class Mob(
 
     override var health = DEFAULT_HEALTH + AMPLIFIER * level
     override var strength = DEFAULT_STRENGTH + AMPLIFIER * level
+    override var baseHealth: Int = 0
+    override var baseStrength: Int = 0
 
     companion object {
         private const val AMPLIFIER = 2
@@ -35,10 +37,6 @@ class Mob(
     }
 
     override fun inclineDamage() = strength
-
-    override fun getCurrentLevel() = level
-
-    override fun getCurrentHealth() = health
 
     override fun takeDamage(dmg: Int) {
         health -= dmg

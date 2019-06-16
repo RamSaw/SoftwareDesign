@@ -10,7 +10,7 @@ import ru.hse.spb.model.engine.Mob
 class ConfusedStrategy(var timeout: Int) : MobStrategy {
     override fun makeTurn(mob: Mob, map: Map): Map.MapPosition {
         timeout--
-        val position = mob.getCurrentPosition()
+        val position = mob.position
         val x = position.x
         val y = position.y
         return listOf(

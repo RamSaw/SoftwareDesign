@@ -8,21 +8,20 @@ import java.io.Serializable
  *  This class represents all game characters.
  */
 abstract class GameCharacter : Serializable {
-    protected abstract var health: Int
-    protected abstract var level: Int
+    abstract var health: Int
+        protected set
+    abstract var level: Int
+        protected set
     protected abstract var strength: Int
-    protected abstract var position: MapPosition
-
-    fun getCurrentPosition() = position
+    abstract var position: MapPosition
+        protected set
+    protected abstract var baseHealth: Int
+    protected abstract var baseStrength: Int
 
     /**
      * Decrease character`s health for given amount.
      */
     abstract fun takeDamage(dmg: Int)
-
-    abstract fun getCurrentLevel(): Int
-
-    abstract fun getCurrentHealth(): Int
 
     /**
      * Return character`s strength to incline.

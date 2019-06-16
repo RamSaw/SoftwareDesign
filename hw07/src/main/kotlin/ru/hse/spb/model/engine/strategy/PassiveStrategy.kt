@@ -8,7 +8,7 @@ import ru.hse.spb.model.engine.Mob
  */
 class PassiveStrategy : MobStrategy {
     override fun makeTurn(mob: Mob, map: Map): Map.MapPosition {
-        return mob.getCurrentPosition()
+        return mob.position
     }
 
     override fun isExpired(): Boolean {

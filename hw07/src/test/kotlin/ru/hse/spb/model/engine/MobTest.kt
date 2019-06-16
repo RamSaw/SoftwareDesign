@@ -15,9 +15,9 @@ class MobTest {
         val mob = Mob(1, start, ConfusedStrategy(100))
         mob.move(map)
         assertTrue(
-            abs(mob.getCurrentPosition().x - start.x)
-                    + abs(mob.getCurrentPosition().y - start.y) <= 1
+            abs(mob.position.x - start.x)
+                    + abs(mob.position.y - start.y) <= 1
         )
-        assertTrue(map.getCell(mob.getCurrentPosition()) == Map.CellState.FREE)
+        assertTrue(map.getCell(mob.position) == Map.CellState.FREE)
     }
 }
