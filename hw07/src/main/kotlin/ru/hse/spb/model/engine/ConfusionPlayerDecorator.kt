@@ -15,10 +15,15 @@ class ConfusionPlayerDecorator(private val player: BasePlayer) : BasePlayer(play
 
     override fun inclineDamage() = player.inclineDamage()
 
-    /**
-     * Applies ConfusedStrategy to the mob.
-     */
-    fun confuseAfterAttack(mob: Mob) {
+    override fun attack(other: GameCharacter) {
+        player.attack(other)
+
+        if (other::class.java == Mob::class.java) {
+            confuseAfterAttack(other as Mob)
+        }
+    }
+
+    private fun confuseAfterAttack(mob: Mob) {
         mob.setStrategy(ConfusedStrategy(confuseTime))
     }
 

@@ -29,6 +29,13 @@ abstract class GameCharacter : Serializable {
     abstract fun inclineDamage(): Int
 
     /**
+     * Performs attack on other character.
+     */
+    open fun attack(other: GameCharacter) {
+        other.takeDamage(this.inclineDamage())
+    }
+
+    /**
      * Change character`s position on the map.
      */
     fun changePosition(x: Int, y: Int) {

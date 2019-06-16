@@ -14,16 +14,7 @@ class CombatSystem : Serializable {
      * Fight between game characters.
      */
     fun combat(aggressor: GameCharacter, victim: GameCharacter) {
-        victim.takeDamage(aggressor.inclineDamage())
-        aggressor.takeDamage(victim.inclineDamage())
-    }
-
-    /**
-     * Incline damage to confusion player and mob.
-     */
-    fun combat(player: ConfusionPlayerDecorator, mob: Mob) {
-        mob.takeDamage(player.inclineDamage())
-        player.confuseAfterAttack(mob)
-        player.takeDamage(mob.inclineDamage())
+        aggressor.attack(victim)
+        victim.attack(aggressor)
     }
 }
