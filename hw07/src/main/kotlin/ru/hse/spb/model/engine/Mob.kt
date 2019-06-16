@@ -27,11 +27,11 @@ class Mob(
      * Makes a move corresponding to current strategy.
      */
     fun move(map: Map): MapPosition {
-        if (temporaryStrategy != null && !temporaryStrategy!!.isExpired()) {
-            return temporaryStrategy!!.makeTurn(this, map)
+        return if (temporaryStrategy?.isExpired() == true) {
+            temporaryStrategy!!.makeTurn(this, map)
+        } else {
+            strategy.makeTurn(this, map)
         }
-
-        return strategy.makeTurn(this, map)
     }
 
     override fun inclineDamage() = strength
