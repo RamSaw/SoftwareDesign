@@ -35,7 +35,5 @@ class AggressiveStrategy(private val model: Model) : MobStrategy {
         return mobPosition
     }
 
-    override fun isExpired(): Boolean {
-        return false
-    }
+    override fun isExpired(): Boolean = falses
 }
