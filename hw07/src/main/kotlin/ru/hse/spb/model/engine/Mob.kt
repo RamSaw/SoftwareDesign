@@ -50,9 +50,4 @@ class Mob(
     fun setStrategy(strategy: MobStrategy) {
         temporaryStrategy = strategy
     }
-
-    /**
-     * Getter for current strategy.
-     */
-    fun getStrategy() = temporaryStrategy
 }

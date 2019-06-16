@@ -1,7 +1,6 @@
 package ru.hse.spb.model
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import ru.hse.spb.model.engine.ConfusionPlayerDecorator
 import ru.hse.spb.model.engine.Mob
@@ -18,7 +17,6 @@ class CombatSystemTest {
         val combatSystem = CombatSystem()
         combatSystem.combat(player, mob)
         assertEquals(oldHealth - mob.inclineDamage(), player.getCurrentHealth())
-        assertNull(mob.getStrategy())
     }
 
     @Test
@@ -29,7 +27,6 @@ class CombatSystemTest {
         val combatSystem = CombatSystem()
         combatSystem.combat(player, mob)
         assertEquals(oldHealth - mob.inclineDamage(), player.getCurrentHealth())
-        assertEquals(ConfusedStrategy(0).javaClass, mob.getStrategy()?.javaClass)
     }
 
     @Test
