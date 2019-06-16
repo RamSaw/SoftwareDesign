@@ -7,10 +7,12 @@ import java.io.Serializable
  */
 data class Equipment(
     val name: String,
-    var isOnCharacter: Boolean,
+    private var isOnCharacter: Boolean,
     val additionalHealth: Int,
     val additionalStrength: Int
 ) : Serializable{
+    fun isOnCharacter() = isOnCharacter
+
     fun takeOff() {
         isOnCharacter = false
     }

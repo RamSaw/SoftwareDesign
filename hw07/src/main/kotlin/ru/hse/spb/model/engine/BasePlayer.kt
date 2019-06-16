@@ -37,8 +37,8 @@ abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
      */
     fun getEquipmentNames(): List<String> = equipment.map { it.name }
 
-    private fun getAdditionalHealth(): Int = equipment.filter { it.isOnCharacter }.map { it.additionalHealth }.sum()
-    private fun getAdditionalStrength(): Int = equipment.filter { it.isOnCharacter }.map { it.additionalStrength }.sum()
+    private fun getAdditionalHealth(): Int = equipment.filter { it.isOnCharacter() }.map { it.additionalHealth }.sum()
+    private fun getAdditionalStrength(): Int = equipment.filter { it.isOnCharacter() }.map { it.additionalStrength }.sum()
 
     companion object {
         private const val EQUIPMENT_NAME = "GODSWORD"

@@ -23,7 +23,7 @@ class Player(loc: MapPosition) : BasePlayer(loc) {
 
         val eq = equipment[equipmentId]
 
-        if (eq.isOnCharacter) {
+        if (eq.isOnCharacter()) {
             if (health > eq.additionalHealth) {
                 eq.takeOff()
             }
