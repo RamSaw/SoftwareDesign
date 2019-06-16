@@ -65,6 +65,7 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
         }
         if (player.getCurrentHealth() <= 0) {
             gameFinished = true
+            deleteSavedModel()
         }
     }
 
@@ -172,6 +173,12 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
         this.strategies = model.strategies
         this.gameFinished = model.gameFinished
         this.gameStarted = model.gameStarted
+    }
+
+    private fun deleteSavedModel() {
+        if (File(SAVED_GAME_FILENAME).exists()) {
+            File(SAVED_GAME_FILENAME).delete()
+        }
     }
 
     companion object {
