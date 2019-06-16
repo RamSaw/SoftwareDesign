@@ -23,6 +23,9 @@ class Mob(
         private const val DEFAULT_STRENGTH = 1
     }
 
+    /**
+     * Makes a move corresponding to current strategy.
+     */
     fun move(map: Map): MapPosition {
         if (temporaryStrategy != null && !temporaryStrategy!!.isExpired()) {
             return temporaryStrategy!!.makeTurn(this, map)
@@ -41,9 +44,15 @@ class Mob(
         health -= dmg
     }
 
+    /**
+     * Set temporary strategy to a specified one.
+     */
     fun setStrategy(strategy: MobStrategy) {
         temporaryStrategy = strategy
     }
 
+    /**
+     * Getter for current strategy.
+     */
     fun getStrategy() = temporaryStrategy
 }

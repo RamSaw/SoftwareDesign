@@ -25,6 +25,9 @@ abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
      */
     abstract fun takeOnOffEquipment(equipmentId: Int)
 
+    /**
+     * Getter for all available equipment.
+     */
     fun getEquipmentNames(): List<String> = equipment.map { it.name }
 
     companion object {

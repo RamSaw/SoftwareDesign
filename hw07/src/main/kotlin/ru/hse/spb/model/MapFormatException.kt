@@ -1,4 +1,6 @@
 package ru.hse.spb.model
 
-class MapFormatException(message: String?) : Exception(message) {
-}
+/**
+ * Exception for wrong map file format.
+ */
+class MapFormatException(message: String?) : Exception(message)

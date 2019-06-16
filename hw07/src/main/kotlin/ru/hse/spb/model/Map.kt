@@ -168,6 +168,9 @@ class Map private constructor(val field: Array<Array<CellState>>) : Serializable
         }
     }
 
+    /**
+     * Changes cell state to a given one.
+     */
     fun changeCellState(pos:MapPosition, state:CellState){
         field[pos.y][pos.x] = state
     }
