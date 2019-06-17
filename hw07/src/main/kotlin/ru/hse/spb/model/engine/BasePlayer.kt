@@ -9,7 +9,7 @@ import ru.hse.spb.model.Map.MapPosition
 abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
     override var level: Int = 1
     override var position: MapPosition = loc
-    protected val equipment = arrayOf(Equipment(EQUIPMENT_NAME, true, DEFAULT_HEALTH, DEFAULT_STRENGTH))
+    abstract val equipment: List<Equipment>
 
     override var health: Int
         get() = baseHealth + getAdditionalHealth()
@@ -18,6 +18,7 @@ abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
         get() = baseStrength + getAdditionalStrength()
         set(value) {}
     protected val AMPLIFIER = 3
+    protected val MAX_EQUIPMENT_CNT = 10
 
     override var baseHealth: Int = DEFAULT_HEALTH
     override var baseStrength: Int = DEFAULT_STRENGTH
@@ -42,8 +43,7 @@ abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
     protected fun getEquipmentOn(): List<Equipment> = equipment.filter { it.isOnCharacter() }
 
     companion object {
-        private const val EQUIPMENT_NAME = "GODSWORD"
-        private const val DEFAULT_HEALTH = 10
-        private const val DEFAULT_STRENGTH = 2
+        private const val DEFAULT_HEALTH = 20
+        private const val DEFAULT_STRENGTH = 4
     }
 }

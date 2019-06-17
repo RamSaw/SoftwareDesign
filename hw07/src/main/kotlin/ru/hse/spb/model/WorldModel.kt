@@ -181,7 +181,7 @@ class WorldModel(override var map: Map, override var view: View) : Model, Serial
     }
 
     companion object {
-        private const val MOBS_THRESHOLD = 5
+        private const val MOBS_THRESHOLD = 20
         private const val SAVED_GAME_FILENAME = "saves/savedGame"
         private const val FAILED_LOAD_MESSAGE = "Failed to load save file."
     }
