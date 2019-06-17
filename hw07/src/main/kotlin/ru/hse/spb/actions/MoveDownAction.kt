@@ -5,8 +5,8 @@ import ru.hse.spb.model.Model
 /**
  * Represents moving down action.
  */
-object MoveDownAction : Action {
-    override fun execute(model: Model) {
+class MoveDownAction(private val model: Model) : Action {
+    override fun execute() {
         model.movePlayer(Model.PlayerMove.MOVE_DOWN)
     }
 }

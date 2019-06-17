@@ -5,8 +5,8 @@ import ru.hse.spb.model.Model
 /**
  * Represents save game action.
  */
-object SaveGameAction : Action {
-    override fun execute(model: Model) {
+class SaveGameAction(private val model: Model) : Action {
+    override fun execute() {
         model.save()
     }
 }

@@ -1,5 +1,6 @@
 package ru.hse.spb
 
+import ru.hse.spb.actions.*
 import ru.hse.spb.controller.Controller
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.MapFormatException
@@ -38,6 +39,15 @@ fun main(args: Array<String>) {
     }
     val model = WorldModel(map as Map, view)
     val controller = Controller(model, view)
+
+    view.moveDownAction = MoveDownAction(model)
+    view.moveUpAction = MoveUpAction(model)
+    view.moveLeftAction = MoveLeftAction(model)
+    view.moveRightAction = MoveRightAction(model)
+    view.quitGameAction = QuitGameAction(model)
+    view.saveGameAction = SaveGameAction(model)
+    view.loadGameAction = LoadGameAction(model)
+    view.digitActionProvider = DigitActionProvider(model)
 
     controller.run()
     view.stop()

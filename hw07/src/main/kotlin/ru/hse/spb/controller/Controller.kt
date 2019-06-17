@@ -14,8 +14,7 @@ class Controller(private val model: Model,
      */
     fun run() {
         while (true) {
-            val action = view.getAction()
-            action.execute(model)
+            view.waitAction()
 
             if (model.isGameFinished()) {
                 break

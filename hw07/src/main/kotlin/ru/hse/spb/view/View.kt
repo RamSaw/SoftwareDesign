@@ -13,9 +13,9 @@ interface View {
     fun draw(model: Model?)
 
     /**
-     * Reads user action.
+     * Waits for user to act.
      */
-    fun getAction(): Action
+    fun waitAction()
 
     /**
      * Closes view session.

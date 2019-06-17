@@ -14,6 +14,15 @@ import java.lang.Integer.max
  * Simple view implementation, uses console graphics.
  */
 object ConsoleView : View, Serializable {
+    var moveDownAction: Action? = null
+    var moveUpAction: Action? = null
+    var moveLeftAction: Action? = null
+    var moveRightAction: Action? = null
+    var quitGameAction: Action? = null
+    var saveGameAction: Action? = null
+    var loadGameAction: Action? = null
+    var digitActionProvider: DigitActionProvider? = null
+
     private const val MAP_POSITION_X = 0
     private const val MAP_POSITION_Y = 0
     private const val INFO_PADDING_X = 10
@@ -39,22 +48,22 @@ object ConsoleView : View, Serializable {
         screen.stopScreen()
     }
 
-    override fun getAction(): Action {
+    override fun waitAction() {
         var action : Action?
 
         while (true) {
             val key = screen.readInput() ?: continue
 
             action = when (key.kind) {
-                Key.Kind.ArrowDown -> MoveDownAction
-                Key.Kind.ArrowUp -> MoveUpAction
-                Key.Kind.ArrowLeft -> MoveLeftAction
-                Key.Kind.ArrowRight -> MoveRightAction
+                Key.Kind.ArrowDown -> moveDownAction
+                Key.Kind.ArrowUp -> moveUpAction
+                Key.Kind.ArrowLeft -> moveLeftAction
+                Key.Kind.ArrowRight -> moveRightAction
                 Key.Kind.NormalKey -> when (key.character) {
-                    'q' -> QuitGameAction
-                    's' -> SaveGameAction
-                    'l' -> LoadGameAction
-                    in '0'..'9' -> TakeOnOffEquipmentAction(key.character.toInt() - '0'.toInt())
+                    'q' -> quitGameAction
+                    's' -> saveGameAction
+                    'l' -> loadGameAction
+                    in '0'..'9' -> digitActionProvider?.actionFor(key.character.toInt() - '0'.toInt())
                     else -> null
                 }
                 else -> null
@@ -65,7 +74,7 @@ object ConsoleView : View, Serializable {
             }
         }
 
-        return action!!
+        action!!.execute()
     }
 
     override fun draw(model: Model?) {

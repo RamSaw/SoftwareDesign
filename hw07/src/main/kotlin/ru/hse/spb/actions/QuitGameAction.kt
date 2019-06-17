@@ -5,8 +5,8 @@ import ru.hse.spb.model.Model
 /**
  * Represents quit game action.
  */
-object QuitGameAction : Action {
-    override fun execute(model: Model) {
+class QuitGameAction(private val model: Model) : Action {
+    override fun execute() {
         model.finishGame()
     }
 }
