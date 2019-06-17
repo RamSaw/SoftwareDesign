@@ -1,7 +1,6 @@
 package ru.hse.spb.model.engine
 
 import ru.hse.spb.model.Map.MapPosition
-import java.lang.Integer.max
 
 /**
  * This class represents basic player.
@@ -28,7 +27,9 @@ class Player(loc: MapPosition) : BasePlayer(loc) {
                 eq.takeOff()
             }
         } else {
-            eq.takeOn()
+            if (getEquipmentOn().isEmpty()) {
+                eq.takeOn()
+            }
         }
     }
 
