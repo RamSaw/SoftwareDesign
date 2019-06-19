@@ -80,6 +80,7 @@ object ConsoleView : View, Serializable {
     override fun draw(model: Model?) {
         currentModel = model ?: return
         screen.updateScreenSize()
+        screen.clear()
 
         drawMap(currentModel!!)
         drawMobs(currentModel!!)
@@ -133,24 +134,37 @@ object ConsoleView : View, Serializable {
     private fun drawInfoPanel(model: Model) {
         val map = model.map
         val player = model.player
+        var paddingY = INFO_PADDING_Y
 
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
-            MAP_POSITION_Y + INFO_PADDING_Y,
+            MAP_POSITION_Y + paddingY++,
             "level: " + player.level,
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
         )
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
-            MAP_POSITION_Y + INFO_PADDING_Y + 1,
-            "equipment: " + player.getEquipmentNames().joinToString(),
+            MAP_POSITION_Y + paddingY++,
+            "equipment:",
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
         )
+        for (name in player.getEquipmentNames()) {
+            screen.putString(
+                MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
+                MAP_POSITION_Y + paddingY++,
+                name,
+                Terminal.Color.WHITE,
+                Terminal.Color.BLACK
+            )
+        }
+
+        paddingY++
+
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
-            MAP_POSITION_Y + INFO_PADDING_Y + 2,
+            MAP_POSITION_Y + paddingY++,
             "strength: " + player.inclineDamage(),
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
@@ -160,14 +174,7 @@ object ConsoleView : View, Serializable {
 
         screen.putString(
             MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
-            MAP_POSITION_Y + INFO_PADDING_Y + 3,
-            "health:          ",
-            Terminal.Color.WHITE,
-            Terminal.Color.BLACK
-        )
-        screen.putString(
-            MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
-            MAP_POSITION_Y + INFO_PADDING_Y + 3,
+            MAP_POSITION_Y + paddingY++,
             "health: $health",
             Terminal.Color.WHITE,
             Terminal.Color.BLACK
@@ -176,7 +183,7 @@ object ConsoleView : View, Serializable {
         if (health == 0) {
             screen.putString(
                 MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
-                MAP_POSITION_Y + INFO_PADDING_Y + 4,
+                MAP_POSITION_Y + paddingY++,
                 "GAME OVER",
                 Terminal.Color.WHITE,
                 Terminal.Color.BLACK
@@ -184,7 +191,7 @@ object ConsoleView : View, Serializable {
         }
 
         drawControlInfo(MAP_POSITION_X + map.getWidth() + INFO_PADDING_X,
-                      MAP_POSITION_Y + INFO_PADDING_Y + 5)
+                      MAP_POSITION_Y + paddingY)
     }
 
     private fun drawControlInfo(x: Int, y: Int) {
