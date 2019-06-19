@@ -8,9 +8,8 @@ import ru.hse.spb.model.engine.strategy.ConfusedStrategy
 class ConfusionPlayerDecorator(private val player: BasePlayer) : BasePlayer(player.position) {
     override val equipment = player.equipment
     override var level = player.level
-    override var health: Int
+    override val health: Int
         get() = player.health
-        set(value) {}
 
     private var confuseTime = 5
 

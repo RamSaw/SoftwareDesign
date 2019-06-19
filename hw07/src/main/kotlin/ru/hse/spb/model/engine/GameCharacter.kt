@@ -8,11 +8,10 @@ import java.io.Serializable
  *  This class represents all game characters.
  */
 abstract class GameCharacter : Serializable {
-    abstract var health: Int
-        protected set
+    abstract val health: Int
     abstract var level: Int
         protected set
-    protected abstract var strength: Int
+    protected abstract val strength: Int
     abstract var position: MapPosition
         protected set
     protected abstract var baseHealth: Int

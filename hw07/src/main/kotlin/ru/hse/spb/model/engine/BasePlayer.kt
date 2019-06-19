@@ -11,12 +11,10 @@ abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
     override var position: MapPosition = loc
     abstract val equipment: List<Equipment>
 
-    override var health: Int
+    override val health: Int
         get() = baseHealth + getAdditionalHealth()
-        set(value) {}
-    override var strength: Int
+    override val strength: Int
         get() = baseStrength + getAdditionalStrength()
-        set(value) {}
     protected val AMPLIFIER = 3
     protected val MAX_EQUIPMENT_CNT = 10
 
