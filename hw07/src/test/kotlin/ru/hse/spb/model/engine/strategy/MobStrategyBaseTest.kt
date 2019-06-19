@@ -32,6 +32,9 @@ open class MobStrategyBaseTest {
         private const val PLAYER_X = 4
         private const val PLAYER_Y = 4
 
+        /**
+         * Calculates L1 distance between two positions.
+         */
         fun dist(first: Map.MapPosition, second: Map.MapPosition) : Int {
             return abs(first.x - second.x) + abs(first.y - second.y)
         }
