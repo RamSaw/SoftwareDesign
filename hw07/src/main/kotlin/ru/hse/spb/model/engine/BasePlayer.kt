@@ -7,7 +7,7 @@ import ru.hse.spb.model.Map.MapPosition
  * This class represents common attributes for all type of players
  */
 abstract class BasePlayer(loc: MapPosition) : GameCharacter() {
-    override var level: Int = 1
+    override val level: Int = 1
     override var position: MapPosition = loc
     abstract val equipment: List<Equipment>
 

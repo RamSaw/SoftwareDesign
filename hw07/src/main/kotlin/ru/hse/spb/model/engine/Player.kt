@@ -6,6 +6,7 @@ import ru.hse.spb.model.Map.MapPosition
  * This class represents basic player.
  */
 class Player(loc: MapPosition) : BasePlayer(loc) {
+    override var level = super.level
     override val equipment = mutableListOf<Equipment>()
 
     override fun inclineDamage() = strength

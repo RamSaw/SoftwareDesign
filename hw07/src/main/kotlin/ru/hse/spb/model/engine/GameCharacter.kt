@@ -9,8 +9,7 @@ import java.io.Serializable
  */
 abstract class GameCharacter : Serializable {
     abstract val health: Int
-    abstract var level: Int
-        protected set
+    abstract val level: Int
     protected abstract val strength: Int
     abstract var position: MapPosition
         protected set

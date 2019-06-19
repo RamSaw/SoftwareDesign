@@ -8,7 +8,7 @@ import ru.hse.spb.model.engine.strategy.MobStrategy
  * This class represents mob(non playable characters).
  */
 class Mob(
-    override var level: Int,
+    override val level: Int,
     override var position: MapPosition,
     private var strategy: MobStrategy
 ) : GameCharacter() {

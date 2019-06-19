@@ -6,8 +6,10 @@ import ru.hse.spb.model.engine.strategy.ConfusedStrategy
  * This class adds confusion action to player.
  */
 class ConfusionPlayerDecorator(private val player: BasePlayer) : BasePlayer(player.position) {
-    override val equipment = player.equipment
-    override var level = player.level
+    override val equipment : List<Equipment>
+        get() = player.equipment
+    override val level: Int
+        get() = player.level
     override val health: Int
         get() = player.health
 
