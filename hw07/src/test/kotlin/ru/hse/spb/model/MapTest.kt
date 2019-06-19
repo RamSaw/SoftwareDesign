@@ -21,7 +21,7 @@ class MapTest {
 
     @Test
     fun testLoad() {
-        val map = Map.load(javaClass.getResource("/maps/00.txt").path)
+        val map = Map.load(javaClass.getResource("/maps/map_test.txt").path)
         val expectedCells = listOf(Map.MapPosition(1, 1),
                                    Map.MapPosition(2, 1),
                                    Map.MapPosition(2, 2))
@@ -36,7 +36,7 @@ class MapTest {
 
     @Test
     fun testGetWidth() {
-        val map = Map.load(javaClass.getResource("/maps/00.txt").path)
+        val map = Map.load(javaClass.getResource("/maps/map_test.txt").path)
         val expected = 4
 
         assertEquals(expected, map.getWidth())
@@ -44,7 +44,7 @@ class MapTest {
 
     @Test
     fun testGetStartCell() {
-        val map = Map.load(javaClass.getResource("/maps/00.txt").path)
+        val map = Map.load(javaClass.getResource("/maps/map_test.txt").path)
         val startCell = map.getStartCell()
 
         assertEquals(Map.CellState.FREE, map.getCell(startCell))
