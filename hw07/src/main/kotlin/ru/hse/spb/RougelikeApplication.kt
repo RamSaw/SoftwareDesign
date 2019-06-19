@@ -2,6 +2,7 @@ package ru.hse.spb
 
 import ru.hse.spb.actions.*
 import ru.hse.spb.controller.Controller
+import ru.hse.spb.model.FailedLoadException
 import ru.hse.spb.model.Map
 import ru.hse.spb.model.MapFormatException
 import ru.hse.spb.model.WorldModel
@@ -49,8 +50,12 @@ fun main(args: Array<String>) {
     view.loadGameAction = LoadGameAction(model)
     view.digitActionProvider = DigitActionProvider(model)
 
-    controller.run()
-    view.stop()
+    try {
+        controller.run()
+        view.stop()
+    } catch (e: FailedLoadException) {
+        e.message?.let { exitWithError(it) }
+    }
 }
 
 fun exitWithError(errorMessage: String) {
